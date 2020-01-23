@@ -362,8 +362,8 @@ WebsocketProvider.prototype.reset = function () {
  * @returns {void}
  */
 WebsocketProvider.prototype.disconnect = function (code, reason) {
-    this._removeSocketListeners();
     this.connection.close(code || 1000, reason);
+    this._removeSocketListeners();
 };
 
 /**
