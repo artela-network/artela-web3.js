@@ -9,8 +9,9 @@
 set -o errexit
 
 # Install ganache-core
-git clone https://github.com/trufflesuite/ganache-core
+git clone https://github.com/cgewecke/ganache-core
 cd ganache-core
+git checkout web3/debug-pri
 
 # Install via registry and verify
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
