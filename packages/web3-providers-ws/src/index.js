@@ -166,6 +166,7 @@ WebsocketProvider.prototype._onConnect = function () {
  * @returns {void}
  */
 WebsocketProvider.prototype._onClose = function (event) {
+    console.log('hearing _onClose --> ' + event.code);
     var _this = this;
 
     if (this.reconnectOptions.auto && (![1000, 1001].includes(event.code) || event.wasClean === false)) {
@@ -362,11 +363,12 @@ WebsocketProvider.prototype.reset = function () {
  * @returns {void}
  */
 WebsocketProvider.prototype.disconnect = function (code, reason) {
+    const _this = this;
     console.log('running disconnect --> ' + code);
     this.connection.close(code || 1000, reason);
     setTimeout(function(){
         console.log('removing socket listeners in .disconnect');
-        this._removeSocketListeners()
+        _this._removeSocketListeners()
     },0);
 };
 
