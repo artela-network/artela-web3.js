@@ -6,30 +6,30 @@ git:
 matrix:
   fast_finish: true
   include:
-    - node_js: 8
-      env: TEST=unit
-    - node_js: 11
-      env: TEST=unit
-    - node_js: 12
-      env: TEST=unit
-    - node_js: 10
-      env: TEST=build_and_lint
-    - node_js: 10
-      env: TEST=unit_and_e2e_clients
-    - node_js: 10
-      env: TEST=e2e_ganache
-    - node_js: 10
-      env: TEST=e2e_mosaic
-    - node_js: 10
-      env: TEST=e2e_browsers
-      addons:
-        chrome: stable
-        firefox: latest
-  allow_failures:
+    # - node_js: 8
+    #   env: TEST=unit
+    # - node_js: 11
+    #   env: TEST=unit
+    # - node_js: 12
+    #   env: TEST=unit
+    # - node_js: 10
+    #   env: TEST=build_and_lint
+    # - node_js: 10
+    #   env: TEST=unit_and_e2e_clients
     - node_js: 10
       env: TEST=e2e_ganache
-    - node_js: 10
-      env: TEST=e2e_mosaic
+    # - node_js: 10
+    #   env: TEST=e2e_mosaic
+    # - node_js: 10
+    #   env: TEST=e2e_browsers
+    #   addons:
+    #     chrome: stable
+    #     firefox: latest
+  # allow_failures:
+  #   - node_js: 10
+  #     env: TEST=e2e_ganache
+  #   - node_js: 10
+  #     env: TEST=e2e_mosaic
 
 addons:
   apt:
