@@ -167,7 +167,7 @@ WebsocketProvider.prototype._onConnect = function () {
  * @returns {void}
  */
 WebsocketProvider.prototype._onClose = function (event) {
-    console.log('hearing _onClose --> ' + event.code);
+    console.log('hearing _onClose --> ' + event.code + ' ' + event.reason);
     var _this = this;
 
     if (this.reconnectOptions.auto && (![1000, 1001].includes(event.code) || event.wasClean === false)) {
