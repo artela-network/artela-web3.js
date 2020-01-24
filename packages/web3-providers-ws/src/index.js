@@ -366,8 +366,11 @@ WebsocketProvider.prototype.reset = function () {
 WebsocketProvider.prototype.disconnect = function (code, reason) {
     console.log('running disconnect --> ' + code);
     this._removeSocketListeners();
-    this.connection.close(code || 1000, reason);
-
+    this._onClose({
+        code: code || 1000,
+        reason: (!code || code === 1000) ? "Normal connection closure" : reason,
+        wasClean: true
+    });
 };
 
 /**
