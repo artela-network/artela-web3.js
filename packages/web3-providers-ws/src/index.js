@@ -136,6 +136,7 @@ WebsocketProvider.prototype._onMessage = function (e) {
     });
 };
 
+
 /**
  * Listener for the `open` event of the underlying WebSocket object
  *
@@ -203,18 +204,6 @@ WebsocketProvider.prototype._onClose = function (event) {
  * @returns {void}
  */
 WebsocketProvider.prototype._addSocketListeners = function () {
-    this.connection.onerror = function(err){
-        console.log('hearing connection.onerror --> ' + err);
-    };
-
-    this.connection.onclose = function(event){
-        let code;
-        if (typeof event === 'object'){
-           code = event.code;
-        }
-        console.log('hearing connection.onclose --> ' + code);
-    };
-
     this.connection.addEventListener('message', this._onMessage.bind(this));
     this.connection.addEventListener('open', this._onConnect.bind(this));
     this.connection.addEventListener('close', this._onClose.bind(this));
@@ -376,7 +365,7 @@ WebsocketProvider.prototype.reset = function () {
  */
 WebsocketProvider.prototype.disconnect = function (code, reason) {
     console.log('running disconnect --> ' + code);
-    this._removeSocketListeners();
+    //this._removeSocketListeners();
     this.connection.close(code || 1000, reason);
 
 };
