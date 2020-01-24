@@ -203,6 +203,18 @@ WebsocketProvider.prototype._onClose = function (event) {
  * @returns {void}
  */
 WebsocketProvider.prototype._addSocketListeners = function () {
+    this.connection.onerror = function(err){
+        console.log('hearing connection.onerror --> ' + err);
+    };
+
+    this.connection.onclose = function(event){
+        let code;
+        if (typeof event === 'object'){
+           code = event.code;
+        }
+        console.log('hearing connection.onclose --> ' + code);
+    };
+
     this.connection.addEventListener('message', this._onMessage.bind(this));
     this.connection.addEventListener('open', this._onConnect.bind(this));
     this.connection.addEventListener('close', this._onClose.bind(this));
@@ -363,13 +375,10 @@ WebsocketProvider.prototype.reset = function () {
  * @returns {void}
  */
 WebsocketProvider.prototype.disconnect = function (code, reason) {
-    const _this = this;
     console.log('running disconnect --> ' + code);
+    this._removeSocketListeners();
     this.connection.close(code || 1000, reason);
-    setTimeout(function(){
-        console.log('removing socket listeners in .disconnect');
-        _this._removeSocketListeners()
-    },0);
+
 };
 
 /**
