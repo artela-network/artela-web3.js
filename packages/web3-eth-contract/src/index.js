@@ -717,8 +717,8 @@ Contract.prototype._on = function(){
 
 
     // prevent the event "newListener" and "removeListener" from being overwritten
-    this._checkListener('newListener', subOptions.event.name);
-    this._checkListener('removeListener', subOptions.event.name);
+    this._checkListener('newListener', subOptions.event.name, subOptions.callback);
+    this._checkListener('removeListener', subOptions.event.name, subOptions.callback);
 
     // TODO check if listener already exists? and reuse subscription if options are the same.
 
