@@ -3,6 +3,7 @@ var Basic = require('./sources/Basic');
 var Child = require('./sources/Child');
 var Parent = require('./sources/Parent');
 var utils = require('./helpers/test.utils');
+var Web3WsProvider = require("../packages/web3-providers-ws/src/index.js");
 var Web3 = utils.getWeb3();
 
 describe('contract.events [ @E2E ]', function() {
@@ -116,6 +117,42 @@ describe('contract.events [ @E2E ]', function() {
                     toBlock: 'latest'
                 })
                 .on('error', function(err) {
+                    failed = true;
+                    this.removeAllListeners();
+                    reject(new Error('err listener should not hear provider.disconnect'));
+                });
+
+            await instance
+                .methods
+                .firesEvent(accounts[0], 1)
+                .send({from: accounts[0]});
+
+            web3.currentProvider.disconnect();
+
+            // Resolve only if we haven't already rejected
+            setTimeout(() => { if(!failed) resolve() }, 2500)
+        });
+    });
+
+    it('should not hear the error handler when provider.disconnect() called', function(){
+        this.timeout(15000);
+
+        let failed = false;
+
+        web3.setProvider(new Web3WsProvider("ws://localhost:8545"));
+
+        return new Promise(async (resolve, reject) => {
+            instance
+                .events
+                .BasicEvent({
+                    fromBlock: 0,
+                    toBlock: 'latest'
+                })
+                .on('data', function(val){
+                    console.log('val --> ' + val)
+                })
+                .on('error', function(err) {
+                    console.log('err --> ' + err)
                     failed = true;
                     this.removeAllListeners();
                     reject(new Error('err listener should not hear provider.disconnect'));
