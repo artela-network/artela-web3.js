@@ -11,7 +11,7 @@ set -o errexit
 # Install ganache-core
 git clone https://github.com/cgewecke/ganache-core
 cd ganache-core
-git checkout web3/debug-pri
+git checkout fix/websocket-close
 
 # Install via registry and verify
 echo ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
