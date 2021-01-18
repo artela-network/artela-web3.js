@@ -1,0 +1,17 @@
+{
+    "httpProvider": "http://3.229.124.43:5052",
+    "validators": [
+        {
+            "pubKey": "0xb96a4329f70262d0461a4f30c6ab8df893bab9a8ff0bcfef82f837a0799e38238efd12f4a7a1d3fdbdd5fe533e0c8a22",
+            "alias": "spaceStrawberryCorn"
+        },
+        {
+            "pubKey": "0x800429af2ff9e4581b3a800cec1604de49538a50659c0cbb2b79493b5d888b2b2075f9e7163bc11024088b17c2b78107",
+            "alias": "chainSafeEnchanting"
+        },
+        {
+            "pubKey": "0x80051d44a89048ab4f9bb146357e841c78471442c6b926e2b8311cc75a2d47c75d278d1ec6559a529d9ac5cbd94063ef",
+            "alias": "chickenZebraSurfing"
+        }
+    ]
+}
