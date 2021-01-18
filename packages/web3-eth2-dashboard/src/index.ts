@@ -4,14 +4,14 @@ import { screen } from 'blessed'
 
 import { readConfig } from './helpers/readConfigFile'
 import { guiConfig } from '../types/index'
-import { ConnectedBox } from './views/connectedBox'
+import { BottomContainerBox } from './views/bottomBox/containerBox'
 import { ValidatorInfoBox } from './views/validatorInfoBox'
 import { ValidatorTable } from './views/validatorTable'
 
 class Eth2Dashboard {
     config: guiConfig
     connected: boolean = false
-    connectedBox: any
+    bottomContainerBox: any
     eth2Beacon: IETH2BeaconChain | undefined
     screenInstance: any
     validatorInfoBox: any
@@ -32,13 +32,13 @@ class Eth2Dashboard {
     initScreen() {
         if (this.screenInstance === undefined) {
             this.screenInstance = screen({smartCSR: true})
-            this.screenInstance.title = 'ETH2CliGui'
+            this.screenInstance.title = 'Web3Eth2Dashboard'
         }
     }
 
-    initConnectedBox() {
-        if (this.connectedBox === undefined) {
-            this.connectedBox = new ConnectedBox(this.config.httpProvider, this.connected)
+    initBottomContainerBox() {
+        if (this.bottomContainerBox === undefined) {
+            this.bottomContainerBox = new BottomContainerBox(this.config.httpProvider, this.connected)
         }
     }
 
@@ -60,15 +60,18 @@ class Eth2Dashboard {
     drawGui() {
         if (this.screenInstance === undefined) {
             this.initScreen()
-            this.initConnectedBox()
-            this.initValidatorInfoBox()
-            this.initValidatorTable()
+            this.initBottomContainerBox()
+            // this.initValidatorInfoBox()
+            // this.initValidatorTable()
 
             // Quit on Escape, q, or Control-C.
             this.screenInstance.key(['escape', 'q', 'C-c'], () => process.exit(0))
-            this.screenInstance.append(this.connectedBox.getElement())
-            this.screenInstance.append(this.validatorInfoBox.getElement())
-            this.screenInstance.append(this.validatorTable.getElement())
+            this.screenInstance.append(this.bottomContainerBox.rawElement)
+            // this.screenInstance.append(this.connectedBox.getElement())
+            // this.screenInstance.append(this.controlsBox.getElement())
+            // this.screenInstance.append(this.versionBox.getElement())
+            // this.screenInstance.append(this.validatorInfoBox.getElement())
+            // this.screenInstance.append(this.validatorTable.getElement())
             this.screenInstance.render()
         }
     }
