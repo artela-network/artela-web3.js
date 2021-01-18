@@ -3,7 +3,8 @@ import { existsSync, readFileSync } from 'fs'
 import { writeConfig } from './writeConfigFile'
 import configTemplate from './configTemplate.json'
 
-const configFilePath = '~/.config/eth2cli.txt'
+const homedir = require('os').homedir();
+const configFilePath = `${homedir}/.config/web3-eth2-dashboard.txt`
 
 export const readConfig = (regenerateConfig: boolean = false) => {
     try {
@@ -11,7 +12,7 @@ export const readConfig = (regenerateConfig: boolean = false) => {
             writeConfig(configTemplate, true)
             return configTemplate
         }
-        return readFileSync(configFilePath)
+        return JSON.parse(readFileSync(configFilePath).toString())
     } catch (error) {
         console.error(`Error reading config file: ${error}`)
     }

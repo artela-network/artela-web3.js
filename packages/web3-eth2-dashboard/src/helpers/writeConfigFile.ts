@@ -2,7 +2,8 @@ import { existsSync, writeFileSync } from 'fs'
 
 import { readConfig } from './readConfigFile'
 
-const configFilePath = '~/.config/eth2cli.json'
+const homedir = require('os').homedir();
+const configFilePath = `${homedir}/.config/web3-eth2-dashboard.txt`
 
 export const writeConfig = (jsonData: Object, overwrite: boolean = false) => {
     try {
