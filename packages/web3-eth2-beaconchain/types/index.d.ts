@@ -43,4 +43,15 @@ export interface IETH2BeaconChain {
   submitProposerSlashings(): Promise<void>
   getSignedVoluntaryExits(): Promise<SignedVoluntaryExit[]>
   submitVoluntaryExit(): Promise<void>
+  addBlockExplorerApi(): void
+  blockExplorerApi: IBlockExplorerApi | undefined
+}
+
+export interface IBlockExplorerApi {
+  getValidatorsForEth1Address(): any,
+  getTop100Validators(): any,
+  getValidatorAttestations(): any,
+  getValidatorBalanceHistory(): any,
+  getValidatorPerformance(): any,
+  getValidatorProposals(): any,
 }
