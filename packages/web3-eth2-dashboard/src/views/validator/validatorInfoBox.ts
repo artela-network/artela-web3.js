@@ -1,16 +1,17 @@
 import { listtable } from 'blessed'
 import { IETH2BeaconChain } from 'web3-eth2-beaconchain'
+
 export class ValidatorInfoBox {
     eth2BeaconChainInstance: IETH2BeaconChain | undefined
-    validatorInfoBox: any
+    rawElement: any
 
     constructor(eth2BeaconChainInstance: IETH2BeaconChain | undefined) {
         this.eth2BeaconChainInstance = eth2BeaconChainInstance
-        this.validatorInfoBox = listtable({
-            top: '30%',
+        this.rawElement = listtable({
+            top: '20%',
             left: 'left',
-            width: '25%',
-            height: '72%',
+            width: '30%',
+            height: '22%',
             align: 'left',
             keys: true,
             vi: true,
@@ -19,7 +20,7 @@ export class ValidatorInfoBox {
             style: {
                 // @ts-ignore
                 border: {
-                fg: 'white'
+                    fg: 'white'
                 },
                 cell: {
                     fg: 'white',
@@ -29,7 +30,7 @@ export class ValidatorInfoBox {
                 }
             }
         })
-        this.validatorInfoBox.setData([[''],['Please select a Validator']])
+        this.rawElement.setData([[''],['Please select a Validator']])
     }
 
     static formatValidatorInfo(validatorInfo: any): string[][] {
@@ -48,10 +49,6 @@ export class ValidatorInfoBox {
         ]
     }
 
-    getElement() {
-        return this.validatorInfoBox
-    }
-
     getValidatorInfo(validatorPubKey: string): any {
         try {
             if (this.eth2BeaconChainInstance === undefined) throw Error(`No ETH2 beacon chain instance provided`)
@@ -64,6 +61,6 @@ export class ValidatorInfoBox {
 
     async setValidatorInfo(validatorPubKey: string) {
         const validatorInfo = await this.getValidatorInfo(validatorPubKey)
-        this.validatorInfoBox.setData(ValidatorInfoBox.formatValidatorInfo(validatorInfo))
+        this.rawElement.setData(ValidatorInfoBox.formatValidatorInfo(validatorInfo))
     }
 }

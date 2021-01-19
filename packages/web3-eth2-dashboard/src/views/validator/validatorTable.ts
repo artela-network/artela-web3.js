@@ -1,31 +1,32 @@
 import { listtable } from 'blessed'
 
-import { configValidator } from '../../types/index'
+import { configValidator } from '../../../types/index'
 
 export class ValidatorTable {
+    rawElement: any
+    screenInstance: any
     validators: configValidator[]
     validatorInfoBoxInstance: any
     validatorTable: any
-    screenInstance: any
 
     constructor(screenInstance: any, validatorInfoBoxInstance: any, validators: configValidator[]) {
         this.screenInstance = screenInstance
         this.validatorInfoBoxInstance = validatorInfoBoxInstance
         this.validators = validators
-        this.validatorTable = listtable({
-            top: '6%',
+        this.rawElement = listtable({
+            top: 'left',
             left: 'left',
             border: 'line',
             align: 'left',
             keys: true,
-            width: '25%',
-            height: '25%',
+            width: '30%',
+            height: '20%',
             vi: true,
             mouse: true,
             style: {
                 // @ts-ignore
                 border: {
-                fg: 'green'
+                    fg: 'green'
                 },
                 header: {
                 fg: 'white',
@@ -40,15 +41,11 @@ export class ValidatorTable {
             }
         })
         
-        this.validatorTable.setData(ValidatorTable.formatValidators(validators))
-        this.validatorTable.focus()
-        this.validatorTable.on('select', async (data: any) => {
-            const validatorIndex = this.validatorTable.getItemIndex(data)
-            await this.validatorInfoBoxInstance.setValidatorInfo(
-                // validatorIndex - 1 because Blessed uses 1 based indexes
-                this.validators[validatorIndex - 1].pubKey
-            )
-            this.screenInstance.render()
+        this.rawElement.setData(ValidatorTable.formatValidators(validators))
+        this.rawElement.focus()
+        this.rawElement.on('select', (data: any) => {
+            const validatorIndex = this.rawElement.getItemIndex(data)
+            this.setSelectedValidator(validatorIndex)
         })
     }
 
@@ -63,10 +60,11 @@ export class ValidatorTable {
         return tableData
     }
 
-    /**
-     * @TODO could remove this and access property directly?
-     */
-    getElement() {
-        return this.validatorTable
+    async setSelectedValidator(validatorIndex: number) {
+        await this.validatorInfoBoxInstance.setValidatorInfo(
+            // validatorIndex - 1 because Blessed uses 1 based indexes
+            this.validators[validatorIndex - 1].pubKey
+        )
+        this.screenInstance.render()
     }
 }

@@ -4,17 +4,19 @@ import { screen } from 'blessed'
 
 import { readConfig } from './helpers/readConfigFile'
 import { guiConfig } from '../types/index'
-import { BottomContainerBox } from './views/bottomBox/containerBox'
-import { ValidatorInfoBox } from './views/validatorInfoBox'
-import { ValidatorTable } from './views/validatorTable'
+import { BottomContainerBox } from './views/validator/bottomBox/containerBox'
+import { ValidatorInfoBox } from './views/validator/validatorInfoBox'
+import { ValidatorIncomeBox } from './views/validator/validatorIncomeBox'
+import { ValidatorTable } from './views/validator/validatorTable'
 
 class Eth2Dashboard {
     config: guiConfig
     connected: boolean = false
     bottomContainerBox: any
-    eth2Beacon: IETH2BeaconChain | undefined
+    eth2BeaconChain: IETH2BeaconChain | undefined
     screenInstance: any
     validatorInfoBox: any
+    validatorIncomeBox: any
     validatorTable: any
 
     constructor(config: guiConfig) {
@@ -23,8 +25,13 @@ class Eth2Dashboard {
     }
 
     connectToProvider() {
-        if (this.eth2Beacon === undefined) {
-            this.eth2Beacon = new ETH2BeaconChain(this.config.httpProvider)
+        if (this.eth2BeaconChain === undefined) {
+            this.eth2BeaconChain = new ETH2BeaconChain(this.config.httpProvider)
+            if (!this.eth2BeaconChain) {
+                this.connected = false
+                return
+            }
+            this.eth2BeaconChain.addBlockExplorerApi()
             this.connected = true
         }
     }
@@ -44,7 +51,13 @@ class Eth2Dashboard {
 
     initValidatorInfoBox() {
         if (this.validatorInfoBox === undefined) {
-            this.validatorInfoBox = new ValidatorInfoBox(this.eth2Beacon)
+            this.validatorInfoBox = new ValidatorInfoBox(this.eth2BeaconChain)
+        }
+    }
+
+    initValidatorIncomeBox() {
+        if (this.validatorIncomeBox === undefined) {
+            this.validatorIncomeBox = new ValidatorIncomeBox(this.eth2BeaconChain)
         }
     }
 
@@ -61,17 +74,16 @@ class Eth2Dashboard {
         if (this.screenInstance === undefined) {
             this.initScreen()
             this.initBottomContainerBox()
-            // this.initValidatorInfoBox()
-            // this.initValidatorTable()
+            this.initValidatorInfoBox()
+            this.initValidatorIncomeBox()
+            this.initValidatorTable()
 
             // Quit on Escape, q, or Control-C.
             this.screenInstance.key(['escape', 'q', 'C-c'], () => process.exit(0))
             this.screenInstance.append(this.bottomContainerBox.rawElement)
-            // this.screenInstance.append(this.connectedBox.getElement())
-            // this.screenInstance.append(this.controlsBox.getElement())
-            // this.screenInstance.append(this.versionBox.getElement())
-            // this.screenInstance.append(this.validatorInfoBox.getElement())
-            // this.screenInstance.append(this.validatorTable.getElement())
+            this.screenInstance.append(this.validatorInfoBox.rawElement)
+            this.screenInstance.append(this.validatorIncomeBox.rawElement)
+            this.screenInstance.append(this.validatorTable.rawElement)
             this.screenInstance.render()
         }
     }
