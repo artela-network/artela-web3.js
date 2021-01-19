@@ -17,6 +17,8 @@ import {
   SignedVoluntaryExit
 } from '@chainsafe/lodestar-types'
 
+import { IBaseAPISchema, ETH2BaseOpts } from 'web3-eth2-core'
+
 export type StateId = 'head' | 'genesis' | 'finalized' | 'justified' | Slot | Root
 export type BlockId = 'head' | 'genesis' | 'finalized' | Slot | Root
 
@@ -54,4 +56,13 @@ export interface IBlockExplorerApi {
   getValidatorBalanceHistory(): any,
   getValidatorPerformance(): any,
   getValidatorProposals(): any,
+}
+
+// @ts-ignore
+export class ETH2BeaconChain implements IETH2BeaconChain {
+  constructor(
+    provider: string,
+    schema: IBaseAPISchema,
+    opts: ETH2BaseOpts
+  )
 }
