@@ -1,11 +1,11 @@
 import { listtable } from 'blessed'
-import { IETH2BeaconChain } from 'web3-eth2-beaconchain'
+import { ETH2BeaconChain } from 'web3-eth2-beaconchain'
 
 export class ValidatorInfoBox {
-    eth2BeaconChainInstance: IETH2BeaconChain | undefined
+    eth2BeaconChainInstance: ETH2BeaconChain | undefined
     rawElement: any
 
-    constructor(eth2BeaconChainInstance: IETH2BeaconChain | undefined) {
+    constructor(eth2BeaconChainInstance: ETH2BeaconChain | undefined) {
         this.eth2BeaconChainInstance = eth2BeaconChainInstance
         this.rawElement = listtable({
             top: '20%',
@@ -52,7 +52,6 @@ export class ValidatorInfoBox {
     getValidatorInfo(validatorPubKey: string): any {
         try {
             if (this.eth2BeaconChainInstance === undefined) throw Error(`No ETH2 beacon chain instance provided`)
-            // @ts-ignore IETH2Beacon is not properly configured
             return this.eth2BeaconChainInstance.getValidatorById({stateId: 'head', validatorId: validatorPubKey})
         } catch (error) {
             console.error(error)
