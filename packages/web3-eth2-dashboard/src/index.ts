@@ -1,5 +1,5 @@
 // @ts-ignore
-import {ETH2BeaconChain, IETH2BeaconChain} from 'web3-eth2-beaconchain'
+import {ETH2BeaconChain} from 'web3-eth2-beaconchain'
 import { screen } from 'blessed'
 
 import { readConfig } from './helpers/readConfigFile'
@@ -13,7 +13,7 @@ class Eth2Dashboard {
     config: guiConfig
     connected: boolean = false
     bottomContainerBox: any
-    eth2BeaconChain: IETH2BeaconChain | undefined
+    eth2BeaconChain: ETH2BeaconChain | undefined
     screenInstance: any
     validatorInfoBox: any
     validatorIncomeBox: any
