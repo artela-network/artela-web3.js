@@ -22,7 +22,22 @@ import { IBaseAPISchema, ETH2BaseOpts } from 'web3-eth2-core'
 export type StateId = 'head' | 'genesis' | 'finalized' | 'justified' | Slot | Root
 export type BlockId = 'head' | 'genesis' | 'finalized' | Slot | Root
 
-export interface IETH2BeaconChain {
+export interface IBlockExplorerApi {
+  getValidatorsForEth1Address(): any,
+  getTop100Validators(): any,
+  getValidatorAttestations(): any,
+  getValidatorBalanceHistory(): any,
+  getValidatorPerformance(): any,
+  getValidatorProposals(): any,
+}
+
+export class ETH2BeaconChain {
+  constructor(
+    provider: string,
+    schema?: IBaseAPISchema,
+    opts?: ETH2BaseOpts
+  )
+
   getGenesis(): Promise<Genesis | null>
   getHashRoot(params: {stateId: StateId}): Promise<{ root: Root }>
   getForkData(params: {stateId: StateId}): Promise<Fork>
@@ -47,22 +62,4 @@ export interface IETH2BeaconChain {
   submitVoluntaryExit(): Promise<void>
   addBlockExplorerApi(): void
   blockExplorerApi: IBlockExplorerApi | undefined
-}
-
-export interface IBlockExplorerApi {
-  getValidatorsForEth1Address(): any,
-  getTop100Validators(): any,
-  getValidatorAttestations(): any,
-  getValidatorBalanceHistory(): any,
-  getValidatorPerformance(): any,
-  getValidatorProposals(): any,
-}
-
-// @ts-ignore
-export class ETH2BeaconChain implements IETH2BeaconChain {
-  constructor(
-    provider: string,
-    schema: IBaseAPISchema,
-    opts: ETH2BaseOpts
-  )
 }
