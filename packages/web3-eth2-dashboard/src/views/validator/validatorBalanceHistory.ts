@@ -1,7 +1,7 @@
 import { listtable } from 'blessed'
 import { ETH2BeaconChain } from 'web3-eth2-beaconchain'
 
-export class ValidatorIncomeBox {
+export class ValidatorBalanceHistoryBox {
     eth2BeaconChainInstance: ETH2BeaconChain | undefined
     rawElement: any
 
@@ -9,7 +9,7 @@ export class ValidatorIncomeBox {
         this.eth2BeaconChainInstance = eth2BeaconChainInstance
         this.rawElement = listtable({
             top: '40%',
-            left: 'left',
+            left: '15%',
             width: '15%',
             height: '20%',
             align: 'left',
@@ -40,34 +40,35 @@ export class ValidatorIncomeBox {
 
     static formatDeltaString(amount: number): string {
         if (Math.sign(amount) === -1) {
-            return ` {red-fg}${ValidatorIncomeBox.convertGweiToEther(amount)} ETH{/}`
+            return ` {red-fg}${ValidatorBalanceHistoryBox.convertGweiToEther(amount)} ETH{/}`
         }
 
-        return ` {green-fg}+${ValidatorIncomeBox.convertGweiToEther(amount)} ETH{/}`
+        return ` {green-fg}+${ValidatorBalanceHistoryBox.convertGweiToEther(amount)} ETH{/}`
     }
 
-    static formatValidatorIncome(incomeInfo: any): string[][] {
-        return [
-            ['',''],
-            ['',''],
-            [' Day', ValidatorIncomeBox.formatDeltaString(incomeInfo.performance1d)],
-            [' Week', ValidatorIncomeBox.formatDeltaString(incomeInfo.performance7d)],
-            [' Month', ValidatorIncomeBox.formatDeltaString(incomeInfo.performance31d)],
-            [' Year', ValidatorIncomeBox.formatDeltaString(incomeInfo.performance365d)],
-        ]
+    static formatValidatorBalanceHistory(balanceHistory: any): string[][] {
+        const formattedBalanceHistory = [[' Epoch',' Balance Change'],['','']]
+        // Skipping index 0, no way to get delta
+        for (let i = 1; i < balanceHistory.length; i++) {
+            formattedBalanceHistory.push([
+                ` ${balanceHistory[i].epoch}`,
+                ValidatorBalanceHistoryBox.formatDeltaString(balanceHistory[i-1].balance - balanceHistory[i].balance)
+            ])
+        }
+        return formattedBalanceHistory
     }
 
-    getValidatorIncome(validatorIndexOrPubKey: string): any {
+    getValidatorBalanceHistory(validatorIndexOrPubKey: string): any {
         try {
             if (this.eth2BeaconChainInstance === undefined) throw Error(`No ETH2 beacon chain instance provided`)
-            return this.eth2BeaconChainInstance.blockExplorerApi?.getValidatorPerformance({validatorIndexOrPubKey})
+            return this.eth2BeaconChainInstance.blockExplorerApi?.getValidatorBalanceHistory({validatorIndexOrPubKey})
         } catch (error) {
             console.error(error)
         }
     }
 
-    async setValidatorIncome(validatorPubKey: string) {
-        const validatorInfo = await this.getValidatorIncome(validatorPubKey)
-        this.rawElement.setData(ValidatorIncomeBox.formatValidatorIncome(validatorInfo))
+    async setValidatorBalanceHistory(validatorPubKey: string) {
+        const validatorInfo = await this.getValidatorBalanceHistory(validatorPubKey)
+        this.rawElement.setData(ValidatorBalanceHistoryBox.formatValidatorBalanceHistory(validatorInfo))
     }
 }

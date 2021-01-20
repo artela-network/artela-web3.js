@@ -33,7 +33,7 @@ export const DefaultSchema: BaseAPISchema = {
         },
         {
             name: 'getValidatorBalanceHistory',
-            route: '${validatorIndexOrPubKey}/balanceHistory',
+            route: '${validatorIndexOrPubKey}/balancehistory',
             restMethod: 'get',
             inputFormatter: null,
             outputFormatter: null,

@@ -22,6 +22,16 @@ import { BaseAPISchema, ETH2BaseOpts } from 'web3-eth2-core'
 export type StateId = 'head' | 'genesis' | 'finalized' | 'justified' | Slot | Root
 export type BlockId = 'head' | 'genesis' | 'finalized' | Slot | Root
 
+export type BalanceHistory = {
+  balance: number
+  effectivebalance: number
+  epoch: number
+  validatorindex: number
+  week: number
+}
+
+export type BalanceHistoryResponse = BalanceHistory[]
+
 export type PerformanceResponse = {
   balance: number
   performance1d: number

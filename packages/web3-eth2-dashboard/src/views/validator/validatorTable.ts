@@ -8,16 +8,19 @@ export class ValidatorTable {
     validators: configValidator[]
     validatorInfoBoxInstance: any
     validatorIncomeBoxInstance: any
+    validatorBalanceHistoryBoxInstance: any
     validatorTable: any
 
     constructor(
         screenInstance: any,
         validatorInfoBoxInstance: any,
         validatorIncomeBoxInstance: any,
+        validatorBalanceHistoryBoxInstance: any,
         validators: configValidator[]) {
         this.screenInstance = screenInstance
         this.validatorInfoBoxInstance = validatorInfoBoxInstance
         this.validatorIncomeBoxInstance = validatorIncomeBoxInstance
+        this.validatorBalanceHistoryBoxInstance = validatorBalanceHistoryBoxInstance
         this.validators = validators
         this.rawElement = listtable({
             top: 'left',
@@ -71,7 +74,8 @@ export class ValidatorTable {
         const pubKey = this.validators[validatorIndex - 1].pubKey
         await Promise.all([
             this.validatorInfoBoxInstance.setValidatorInfo(pubKey),
-            this.validatorIncomeBoxInstance.setValidatorIncome(pubKey)
+            this.validatorIncomeBoxInstance.setValidatorIncome(pubKey),
+            this.validatorBalanceHistoryBoxInstance.setValidatorBalanceHistory(pubKey)
         ])
         this.screenInstance.render()
     }

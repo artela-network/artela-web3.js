@@ -37,16 +37,16 @@ export class ValidatorInfoBox {
         return [
             ['',''],
             ['',''],
-            [' Validator registry index',validatorInfo.index],
+            [' Validator registry index',` ${validatorInfo.index}`],
             // Capitalize first letter
-            [' Status',`${validatorInfo.status.charAt(0).toUpperCase()}${validatorInfo.status.substr(1)}`],
-            [' Balance',`${validatorInfo.balance.substr(0,validatorInfo.balance.length-9)}.${validatorInfo.balance.slice(-9)} ETH`],
-            [' Effective balance',`${validatorInfo.validator.effective_balance.substr(0,validatorInfo.validator.effective_balance.length-9)}.${validatorInfo.validator.effective_balance.slice(-9)} ETH`],
-            [' Slashed',validatorInfo.validator.slashed ? 'Yes' : 'No'],
-            [' Active since epoch',validatorInfo.validator.activation_epoch],
-            [' Eligible since epoch',validatorInfo.validator.activation_eligibility_epoch],
-            [' Withdrawable epoch',validatorInfo.validator.withdrawable_epoch],
-            [' Withdrawable credentials',`${validatorInfo.validator.withdrawal_credentials.substr(0,11)}...${validatorInfo.validator.withdrawal_credentials.substr(12,11)}`]
+            [' Status',` ${validatorInfo.status.charAt(0).toUpperCase()}${validatorInfo.status.substr(1)}`],
+            [' Balance',` ${validatorInfo.balance.substr(0,validatorInfo.balance.length-9)}.${validatorInfo.balance.slice(-9)} ETH`],
+            [' Effective balance',` ${validatorInfo.validator.effective_balance.substr(0,validatorInfo.validator.effective_balance.length-9)}.${validatorInfo.validator.effective_balance.slice(-9)} ETH`],
+            [' Slashed',validatorInfo.validator.slashed ? ' Yes' : ' No'],
+            [' Active since epoch',` ${validatorInfo.validator.activation_epoch}`],
+            [' Eligible since epoch',` ${validatorInfo.validator.activation_eligibility_epoch}`],
+            [' Withdrawable epoch',` ${validatorInfo.validator.withdrawable_epoch}`],
+            [' Withdrawable credentials',` ${validatorInfo.validator.withdrawal_credentials.substr(0,11)}...${validatorInfo.validator.withdrawal_credentials.substr(12,11)}`]
         ]
     }
 

@@ -6,6 +6,7 @@ import { guiConfig } from '../types/index'
 import { BottomContainerBox } from './views/validator/bottomBox/containerBox'
 import { ValidatorInfoBox } from './views/validator/validatorInfoBox'
 import { ValidatorIncomeBox } from './views/validator/validatorIncomeBox'
+import { ValidatorBalanceHistoryBox } from './views/validator/validatorBalanceHistory'
 import { ValidatorTable } from './views/validator/validatorTable'
 
 class Eth2Dashboard {
@@ -16,6 +17,7 @@ class Eth2Dashboard {
     screenInstance: any
     validatorInfoBox: any
     validatorIncomeBox: any
+    validatorBalanceHistoryBox: any
     validatorTable: any
 
     constructor(config: guiConfig) {
@@ -60,12 +62,19 @@ class Eth2Dashboard {
         }
     }
 
+    initValidatorBalanceHistoryBox() {
+        if (this.validatorBalanceHistoryBox === undefined) {
+            this.validatorBalanceHistoryBox = new ValidatorBalanceHistoryBox(this.eth2BeaconChain)
+        }
+    }
+
     initValidatorTable() {
         if (this.validatorInfoBox !== undefined && this.validatorTable === undefined) {
             this.validatorTable = new ValidatorTable(
                 this.screenInstance,
                 this.validatorInfoBox,
                 this.validatorIncomeBox,
+                this.validatorBalanceHistoryBox,
                 this.config.validators)
         }
     }
@@ -76,6 +85,7 @@ class Eth2Dashboard {
             this.initBottomContainerBox()
             this.initValidatorInfoBox()
             this.initValidatorIncomeBox()
+            this.initValidatorBalanceHistoryBox()
             this.initValidatorTable()
 
             // Quit on Escape, q, or Control-C.
@@ -83,6 +93,7 @@ class Eth2Dashboard {
             this.screenInstance.append(this.bottomContainerBox.rawElement)
             this.screenInstance.append(this.validatorInfoBox.rawElement)
             this.screenInstance.append(this.validatorIncomeBox.rawElement)
+            this.screenInstance.append(this.validatorBalanceHistoryBox.rawElement)
             this.screenInstance.append(this.validatorTable.rawElement)
             this.screenInstance.render()
         }
