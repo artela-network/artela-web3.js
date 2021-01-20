@@ -11,7 +11,7 @@ export class ValidatorProposalsTable {
             top: '5%',
             left: '30%',
             width: '70%',
-            height: '50%',
+            height: '40%',
             align: 'left',
             keys: true,
             vi: true,

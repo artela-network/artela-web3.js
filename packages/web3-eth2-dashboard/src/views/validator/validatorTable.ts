@@ -9,7 +9,8 @@ export class ValidatorTable {
     validatorInfoBoxInstance: any
     validatorIncomeBoxInstance: any
     validatorBalanceHistoryBoxInstance: any
-    validatorProposalsTable: any
+    validatorProposalsTableInstance: any
+    validatorAttestationsTableInstance: any
     validatorTable: any
 
     constructor(
@@ -18,12 +19,14 @@ export class ValidatorTable {
         validatorIncomeBoxInstance: any,
         validatorBalanceHistoryBoxInstance: any,
         validatorProposalsTableInstance: any,
+        validatorAttestationsTableInstance: any,
         validators: configValidator[]) {
         this.screenInstance = screenInstance
         this.validatorInfoBoxInstance = validatorInfoBoxInstance
         this.validatorIncomeBoxInstance = validatorIncomeBoxInstance
         this.validatorBalanceHistoryBoxInstance = validatorBalanceHistoryBoxInstance
-        this.validatorProposalsTable = validatorProposalsTableInstance
+        this.validatorProposalsTableInstance = validatorProposalsTableInstance
+        this.validatorAttestationsTableInstance = validatorAttestationsTableInstance
         this.validators = validators
         this.rawElement = listtable({
             top: 'left',
@@ -79,7 +82,8 @@ export class ValidatorTable {
             this.validatorInfoBoxInstance.setValidatorInfo(pubKey),
             this.validatorIncomeBoxInstance.setValidatorIncome(pubKey),
             this.validatorBalanceHistoryBoxInstance.setValidatorBalanceHistory(pubKey),
-            this.validatorProposalsTable.setValidatorProposals(pubKey)
+            this.validatorProposalsTableInstance.setValidatorProposals(pubKey),
+            this.validatorAttestationsTableInstance.setValidatorAttestations(pubKey)
         ])
         this.screenInstance.render()
     }

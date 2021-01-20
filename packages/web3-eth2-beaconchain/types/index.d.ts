@@ -22,6 +22,18 @@ import { BaseAPISchema, ETH2BaseOpts } from 'web3-eth2-core'
 export type StateId = 'head' | 'genesis' | 'finalized' | 'justified' | Slot | Root
 export type BlockId = 'head' | 'genesis' | 'finalized' | Slot | Root
 
+export type AttestationResponse = {
+  attesterslot: number
+  committeeindex: number
+  epoch: number
+  inclusionslot: number
+  status: number
+  validatorindex: number
+  week: number
+}
+
+export type AttestationsResponse = AttestationResponse[] | AttestationResponse
+
 export type BalanceHistory = {
   balance: number
   effectivebalance: number
@@ -43,24 +55,24 @@ export type PerformanceResponse = {
 }
 
 export type ProposalResponse = {
-  attestationscount: number,
-  attesterslashingscount: number,
-  blockroot: string,
-  depositscount: number,
-  epoch: number,
-  eth1data_blockhash: string,
-  eth1data_depositcount: number,
-  eth1data_depositroot: string,
-  graffiti: string,
-  graffiti_text: string,
-  parentroot: string,
-  proposer: number,
-  proposerslashingscount: number,
-  randaoreveal: string,
-  signature: string,
-  slot: number,
-  stateroot: string,
-  status: string,
+  attestationscount: number
+  attesterslashingscount: number
+  blockroot: string
+  depositscount: number
+  epoch: number
+  eth1data_blockhash: string
+  eth1data_depositcount: number
+  eth1data_depositroot: string
+  graffiti: string
+  graffiti_text: string
+  parentroot: string
+  proposer: number
+  proposerslashingscount: number
+  randaoreveal: string
+  signature: string
+  slot: number
+  stateroot: string
+  status: string
   voluntaryexitscount: number
 }
 

@@ -9,6 +9,8 @@ import { ValidatorIncomeBox } from './views/validator/validatorIncomeBox'
 import { ValidatorBalanceHistoryBox } from './views/validator/validatorBalanceHistory'
 import { ValidatorProposalsHeaderBox } from './views/validator/validatorProposalsTableHeader'
 import { ValidatorProposalsTable } from './views/validator/validatorProposalsTable'
+import { ValidatorAttestationsHeaderBox } from './views/validator/validatorAttestationsHeaderBox'
+import { ValidatorAttestationsTable } from './views/validator/validatorAttestationsTable'
 import { ValidatorTable } from './views/validator/validatorTable'
 
 class Eth2Dashboard {
@@ -22,6 +24,8 @@ class Eth2Dashboard {
     validatorBalanceHistoryBox: any
     validatorsProposalHeaderBox: any
     validatorProposalsTable: any
+    validatorAttestationsHeaderBox: any
+    validatorAttestationsTable: any
     validatorTable: any
 
     constructor(config: guiConfig) {
@@ -84,6 +88,18 @@ class Eth2Dashboard {
         }
     }
 
+    initValidatorAttestationsHeaderBox() {
+        if (this.validatorAttestationsHeaderBox === undefined) {
+            this.validatorAttestationsHeaderBox = new ValidatorAttestationsHeaderBox()
+        }
+    }
+
+    initValidatorAttestationsTable() {
+        if (this.validatorAttestationsTable === undefined) {
+            this.validatorAttestationsTable = new ValidatorAttestationsTable(this.eth2BeaconChain)
+        }
+    }
+
     initValidatorTable() {
         if (this.validatorInfoBox !== undefined && this.validatorTable === undefined) {
             this.validatorTable = new ValidatorTable(
@@ -92,6 +108,7 @@ class Eth2Dashboard {
                 this.validatorIncomeBox,
                 this.validatorBalanceHistoryBox,
                 this.validatorProposalsTable,
+                this.validatorAttestationsTable,
                 this.config.validators)
         }
     }
@@ -105,6 +122,8 @@ class Eth2Dashboard {
             this.initValidatorBalanceHistoryBox()
             this.initValidatorProposalsHeaderBox()
             this.initValidatorProposalsTable()
+            this.initValidatorAttestationsHeaderBox()
+            this.initValidatorAttestationsTable()
             this.initValidatorTable()
 
             // Quit on Escape, q, or Control-C.
@@ -115,6 +134,8 @@ class Eth2Dashboard {
             this.screenInstance.append(this.validatorBalanceHistoryBox.rawElement)
             this.screenInstance.append(this.validatorsProposalHeaderBox.rawElement)
             this.screenInstance.append(this.validatorProposalsTable.rawElement)
+            this.screenInstance.append(this.validatorAttestationsHeaderBox.rawElement)
+            this.screenInstance.append(this.validatorAttestationsTable.rawElement)
             this.screenInstance.append(this.validatorTable.rawElement)
             this.screenInstance.render()
         }
