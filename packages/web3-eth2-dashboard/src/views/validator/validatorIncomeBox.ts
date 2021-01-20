@@ -17,6 +17,7 @@ export class ValidatorIncomeBox {
             vi: true,
             mouse: true,
             border: 'line',
+            tags: true,
             style: {
                 // @ts-ignore
                 border: {
@@ -33,20 +34,33 @@ export class ValidatorIncomeBox {
         this.rawElement.setData([[''],['Please select a Validator']])
     }
 
-    static formatValidatorIncome(validatorInfo: any): string[][] {
+    static convertGweiToEther(amount: number): number {
+        return amount / 10**9
+    }
+
+    static formatDeltaString(amount: number): string {
+        if (Math.sign(amount) === -1) {
+            return ` {red-fg}${ValidatorIncomeBox.convertGweiToEther(amount)} ETH{/}`
+        }
+
+        return ` {green-fg}+${ValidatorIncomeBox.convertGweiToEther(amount)} ETH{/}`
+    }
+
+    static formatValidatorIncome(incomeInfo: any): string[][] {
         return [
             ['',''],
-            ['Day', '1'],
-            ['Month', '1'],
-            ['Year', '1'],
-            ['APR', '1'],
+            ['',''],
+            ['Day', ValidatorIncomeBox.formatDeltaString(incomeInfo.performance1d)],
+            ['Week', ValidatorIncomeBox.formatDeltaString(incomeInfo.performance7d)],
+            ['Month', ValidatorIncomeBox.formatDeltaString(incomeInfo.performance31d)],
+            ['Year', ValidatorIncomeBox.formatDeltaString(incomeInfo.performance365d)],
         ]
     }
 
-    getValidatorIncome(validatorPubKey: string): any {
+    getValidatorIncome(validatorIndexOrPubKey: string): any {
         try {
             if (this.eth2BeaconChainInstance === undefined) throw Error(`No ETH2 beacon chain instance provided`)
-            return this.eth2BeaconChainInstance.blockExplorerApi?.getValidatorPerformance(validatorPubKey)
+            return this.eth2BeaconChainInstance.blockExplorerApi?.getValidatorPerformance({validatorIndexOrPubKey})
         } catch (error) {
             console.error(error)
         }

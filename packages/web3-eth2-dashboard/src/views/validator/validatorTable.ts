@@ -7,11 +7,17 @@ export class ValidatorTable {
     screenInstance: any
     validators: configValidator[]
     validatorInfoBoxInstance: any
+    validatorIncomeBoxInstance: any
     validatorTable: any
 
-    constructor(screenInstance: any, validatorInfoBoxInstance: any, validators: configValidator[]) {
+    constructor(
+        screenInstance: any,
+        validatorInfoBoxInstance: any,
+        validatorIncomeBoxInstance: any,
+        validators: configValidator[]) {
         this.screenInstance = screenInstance
         this.validatorInfoBoxInstance = validatorInfoBoxInstance
+        this.validatorIncomeBoxInstance = validatorIncomeBoxInstance
         this.validators = validators
         this.rawElement = listtable({
             top: 'left',
@@ -61,10 +67,12 @@ export class ValidatorTable {
     }
 
     async setSelectedValidator(validatorIndex: number) {
-        await this.validatorInfoBoxInstance.setValidatorInfo(
-            // validatorIndex - 1 because Blessed uses 1 based indexes
-            this.validators[validatorIndex - 1].pubKey
-        )
+        // validatorIndex - 1 because Blessed uses 1 based indexes
+        const pubKey = this.validators[validatorIndex - 1].pubKey
+        await Promise.all([
+            this.validatorInfoBoxInstance.setValidatorInfo(pubKey),
+            this.validatorIncomeBoxInstance.setValidatorIncome(pubKey)
+        ])
         this.screenInstance.render()
     }
 }

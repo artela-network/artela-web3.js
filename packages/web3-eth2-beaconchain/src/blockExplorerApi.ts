@@ -1,7 +1,7 @@
 // @ts-ignore
 import { ETH2Core } from 'web3-eth2-core'
 
-import { IBlockExplorerApi } from '../types'
+import { BlockExplorerApi as IBlockExplorerApi } from '../types'
 import { DefaultSchema } from './blockExplorerApiSchema'
 
 // @ts-ignore Typescript isn't aware that class methods are added during execution

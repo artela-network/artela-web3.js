@@ -1,6 +1,6 @@
-import { IBaseAPISchema } from '../../web3-eth2-core/src/schema'
+import { BaseAPISchema } from '../../web3-eth2-core/types/index'
 
-export const DefaultSchema: IBaseAPISchema = {
+export const DefaultSchema: BaseAPISchema = {
     packageName: 'eth2-blockExplorerApi',
     routePrefix: '/api/v1/validator/',
     methods: [
@@ -24,7 +24,7 @@ export const DefaultSchema: IBaseAPISchema = {
         },
         {
             name: 'getValidatorAttestations',
-            route: '${indexOrPubKey}/attestations',
+            route: '${validatorIndexOrPubKey}/attestations',
             restMethod: 'get',
             inputFormatter: null,
             outputFormatter: null,
@@ -33,7 +33,7 @@ export const DefaultSchema: IBaseAPISchema = {
         },
         {
             name: 'getValidatorBalanceHistory',
-            route: '${indexOrPubKey}/balanceHistory',
+            route: '${validatorIndexOrPubKey}/balanceHistory',
             restMethod: 'get',
             inputFormatter: null,
             outputFormatter: null,
@@ -42,7 +42,7 @@ export const DefaultSchema: IBaseAPISchema = {
         },
         {
             name: 'getValidatorPerformance',
-            route: '${indexOrPubKey}/performance',
+            route: '${validatorIndexOrPubKey}/performance',
             restMethod: 'get',
             inputFormatter: null,
             outputFormatter: null,
@@ -51,7 +51,7 @@ export const DefaultSchema: IBaseAPISchema = {
         },
         {
             name: 'getValidatorProposals',
-            route: '${indexOrPubKey}/proposals',
+            route: '${validatorIndexOrPubKey}/proposals',
             restMethod: 'get',
             inputFormatter: null,
             outputFormatter: null,

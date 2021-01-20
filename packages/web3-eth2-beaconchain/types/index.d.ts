@@ -17,24 +17,36 @@ import {
   SignedVoluntaryExit
 } from '@chainsafe/lodestar-types'
 
-import { IBaseAPISchema, ETH2BaseOpts } from 'web3-eth2-core'
+import { BaseAPISchema, ETH2BaseOpts } from 'web3-eth2-core'
 
 export type StateId = 'head' | 'genesis' | 'finalized' | 'justified' | Slot | Root
 export type BlockId = 'head' | 'genesis' | 'finalized' | Slot | Root
 
-export interface IBlockExplorerApi {
-  getValidatorsForEth1Address(): any,
-  getTop100Validators(): any,
-  getValidatorAttestations(): any,
-  getValidatorBalanceHistory(): any,
-  getValidatorPerformance(): any,
-  getValidatorProposals(): any,
+export type PerformanceResponse = {
+  balance: number
+  performance1d: number
+  performance7d: number
+  performance31d: number
+  performance365d: number
+  rank7d: number
+  validatorIndex: number
+}
+
+export class BlockExplorerApi {
+  constructor()
+
+  getValidatorsForEth1Address(params: {address: string}): any
+  getTop100Validators(): any
+  getValidatorAttestations(params: {validatorIndexOrPubKey: string}): any
+  getValidatorBalanceHistory(params: {validatorIndexOrPubKey: string}): any
+  getValidatorPerformance(params: {validatorIndexOrPubKey: string}): Promise<PerformanceResponse>
+  getValidatorProposals(params: {validatorIndexOrPubKey: string}): any
 }
 
 export class ETH2BeaconChain {
   constructor(
     provider: string,
-    schema?: IBaseAPISchema,
+    schema?: BaseAPISchema,
     opts?: ETH2BaseOpts
   )
 
@@ -60,4 +72,6 @@ export class ETH2BeaconChain {
   submitProposerSlashings(): Promise<void>
   getSignedVoluntaryExits(): Promise<SignedVoluntaryExit[]>
   submitVoluntaryExit(): Promise<void>
+  addBlockExplorerApi(): void
+  blockExplorerApi: BlockExplorerApi
 }

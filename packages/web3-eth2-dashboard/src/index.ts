@@ -65,6 +65,7 @@ class Eth2Dashboard {
             this.validatorTable = new ValidatorTable(
                 this.screenInstance,
                 this.validatorInfoBox,
+                this.validatorIncomeBox,
                 this.config.validators)
         }
     }
