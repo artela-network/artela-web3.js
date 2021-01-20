@@ -2,7 +2,7 @@
     "httpProvider": "http://3.229.124.43:5052",
     "validators": [
         {
-            "pubKey": "0xb96a4329f70262d0461a4f30c6ab8df893bab9a8ff0bcfef82f837a0799e38238efd12f4a7a1d3fdbdd5fe533e0c8a22",
+            "pubKey": "0x8ff19c2da0a84740b8f10ae34dc96e2ca684d3b458075f540aae60f10372171c93e4383c6ec8af3cd9d9cc3e23871db2",
             "alias": "spaceStrawberryCorn"
         },
         {

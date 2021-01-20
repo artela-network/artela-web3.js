@@ -42,6 +42,30 @@ export type PerformanceResponse = {
   validatorIndex: number
 }
 
+export type ProposalResponse = {
+  attestationscount: number,
+  attesterslashingscount: number,
+  blockroot: string,
+  depositscount: number,
+  epoch: number,
+  eth1data_blockhash: string,
+  eth1data_depositcount: number,
+  eth1data_depositroot: string,
+  graffiti: string,
+  graffiti_text: string,
+  parentroot: string,
+  proposer: number,
+  proposerslashingscount: number,
+  randaoreveal: string,
+  signature: string,
+  slot: number,
+  stateroot: string,
+  status: string,
+  voluntaryexitscount: number
+}
+
+export type ProposalsResponse = ProposalResponse[] | ProposalResponse
+
 export class BlockExplorerApi {
   constructor()
 

@@ -10,7 +10,7 @@ export class ValidatorBalanceHistoryBox {
         this.rawElement = listtable({
             top: '40%',
             left: '15%',
-            width: '15%',
+            width: '15.5%',
             height: '20%',
             align: 'left',
             keys: true,
