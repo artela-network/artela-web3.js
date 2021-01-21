@@ -40,10 +40,10 @@ export class ValidatorIncomeBox {
 
     static formatDeltaString(amount: number): string {
         if (Math.sign(amount) === -1) {
-            return ` {red-fg}${ValidatorIncomeBox.convertGweiToEther(amount)} ETH{/}`
+            return ` {red-fg}${ValidatorIncomeBox.convertGweiToEther(amount)}{/} ETH`
         }
 
-        return ` {green-fg}+${ValidatorIncomeBox.convertGweiToEther(amount)} ETH{/}`
+        return ` {green-fg}+${ValidatorIncomeBox.convertGweiToEther(amount)}{/} ETH`
     }
 
     static formatValidatorIncome(incomeInfo: any): string[][] {

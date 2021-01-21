@@ -40,10 +40,10 @@ export class ValidatorBalanceHistoryBox {
 
     static formatDeltaString(amount: number): string {
         if (Math.sign(amount) === -1) {
-            return ` {red-fg}${ValidatorBalanceHistoryBox.convertGweiToEther(amount)} ETH{/}`
+            return ` {red-fg}${ValidatorBalanceHistoryBox.convertGweiToEther(amount)}{/} ETH`
         }
 
-        return ` {green-fg}+${ValidatorBalanceHistoryBox.convertGweiToEther(amount)} ETH{/}`
+        return ` {green-fg}+${ValidatorBalanceHistoryBox.convertGweiToEther(amount)}{/} ETH`
     }
 
     static formatValidatorBalanceHistory(balanceHistory: any): string[][] {

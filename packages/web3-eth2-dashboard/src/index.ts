@@ -146,7 +146,6 @@ class Eth2Dashboard {
     try {
         const config = readConfig()
         if (config === undefined) throw Error('Unable to load config file')
-        // @ts-ignore
         const eth2Dashboard = new Eth2Dashboard(config)
         eth2Dashboard.drawGui()
     } catch (error) {
