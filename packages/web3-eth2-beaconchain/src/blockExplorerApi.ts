@@ -7,6 +7,6 @@ import { DefaultSchema } from './blockExplorerApiSchema'
 // @ts-ignore Typescript isn't aware that class methods are added during execution
 export class BlockExplorerApi extends ETH2Core implements IBlockExplorerApi {
     constructor() {
-        super('https://beaconcha.in', DefaultSchema, { protectProvider: true })
+        super(process.env.BLOCK_EXPLORER_URL, DefaultSchema, { protectProvider: true })
     }
 }
