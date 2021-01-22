@@ -108,5 +108,7 @@ import {
     submitProposerSlashings(): Promise<void>
     getSignedVoluntaryExits(): Promise<SignedVoluntaryExit[]>
     submitVoluntaryExit(): Promise<void>
+    addBlockExplorerApi(): void
+    blockExplorerApi: BlockExplorerApi
   }
   

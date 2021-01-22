@@ -1,8 +1,8 @@
 import { box } from 'blessed'
 
-import { ConnectedBox } from './connectedBox'
-import { ControlsBox } from './controlsBox'
-import { VersionBox } from './versionBox'
+import { ConnectedBox } from './connected'
+import { ControlsBox } from './controls'
+import { VersionBox } from './version'
 
 export class BottomContainerBox {
     providerUrl: string
