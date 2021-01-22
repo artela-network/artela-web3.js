@@ -1,4 +1,4 @@
-# ETH2 Validator Dashboard
+# WIP ETH2 Validator Dashboard
 
 ## Install
 
