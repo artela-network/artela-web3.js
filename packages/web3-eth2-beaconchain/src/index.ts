@@ -1,7 +1,7 @@
 import { ETH2Core, BaseAPISchema, ETH2BaseOpts } from 'web3-eth2-core'
 import { DefaultSchema } from './schema'
 
-import { ETH2BeaconChain as IETH2BeaconChain, BlockExplorerApi as IBlockExplorerApi } from '../types/index'
+import { ETH2BeaconChain as IETH2BeaconChain, BlockExplorerApi as IBlockExplorerApi } from '../types'
 import { BlockExplorerApi } from './blockExplorerApi'
 
 // @ts-ignore - ETH2BeaconChain incorrectly implements interface IETH2BeaconChain
