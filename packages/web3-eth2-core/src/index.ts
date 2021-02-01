@@ -5,12 +5,12 @@ Axios.defaults.adapter = require('axios/lib/adapters/http');
 import { ETH2BaseOpts, ETH2Function, BaseAPISchema } from '../types'
 
 export class ETH2Core {
-    private _httpClient: AxiosInstance
+    private _httpClient: AxiosInstance | undefined
 
     [ key: string ]: ETH2Function | any;
     
     name: string
-    provider: string
+    provider: string | undefined
     protectProvider: boolean // Protects from global overwrite when using .use functionality
 
     constructor(provider: string, schema: BaseAPISchema, opts: ETH2BaseOpts = {}) {
