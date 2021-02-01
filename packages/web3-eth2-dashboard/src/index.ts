@@ -2,7 +2,7 @@ import { ETH2BeaconChain } from 'web3-eth2-beaconchain'
 import { screen } from 'blessed'
 
 import { readConfig } from './helpers/readConfigFile'
-import { guiConfig } from '../types/index'
+import { guiConfig } from '../types'
 import { BottomContainerBox } from './views/validator/bottomBox/container'
 import { ValidatorInfoBox } from './views/validator/info'
 import { ValidatorIncomeBox } from './views/validator/income'

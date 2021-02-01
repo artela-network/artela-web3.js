@@ -16,6 +16,8 @@ import {
     ProposerSlashing,
     SignedVoluntaryExit
   } from '@chainsafe/lodestar-types'
+
+  import {ETH2Core,BaseAPISchema,ETH2BaseOpts} from 'web3-eth2-core'
   
   export type StateId = 'head' | 'genesis' | 'finalized' | 'justified' | Slot | Root
   export type BlockId = 'head' | 'genesis' | 'finalized' | Slot | Root
@@ -85,7 +87,9 @@ import {
     getValidatorProposals(params: {validatorIndexOrPubKey: string}): any
   }
 
-  export interface ETH2BeaconChain {
+  export declare class ETH2BeaconChain extends ETH2Core {
+    blockExplorerApi: BlockExplorerApi | undefined
+    constructor(provider: string, schema?: BaseAPISchema, opts?: ETH2BaseOpts)
     getGenesis(): Promise<Genesis | null>
     getHashRoot(params: {stateId: StateId}): Promise<{ root: Root }>
     getForkData(params: {stateId: StateId}): Promise<Fork>
@@ -109,6 +113,5 @@ import {
     getSignedVoluntaryExits(): Promise<SignedVoluntaryExit[]>
     submitVoluntaryExit(): Promise<void>
     addBlockExplorerApi(): void
-    blockExplorerApi: BlockExplorerApi
   }
   

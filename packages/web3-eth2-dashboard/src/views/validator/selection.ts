@@ -1,6 +1,6 @@
 import { listtable } from 'blessed'
 
-import { configValidator } from '../../../types/index'
+import { configValidator } from '../../../types'
 
 export class ValidatorTable {
     rawElement: any
