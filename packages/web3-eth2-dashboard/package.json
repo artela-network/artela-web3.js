@@ -9,6 +9,7 @@
     },
     "types": "types.ts",
     "scripts": {
+        "prestart": "npm run tsc",
         "start": "node lib/src/index.js",
         "test": "jest",
         "tsc": "npx tsc -b",
