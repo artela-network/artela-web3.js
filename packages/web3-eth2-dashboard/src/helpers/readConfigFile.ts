@@ -9,7 +9,7 @@ const configFilePath = `${homedir}/.config/web3-eth2-dashboard.txt`
 export const readConfig = (regenerateConfig: boolean = false) => {
     try {
         if (regenerateConfig || !existsSync(configFilePath)) {
-            writeConfig(configTemplate, true)
+            writeConfig(configTemplate)
             return configTemplate
         }
         return JSON.parse(readFileSync(configFilePath).toString())

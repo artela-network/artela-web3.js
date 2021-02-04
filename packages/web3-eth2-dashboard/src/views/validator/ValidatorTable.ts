@@ -1,18 +1,22 @@
 import { listtable } from 'blessed'
 
-import { configValidator } from '../../../types'
+import { Validator } from '../../../types'
+import { AddValidatorPrompt } from './AddValidatorPrompt'
 import { LoadingScreen } from '../loadingScreen'
+import { readConfig } from '../../helpers/readConfigFile'
+import { writeConfig } from '../../helpers/writeConfigFile'
 
 export class ValidatorTable {
     rawElement: any
     screenInstance: any
-    validators: configValidator[]
+    validators: Validator[]
     validatorInfoBoxInstance: any
     validatorIncomeBoxInstance: any
     validatorBalanceHistoryBoxInstance: any
     validatorProposalsTableInstance: any
     validatorAttestationsTableInstance: any
     validatorTable: any
+    addValidatorPrompt: any
 
     constructor(
         screenInstance: any,
@@ -21,7 +25,7 @@ export class ValidatorTable {
         validatorBalanceHistoryBoxInstance: any,
         validatorProposalsTableInstance: any,
         validatorAttestationsTableInstance: any,
-        validators: configValidator[]) {
+        validators: Validator[]) {
         this.screenInstance = screenInstance
         this.validatorInfoBoxInstance = validatorInfoBoxInstance
         this.validatorIncomeBoxInstance = validatorIncomeBoxInstance
@@ -58,15 +62,16 @@ export class ValidatorTable {
             }
         })
         
-        this.rawElement.setData(ValidatorTable.formatValidators(validators))
+        this.setValidators(validators)
         this.rawElement.focus()
         this.rawElement.on('select', (data: any) => {
             const validatorIndex = this.rawElement.getItemIndex(data)
             this.setSelectedValidator(validatorIndex)
         })
+        this.initAddValidatorPrompt()
     }
 
-    static formatValidators(validators: configValidator[]): string[][] {
+    static formatValidators(validators: Validator[]): string[][] {
         const tableData = [['Public Keys','Alias']]
         for (const validator of validators) {
             tableData.push([
@@ -75,6 +80,15 @@ export class ValidatorTable {
             ])
         }
         return tableData
+    }
+
+    static checkIfValidator(value: string): boolean {
+        return new RegExp('0x[a-f,A-F,0-9]{96}|[0-9]+').test(value)
+    }
+
+    setValidators(validators: Validator[]) {
+        this.validators = validators
+        this.rawElement.setData(ValidatorTable.formatValidators(validators))
     }
 
     async setSelectedValidator(validatorIndex: number) {
@@ -91,5 +105,26 @@ export class ValidatorTable {
         ])
         loadingScreen.stop()
         this.screenInstance.render()
+    }
+
+    initAddValidatorPrompt() {
+        if (this.addValidatorPrompt === undefined) {
+            this.addValidatorPrompt = new AddValidatorPrompt(this.screenInstance)
+        }
+    }
+
+    async addValidator() {
+        if (this.addValidatorPrompt !== undefined) {
+            const response = await this.addValidatorPrompt.showPrompt()
+            console.log(response, ValidatorTable.checkIfValidator(response))
+            // if (ValidatorTable.checkIfValidator(response)) {
+            //     const config = await readConfig()
+            //     config.validators.push({pubKey: response, alias: undefined})
+            //     // TODO Does config object in Eth2Dashboard get updated?
+            //     await writeConfig(config)
+            //     this.setSelectedValidator(config.validators)
+            //     this.screenInstance.render()
+            // }
+        }
     }
 }

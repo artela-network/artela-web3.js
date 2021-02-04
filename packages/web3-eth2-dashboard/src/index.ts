@@ -1,20 +1,20 @@
 import { ETH2BeaconChain } from 'web3-eth2-beaconchain'
 import { screen } from 'blessed'
 
-import { guiConfig } from '../types'
+import { GuiConfig } from '../types'
 import { readConfig } from './helpers/readConfigFile'
 import { BottomContainerBox } from './views/validator/bottomBox/container'
-import { ValidatorGui } from './views/validator/validatorGui'
+import { ValidatorGui } from './views/validator/ValidatorGui'
 
 class Eth2Dashboard {
     screenInstance: any
-    config: guiConfig
+    config: GuiConfig
     eth2BeaconChain: ETH2BeaconChain | undefined
     connected: boolean = false
     bottomContainerBox: any
     validatorGui: any
 
-    constructor(config: guiConfig) {
+    constructor(config: GuiConfig) {
         this.config = config
         this.connectToProvider()
     }

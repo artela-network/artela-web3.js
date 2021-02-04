@@ -1,15 +1,14 @@
 import { ETH2BeaconChain } from 'web3-eth2-beaconchain'
 
 import { ElementId } from '../../../types'
-import { AddValidatorPrompt } from './addValidator'
-import { ValidatorInfoBox } from './info'
-import { ValidatorIncomeBox } from './income'
-import { ValidatorBalanceHistoryBox } from './balanceHistory'
+import { ValidatorInfoBox } from './ValidatorInfoBox'
+import { ValidatorIncomeBox } from './ValidatorIncomeBox'
+import { ValidatorBalanceHistoryBox } from './ValidatorBalanceHistoryBox'
 import { ValidatorProposalsHeaderBox } from './proposals/header'
 import { ValidatorProposalsTable } from './proposals/table'
 import { ValidatorAttestationsHeaderBox } from './attestations/header'
 import { ValidatorAttestationsTable } from './attestations/table'
-import { ValidatorTable } from './selection'
+import { ValidatorTable } from './ValidatorTable'
 
 export class ValidatorGui {
     screenInstance: any
@@ -18,7 +17,6 @@ export class ValidatorGui {
     connected: boolean = false
     bottomContainerBox: any
     bgBlack: any
-    addValidatorPrompt: any
     validatorInfoBox: any
     validatorIncomeBox: any
     validatorBalanceHistoryBox: any
@@ -35,12 +33,6 @@ export class ValidatorGui {
         this.screenInstance = screenInstance
         this.validators = validators
         this.eth2BeaconChain = eth2BeaconChain
-    }
-
-    initAddValidatorPrompt() {
-        if (this.addValidatorPrompt === undefined) {
-            this.addValidatorPrompt = new AddValidatorPrompt(this.screenInstance)
-        }
     }
 
     initValidatorInfoBox() {
@@ -99,12 +91,11 @@ export class ValidatorGui {
     }
 
     addHandler(elementId: ElementId) {
-        if (elementId === 'validatorTable') this.addValidatorPrompt.showPrompt()
+        if (elementId === 'validatorTable') this.validatorTable.addValidator()
     }
 
     init() {
         if (this.screenInstance !== undefined) {
-            this.initAddValidatorPrompt()
             this.initValidatorInfoBox()
             this.initValidatorIncomeBox()
             this.initValidatorBalanceHistoryBox()

@@ -15,20 +15,24 @@ export class AddValidatorPrompt {
             left: 'center',
             label: ' {green-fg}Add Validator{/green-fg} ',
             tags: true,
-            keys: true
+            keys: true,
+            inputOnFocus: false
         })
     }
 
     showPrompt() {
         this.rawElement.setFront()
-        this.rawElement.input('Enter Validator Public Key or Index', '', (err: string, value: string) => {
+        const foo = this.rawElement.input('Enter Validator Public Key or Index', (err: string, value: string) => {
+            if (err !== null) throw err
             console.log(err, value)
-            this.hidePrompt()
+            // this.hidePrompt()
+            return value
         });
+        console.log('FOO', foo)
     }
 
     hidePrompt() {
         this.rawElement.hide()
-        this.screenInstance.render()   
+        this.screenInstance.render() 
     }
 }

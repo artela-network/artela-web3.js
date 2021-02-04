@@ -1,11 +1,10 @@
-export interface configValidator {
-    pubKey: string
-    alias: string
-  }
-  
-export interface guiConfig {
-  httpProvider: string,
-  validators: configValidator[]
-}
-
 export type ElementId = 'validatorTable'
+export type Validator = {
+  pubKey: string
+  alias: string
+}
+  
+export type GuiConfig = {
+  httpProvider: string,
+  validators: Validator[]
+}
