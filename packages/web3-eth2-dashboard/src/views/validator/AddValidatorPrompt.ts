@@ -1,4 +1,5 @@
 import { prompt } from 'blessed'
+import { promisify } from 'util'
 
 export class AddValidatorPrompt {
     screenInstance: any
@@ -20,15 +21,22 @@ export class AddValidatorPrompt {
         })
     }
 
-    showPrompt() {
+    async showPrompt() {
+        // return new Promise((resolve, reject) => {
+        //     this.rawElement.setFront()
+        //     this.rawElement.input('Enter Validator Public Key or Index', (err: string, value: string) => {
+        //         if (err !== null) return reject(err)
+        //         this.hidePrompt()
+        //         resolve(value)
+        //     });
+        // })
+
         this.rawElement.setFront()
-        const foo = this.rawElement.input('Enter Validator Public Key or Index', (err: string, value: string) => {
+        return await this.rawElement.input('Enter Validator Public Key or Index', await promisify((err: string, value: string) => {
             if (err !== null) throw err
-            console.log(err, value)
-            // this.hidePrompt()
+            this.hidePrompt()
             return value
-        });
-        console.log('FOO', foo)
+        }));
     }
 
     hidePrompt() {

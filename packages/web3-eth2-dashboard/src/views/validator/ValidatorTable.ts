@@ -115,8 +115,11 @@ export class ValidatorTable {
 
     async addValidator() {
         if (this.addValidatorPrompt !== undefined) {
+            console.log('TEST 1')
             const response = await this.addValidatorPrompt.showPrompt()
-            console.log(response, ValidatorTable.checkIfValidator(response))
+            // console.log('Test 4', response)
+            console.log('TEST 2', response, ValidatorTable.checkIfValidator(response))
+            console.log('TEST 3')
             // if (ValidatorTable.checkIfValidator(response)) {
             //     const config = await readConfig()
             //     config.validators.push({pubKey: response, alias: undefined})
