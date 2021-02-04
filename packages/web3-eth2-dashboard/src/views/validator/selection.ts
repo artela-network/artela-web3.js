@@ -1,6 +1,7 @@
 import { listtable } from 'blessed'
 
 import { configValidator } from '../../../types'
+import { LoadingScreen } from '../loadingScreen'
 
 export class ValidatorTable {
     rawElement: any
@@ -29,6 +30,7 @@ export class ValidatorTable {
         this.validatorAttestationsTableInstance = validatorAttestationsTableInstance
         this.validators = validators
         this.rawElement = listtable({
+            name: 'validatorTable',
             top: 'left',
             left: 'left',
             border: 'line',
@@ -78,6 +80,8 @@ export class ValidatorTable {
     async setSelectedValidator(validatorIndex: number) {
         // validatorIndex - 1 because Blessed uses 1 based indexes
         const pubKey = this.validators[validatorIndex - 1].pubKey
+        const loadingScreen = new LoadingScreen(this.screenInstance)
+        loadingScreen.start()
         await Promise.all([
             this.validatorInfoBoxInstance.setValidatorInfo(pubKey),
             this.validatorIncomeBoxInstance.setValidatorIncome(pubKey),
@@ -85,6 +89,7 @@ export class ValidatorTable {
             this.validatorProposalsTableInstance.setValidatorProposals(pubKey),
             this.validatorAttestationsTableInstance.setValidatorAttestations(pubKey)
         ])
+        loadingScreen.stop()
         this.screenInstance.render()
     }
 }
