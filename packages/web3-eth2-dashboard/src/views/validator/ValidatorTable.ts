@@ -2,6 +2,7 @@ import { listtable } from 'blessed'
 
 import { Validator } from '../../../types'
 import { AddValidatorPrompt } from './AddValidatorPrompt'
+import { AddValidatorForm } from './AddValidatorForm'
 import { LoadingScreen } from '../loadingScreen'
 import { readConfig } from '../../helpers/readConfigFile'
 import { writeConfig } from '../../helpers/writeConfigFile'
@@ -17,6 +18,7 @@ export class ValidatorTable {
     validatorAttestationsTableInstance: any
     validatorTable: any
     addValidatorPrompt: any
+    addValidatorForm: any
 
     constructor(
         screenInstance: any,
@@ -44,6 +46,7 @@ export class ValidatorTable {
             height: '20%',
             vi: true,
             mouse: true,
+            noCellBorders: true,
             style: {
                 // @ts-ignore
                 border: {
@@ -68,7 +71,6 @@ export class ValidatorTable {
             const validatorIndex = this.rawElement.getItemIndex(data)
             this.setSelectedValidator(validatorIndex)
         })
-        this.initAddValidatorPrompt()
     }
 
     static formatValidators(validators: Validator[]): string[][] {
@@ -113,21 +115,23 @@ export class ValidatorTable {
         }
     }
 
+    initAddValidatorForm() {
+        if (this.addValidatorForm === undefined) {
+            this.addValidatorForm = new AddValidatorForm(this.screenInstance)
+            this.screenInstance.render()
+        }
+    }
+
     async addValidator() {
-        if (this.addValidatorPrompt !== undefined) {
-            console.log('TEST 1')
-            const response = await this.addValidatorPrompt.showPrompt()
-            // console.log('Test 4', response)
-            console.log('TEST 2', response, ValidatorTable.checkIfValidator(response))
-            console.log('TEST 3')
-            // if (ValidatorTable.checkIfValidator(response)) {
-            //     const config = await readConfig()
-            //     config.validators.push({pubKey: response, alias: undefined})
-            //     // TODO Does config object in Eth2Dashboard get updated?
-            //     await writeConfig(config)
-            //     this.setSelectedValidator(config.validators)
-            //     this.screenInstance.render()
-            // }
+        if (this.addValidatorForm === undefined) this.initAddValidatorForm()
+        const {textbox} = await this.addValidatorForm.showForm()
+        if (ValidatorTable.checkIfValidator(textbox[0])) {
+            const config = await readConfig()
+            config.validators.push({pubKey: textbox[0], alias: textbox[1]})
+            // TODO Does config object in Eth2Dashboard get updated?
+            await writeConfig(config)
+            this.setValidators(config.validators)
+            this.screenInstance.render()
         }
     }
 }

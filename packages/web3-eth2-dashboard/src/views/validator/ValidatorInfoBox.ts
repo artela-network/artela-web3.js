@@ -17,6 +17,7 @@ export class ValidatorInfoBox {
             vi: true,
             mouse: true,
             border: 'line',
+            noCellBorders: true,
             style: {
                 // @ts-ignore
                 border: {

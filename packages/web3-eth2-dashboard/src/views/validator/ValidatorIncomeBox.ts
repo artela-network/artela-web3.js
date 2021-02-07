@@ -18,6 +18,7 @@ export class ValidatorIncomeBox {
             mouse: true,
             border: 'line',
             tags: true,
+            noCellBorders: true,
             style: {
                 // @ts-ignore
                 border: {

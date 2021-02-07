@@ -1,5 +1,5 @@
 import { ETH2BeaconChain } from 'web3-eth2-beaconchain'
-import { screen } from 'blessed'
+import { screen, prompt } from 'blessed'
 
 import { GuiConfig } from '../types'
 import { readConfig } from './helpers/readConfigFile'
@@ -46,7 +46,8 @@ class Eth2Dashboard {
 
     initValidatorGui() {
         if (this.validatorGui === undefined && this.eth2BeaconChain !== undefined) {
-            this.validatorGui = new ValidatorGui(this.screenInstance, this.config.validators, this.eth2BeaconChain).init()
+            this.validatorGui = new ValidatorGui(this.screenInstance, this.config.validators, this.eth2BeaconChain)
+            this.validatorGui.init()
         }
     }
 
