@@ -1,6 +1,8 @@
 import { form, box, textbox } from 'blessed'
 
-export class AddValidatorForm {
+import { Validator } from '../../../types'
+
+export class ValidatorForm {
     screenInstance: any
     rawElement: any
     rawElementPubKeyHeader: any
@@ -83,7 +85,11 @@ export class AddValidatorForm {
         this.rawElementAliasInput.key('enter', () => this.submitForm())
     }
 
-    showForm() {
+    showForm(validator?: Validator) {
+        if (validator) {
+            this.rawElementPubKeyInput.setValue(validator.pubKey)
+            this.rawElementAliasInput.setValue(validator.alias)
+        }
         return new Promise(async (resolve, reject) => {
             this.rawElementPubKeyInput.focus()
             this.rawElement.on('submit', (data: any) => resolve(data))

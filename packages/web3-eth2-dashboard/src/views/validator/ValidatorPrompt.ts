@@ -1,6 +1,6 @@
 import { prompt } from 'blessed'
 
-export class AddValidatorPrompt {
+export class ValidatorPrompt {
     screenInstance: any
     rawElement: any
 

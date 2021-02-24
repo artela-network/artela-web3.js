@@ -1,5 +1,5 @@
 import { ETH2BeaconChain } from 'web3-eth2-beaconchain'
-import { screen, prompt } from 'blessed'
+import { screen } from 'blessed'
 
 import { GuiConfig } from '../types'
 import { readConfig } from './helpers/readConfigFile'
@@ -34,7 +34,7 @@ class Eth2Dashboard {
     initScreen() {
         if (this.screenInstance === undefined) {
             this.screenInstance = screen({smartCSR: true, autoPadding: false})
-            this.screenInstance.title = 'Web3Eth2Dashboard'
+            this.screenInstance.title = 'Web3 Eth2 Dashboard'
         }
     }
 
@@ -59,9 +59,7 @@ class Eth2Dashboard {
 
             // Quit on Escape, q, or Control-C.
             this.screenInstance.key(['escape', 'q', 'C-c'], () => process.exit(0))
-
             this.screenInstance.append(this.bottomContainerBox.rawElement)
-
             this.screenInstance.render()
         }
     }

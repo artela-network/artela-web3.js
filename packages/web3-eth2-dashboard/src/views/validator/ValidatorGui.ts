@@ -94,6 +94,10 @@ export class ValidatorGui {
         if (elementId === 'validatorTable') this.validatorTable.addValidator()
     }
 
+    editHandler(elementId: ElementId) {
+        if (elementId === 'validatorTable') this.validatorTable.editValidator()
+    }
+
     init() {
         if (this.screenInstance !== undefined) {
             this.initValidatorInfoBox()
@@ -106,6 +110,7 @@ export class ValidatorGui {
             this.initValidatorTable()
             
             this.screenInstance.key(['a'], () => this.addHandler(this.screenInstance.focused.name))
+            this.screenInstance.key(['e'], () => this.editHandler(this.screenInstance.focused.name))
             
             this.screenInstance.append(this.validatorInfoBox.rawElement)
             this.screenInstance.append(this.validatorIncomeBox.rawElement)
