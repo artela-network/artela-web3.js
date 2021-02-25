@@ -19,7 +19,7 @@ export class ValidatorForm {
             width: 'half',
             top: 'center',
             left: 'center',
-            label: ' {green-fg}Add Validator{/green-fg} ',
+            label: '',
             tags: true,
             keys: true,
         })
@@ -89,10 +89,24 @@ export class ValidatorForm {
         this.rawElementAliasInput.key('escape', () => this.hideForm())
     }
 
-    showForm(action: 'add' | 'edit' ,validator?: Validator) {
+    setFormLabel(action: 'add' | 'edit' | 'delete') {
+        switch (action) {
+            case 'add':
+                if (action === 'add') this.rawElement.setLabel({text: ' {green-fg}Add Validator{/green-fg} '})
+                break
+            case 'edit':
+                if (action === 'edit') this.rawElement.setLabel({text: ' {yellow-fg}Edit Validator{/yellow-fg} '})
+                break
+            case 'delete':
+                if (action === 'delete') this.rawElement.setLabel({text: ' {red-fg}Delete Validator{/red-fg} '})
+                break
+        }
+    }
+
+    showForm(action: 'add' | 'edit' | 'delete', validator?: Validator) {
         return new Promise(async (resolve, reject) => {
             this.rawElement.show()
-            if (action === 'edit') this.rawElement.setLabel({text: ' {yellow-fg}Edit Validator{/yellow-fg} '})
+            this.setFormLabel(action)
             if (validator) {
                 this.rawElementPubKeyInput.setValue(validator.pubKey)
                 this.rawElementAliasInput.setValue(validator.alias)
@@ -104,12 +118,18 @@ export class ValidatorForm {
         })
     }
 
+    clearForm() {
+        this.rawElementPubKeyInput.setValue('')
+        this.rawElementAliasInput.setValue('')
+    }
+
     submitForm() {
         this.rawElement.submit()
         this.hideForm()
     }
 
     hideForm() {
+        this.clearForm()
         this.rawElement.hide()
         this.screenInstance.render() 
     }

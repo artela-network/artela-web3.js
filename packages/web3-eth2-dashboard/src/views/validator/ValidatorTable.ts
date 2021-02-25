@@ -1,6 +1,6 @@
 import { listtable } from 'blessed'
 
-import { Validator } from '../../../types'
+import { Validator, GuiConfig } from '../../../types'
 import { ValidatorPrompt } from './ValidatorPrompt'
 import { ValidatorForm } from './ValidatorForm'
 import { LoadingScreen } from '../loadingScreen'
@@ -143,23 +143,27 @@ export class ValidatorTable {
         }
     }
 
+    async writeConfigAndSetValidators(config: GuiConfig) {
+        // TODO Does config object in Eth2Dashboard get updated?
+        await writeConfig(config)
+        this.setValidators(config.validators)
+        this.screenInstance.render()
+    }
+
     async addValidator() {
         if (this.validatorForm === undefined) this.initValidatorForm()
         const {textbox} = await this.validatorForm.showForm('add')
         if (ValidatorTable.checkIfValidator(textbox[0])) {
             const config = await readConfig()
             config.validators.push({pubKey: textbox[0], alias: textbox[1]})
-            // TODO Does config object in Eth2Dashboard get updated?
-            await writeConfig(config)
-            this.setValidators(config.validators)
-            this.screenInstance.render()
+            this.writeConfigAndSetValidators(config)
         }
     }
 
     async editValidator() {
         if (this.validatorForm === undefined) this.initValidatorForm()
-        const highlightedValidator = this.validators[this.highlightedIndex - 1]
         // validatorIndex - 1 because Blessed uses 1 based indexes
+        const highlightedValidator = this.validators[this.highlightedIndex - 1]
         const {textbox} = await this.validatorForm.showForm('edit', highlightedValidator)
         if (ValidatorTable.checkIfValidator(textbox[0])) {
             const config = await readConfig()
@@ -168,10 +172,8 @@ export class ValidatorTable {
                     validator.alias === highlightedValidator.alias) {
                         validator.pubKey = textbox[0]
                         validator.alias = textbox[1]
-                        // TODO Does config object in Eth2Dashboard get updated?
-                        await writeConfig(config)
-                        this.setValidators(config.validators)
-                        this.screenInstance.render()
+                        this.writeConfigAndSetValidators(config)
+                        this.highlightedIndex = 1
                         break;
                     }
             }
