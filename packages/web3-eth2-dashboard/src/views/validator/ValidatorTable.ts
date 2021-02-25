@@ -1,8 +1,8 @@
 import { listtable } from 'blessed'
 
 import { Validator, GuiConfig } from '../../../types'
-import { ValidatorPrompt } from './ValidatorPrompt'
 import { ValidatorForm } from './ValidatorForm'
+import { ValidatorDeletePrompt } from './ValidatorDeletePrompt'
 import { LoadingScreen } from '../loadingScreen'
 import { readConfig } from '../../helpers/readConfigFile'
 import { writeConfig } from '../../helpers/writeConfigFile'
@@ -17,8 +17,6 @@ export class ValidatorTable {
     validatorProposalsTableInstance: any
     validatorAttestationsTableInstance: any
     validatorTable: any
-    validatorPrompt: any
-    validatorForm: any
     highlightedIndex = 1 // blessed starts indexes at 1
 
     constructor(
@@ -130,17 +128,10 @@ export class ValidatorTable {
         this.screenInstance.render()
     }
 
-    // initValidatorPrompt() {
-    //     if (this.validatorPrompt === undefined) {
-    //         this.validatorPrompt = new ValidatorPrompt(this.screenInstance)
-    //     }
-    // }
-
-    initValidatorForm() {
-        if (this.validatorForm === undefined) {
-            this.validatorForm = new ValidatorForm(this.screenInstance)
-            this.screenInstance.render()
-        }
+    initValidatorForm(): ValidatorForm {
+        const validatorForm = new ValidatorForm(this.screenInstance)
+        this.screenInstance.render()
+        return validatorForm
     }
 
     async writeConfigAndSetValidators(config: GuiConfig) {
@@ -151,8 +142,8 @@ export class ValidatorTable {
     }
 
     async addValidator() {
-        if (this.validatorForm === undefined) this.initValidatorForm()
-        const {textbox} = await this.validatorForm.showForm('add')
+        const validatorForm = this.initValidatorForm()
+        const {textbox} = await validatorForm.showForm('add')
         if (ValidatorTable.checkIfValidator(textbox[0])) {
             const config = await readConfig()
             config.validators.push({pubKey: textbox[0], alias: textbox[1]})
@@ -161,10 +152,10 @@ export class ValidatorTable {
     }
 
     async editValidator() {
-        if (this.validatorForm === undefined) this.initValidatorForm()
+        const validatorForm = this.initValidatorForm()
         // validatorIndex - 1 because Blessed uses 1 based indexes
         const highlightedValidator = this.validators[this.highlightedIndex - 1]
-        const {textbox} = await this.validatorForm.showForm('edit', highlightedValidator)
+        const {textbox} = await validatorForm.showForm('edit', highlightedValidator)
         if (ValidatorTable.checkIfValidator(textbox[0])) {
             const config = await readConfig()
             for (const validator of config.validators) {
@@ -178,5 +169,17 @@ export class ValidatorTable {
                     }
             }
         }
+    }
+
+    async deleteValidator() {
+        const validatorDeletePrompt = new ValidatorDeletePrompt(this.screenInstance)
+        this.screenInstance.render()
+        // validatorIndex - 1 because Blessed uses 1 based indexes
+        const confirmation = await validatorDeletePrompt.showPrompt(this.validators[this.highlightedIndex - 1])
+        console.log(confirmation)
+        // const config = await readConfig()
+        // delete this.validators[this.highlightedIndex - 1]
+        // this.writeConfigAndSetValidators(config)
+        // this.highlightedIndex = 1
     }
 }

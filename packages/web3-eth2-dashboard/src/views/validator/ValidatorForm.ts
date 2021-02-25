@@ -89,24 +89,10 @@ export class ValidatorForm {
         this.rawElementAliasInput.key('escape', () => this.hideForm())
     }
 
-    setFormLabel(action: 'add' | 'edit' | 'delete') {
-        switch (action) {
-            case 'add':
-                if (action === 'add') this.rawElement.setLabel({text: ' {green-fg}Add Validator{/green-fg} '})
-                break
-            case 'edit':
-                if (action === 'edit') this.rawElement.setLabel({text: ' {yellow-fg}Edit Validator{/yellow-fg} '})
-                break
-            case 'delete':
-                if (action === 'delete') this.rawElement.setLabel({text: ' {red-fg}Delete Validator{/red-fg} '})
-                break
-        }
-    }
-
-    showForm(action: 'add' | 'edit' | 'delete', validator?: Validator) {
+    showForm(action: 'add' | 'edit' | 'delete', validator?: Validator): Promise<{textbox: string[]}> {
         return new Promise(async (resolve, reject) => {
-            this.rawElement.show()
-            this.setFormLabel(action)
+            if (action === 'add') this.rawElement.setLabel({text: ' {green-fg}Add Validator{/green-fg} '})
+            if (action === 'edit') this.rawElement.setLabel({text: ' {yellow-fg}Edit Validator{/yellow-fg} '})
             if (validator) {
                 this.rawElementPubKeyInput.setValue(validator.pubKey)
                 this.rawElementAliasInput.setValue(validator.alias)
@@ -129,8 +115,8 @@ export class ValidatorForm {
     }
 
     hideForm() {
-        this.clearForm()
-        this.rawElement.hide()
+        // this.clearForm()
+        this.rawElement.destroy()
         this.screenInstance.render() 
     }
 }
