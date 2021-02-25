@@ -83,14 +83,22 @@ export class ValidatorForm {
         this.rawElement.key('enter', () => this.submitForm())
         this.rawElementPubKeyInput.key('enter', () => this.submitForm())
         this.rawElementAliasInput.key('enter', () => this.submitForm())
+
+        this.rawElement.key('escape', () => this.hideForm())
+        this.rawElementPubKeyInput.key('escape', () => this.hideForm())
+        this.rawElementAliasInput.key('escape', () => this.hideForm())
     }
 
-    showForm(validator?: Validator) {
-        if (validator) {
-            this.rawElementPubKeyInput.setValue(validator.pubKey)
-            this.rawElementAliasInput.setValue(validator.alias)
-        }
+    showForm(action: 'add' | 'edit' ,validator?: Validator) {
         return new Promise(async (resolve, reject) => {
+            this.rawElement.show()
+            if (action === 'edit') this.rawElement.setLabel({text: ' {yellow-fg}Edit Validator{/yellow-fg} '})
+            if (validator) {
+                this.rawElementPubKeyInput.setValue(validator.pubKey)
+                this.rawElementAliasInput.setValue(validator.alias)
+            }
+            this.screenInstance.render() 
+            
             this.rawElementPubKeyInput.focus()
             this.rawElement.on('submit', (data: any) => resolve(data))
         })

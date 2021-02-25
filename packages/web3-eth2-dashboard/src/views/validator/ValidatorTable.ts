@@ -19,7 +19,7 @@ export class ValidatorTable {
     validatorTable: any
     validatorPrompt: any
     validatorForm: any
-    highlightedIndex = 0
+    highlightedIndex = 1 // blessed starts indexes at 1
 
     constructor(
         screenInstance: any,
@@ -72,10 +72,13 @@ export class ValidatorTable {
             const validatorIndex = this.rawElement.getItemIndex(data)
             this.setSelectedValidator(validatorIndex)
         })
-        // this.rawElement.key(['up','down'], (data: any) => {
-        //     console.log(data)
-        //     // this.updateHighlightedIndex()
-        // })
+        // Using the provided this.screenInstance.key(), overrides and
+        // results in loss of scrolling over list items
+        this.rawElement.on('keypress', (ch: any, key: any) => {
+            if (key.name === 'up' || key.name === 'down') {
+                this.updateHighlightedIndex(key.name)
+            }
+        })
     }
 
     static formatValidators(validators: Validator[]): string[][] {
@@ -96,6 +99,14 @@ export class ValidatorTable {
     updateHighlightedIndex(keyPressed: 'up' | 'down') {
         // Don't update index, nothing to highlight
         if (this.validators.length === 0) return
+
+        if (keyPressed === 'up') {
+            if (this.highlightedIndex === 1) return
+            this.highlightedIndex--
+        } else {
+            if (this.highlightedIndex === this.validators.length) return
+            this.highlightedIndex++
+        }
     }
 
     setValidators(validators: Validator[]) {
@@ -134,7 +145,7 @@ export class ValidatorTable {
 
     async addValidator() {
         if (this.validatorForm === undefined) this.initValidatorForm()
-        const {textbox} = await this.validatorForm.showForm()
+        const {textbox} = await this.validatorForm.showForm('add')
         if (ValidatorTable.checkIfValidator(textbox[0])) {
             const config = await readConfig()
             config.validators.push({pubKey: textbox[0], alias: textbox[1]})
@@ -146,16 +157,24 @@ export class ValidatorTable {
     }
 
     async editValidator() {
-        console.log(this.rawElement)
         if (this.validatorForm === undefined) this.initValidatorForm()
-        const {textbox} = await this.validatorForm.showForm()
+        const highlightedValidator = this.validators[this.highlightedIndex - 1]
+        // validatorIndex - 1 because Blessed uses 1 based indexes
+        const {textbox} = await this.validatorForm.showForm('edit', highlightedValidator)
         if (ValidatorTable.checkIfValidator(textbox[0])) {
             const config = await readConfig()
-            config.validators.push({pubKey: textbox[0], alias: textbox[1]})
-            // TODO Does config object in Eth2Dashboard get updated?
-            await writeConfig(config)
-            this.setValidators(config.validators)
-            this.screenInstance.render()
+            for (const validator of config.validators) {
+                if (validator.pubKey === highlightedValidator.pubKey &&
+                    validator.alias === highlightedValidator.alias) {
+                        validator.pubKey = textbox[0]
+                        validator.alias = textbox[1]
+                        // TODO Does config object in Eth2Dashboard get updated?
+                        await writeConfig(config)
+                        this.setValidators(config.validators)
+                        this.screenInstance.render()
+                        break;
+                    }
+            }
         }
     }
 }
