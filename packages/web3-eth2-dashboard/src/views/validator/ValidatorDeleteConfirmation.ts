@@ -2,7 +2,7 @@ import { form, box, button } from 'blessed'
 
 import { Validator } from '../../../types'
 
-export class ValidatorDeletePrompt {
+export class ValidatorDeleteConfirmation {
     screenInstance: any
     rawElement: any
     rawElementQuestion: any
@@ -80,30 +80,30 @@ export class ValidatorDeletePrompt {
             padding: 0
         })
 
-        this.rawElementCancel.on('press', () => this.submitPrompt())
-        this.rawElementConfirm.on('press', () => this.submitPrompt())
+        this.rawElementCancel.on('press', () => this.submitConfirmation())
+        this.rawElementConfirm.on('press', () => this.submitConfirmation())
     }
 
-    static getPromptQuestion(validator: Validator): string {
+    static getConfirmationQuestion(validator: Validator): string {
         return validator.alias ? `{center}{red-fg}Delete validator:{/red-fg} ${validator.alias}{/center}` :
             `{center}{red-fg}Delete validator:{/red-fg} ${validator.pubKey.substr(0,11)}...${validator.pubKey.substr(12,11)}{/center}`
     }
 
-    showPrompt(validator: Validator) {
+    showConfirmation(validator: Validator) {
         return new Promise(async (resolve, reject) => {
-            this.rawElementQuestion.setContent(ValidatorDeletePrompt.getPromptQuestion(validator))
+            this.rawElementQuestion.setContent(ValidatorDeleteConfirmation.getConfirmationQuestion(validator))
             this.screenInstance.render()
             this.rawElementCancel.focus()
             this.rawElement.on('submit', (data: any) => resolve(data.cancel ? false : true))
         })
     }
 
-    submitPrompt() {
+    submitConfirmation() {
         this.rawElement.submit()
-        this.hidePrompt()
+        this.hideConfirmation()
     }
 
-    hidePrompt() {
+    hideConfirmation() {
         this.rawElement.destroy()
         this.screenInstance.render() 
     }

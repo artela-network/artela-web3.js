@@ -2,7 +2,7 @@ import { listtable } from 'blessed'
 
 import { Validator, GuiConfig } from '../../../types'
 import { ValidatorForm } from './ValidatorForm'
-import { ValidatorDeletePrompt } from './ValidatorDeletePrompt'
+import { ValidatorDeleteConfirmation } from './ValidatorDeleteConfirmation'
 import { LoadingScreen } from '../loadingScreen'
 import { readConfig } from '../../helpers/readConfigFile'
 import { writeConfig } from '../../helpers/writeConfigFile'
@@ -172,10 +172,10 @@ export class ValidatorTable {
     }
 
     async deleteValidator() {
-        const validatorDeletePrompt = new ValidatorDeletePrompt(this.screenInstance)
+        const validatorDeleteConfirmation = new ValidatorDeleteConfirmation(this.screenInstance)
         this.screenInstance.render()
         // validatorIndex - 1 because Blessed uses 1 based indexes
-        const confirmation = await validatorDeletePrompt.showPrompt(this.validators[this.highlightedIndex - 1])
+        const confirmation = await validatorDeleteConfirmation.showConfirmation(this.validators[this.highlightedIndex - 1])
         this.rawElement.focus()
         if (confirmation) {
             const config = await readConfig()
