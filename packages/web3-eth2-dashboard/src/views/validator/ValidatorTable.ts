@@ -176,10 +176,13 @@ export class ValidatorTable {
         this.screenInstance.render()
         // validatorIndex - 1 because Blessed uses 1 based indexes
         const confirmation = await validatorDeletePrompt.showPrompt(this.validators[this.highlightedIndex - 1])
-        console.log(confirmation)
-        // const config = await readConfig()
-        // delete this.validators[this.highlightedIndex - 1]
-        // this.writeConfigAndSetValidators(config)
-        // this.highlightedIndex = 1
+        this.rawElement.focus()
+        if (confirmation) {
+            const config = await readConfig()
+            config.validators.splice([this.highlightedIndex - 1], 1)
+            this.writeConfigAndSetValidators(config)
+            this.highlightedIndex = 1
+        }
+        
     }
 }

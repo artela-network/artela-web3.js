@@ -97,16 +97,11 @@ export class ValidatorForm {
                 this.rawElementPubKeyInput.setValue(validator.pubKey)
                 this.rawElementAliasInput.setValue(validator.alias)
             }
-            this.screenInstance.render() 
+            this.screenInstance.render()
             
             this.rawElementPubKeyInput.focus()
             this.rawElement.on('submit', (data: any) => resolve(data))
         })
-    }
-
-    clearForm() {
-        this.rawElementPubKeyInput.setValue('')
-        this.rawElementAliasInput.setValue('')
     }
 
     submitForm() {
@@ -115,7 +110,6 @@ export class ValidatorForm {
     }
 
     hideForm() {
-        // this.clearForm()
         this.rawElement.destroy()
         this.screenInstance.render() 
     }
