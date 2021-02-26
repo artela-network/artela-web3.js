@@ -183,6 +183,5 @@ export class ValidatorTable {
             this.writeConfigAndSetValidators(config)
             this.highlightedIndex = 1
         }
-        
     }
 }
