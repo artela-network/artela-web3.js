@@ -1,5 +1,7 @@
 # ETH2 Validator Dashboard
 
+![Validator Dashboard Screenshot](./ValidatorDashboard.png)
+
 ## Install
 
 1. `npm i`
