@@ -35,13 +35,13 @@ const ethersAbiCoder = new EthersAbiCoder(function (type, value) {
 });
 
 // result method
-function Result() {
+export class Result() {
 }
 
 /**
  * ABICoder prototype should be used to encode/decode solidity params of any type
  */
-export const ABICoder = function () {
+export class ABICoder {
 };
 
 /**
@@ -465,6 +465,4 @@ const encodeFunctionSignature = function (functionName) {
     return utils.sha3(functionName).slice(0, 10);
 };
 
-const coder = new ABICoder();
-
-module.exports = coder;
+export const coder = new ABICoder();
