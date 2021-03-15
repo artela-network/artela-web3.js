@@ -87,97 +87,101 @@ const mod9710 = function (iban) {
  *
  * @param {String} iban
  */
-export function Iban(iban) {
-    this._iban = iban;
-};
-
-/**
- * This method should be used to create an ethereum address from a direct iban address
- *
- * @method toAddress
- * @param {String} iban address
- * @return {String} the ethereum address
- */
-Iban.toAddress = function (ib) {
-    ib = new Iban(ib);
-
-    if(!ib.isDirect()) {
-        throw new Error('IBAN is indirect and can\'t be converted');
+export class Iban {
+    constructor(iban: any) {
+        this._iban = iban;
     }
 
-    return ib.toAddress();
-};
+    /**
+     * This method should be used to create an ethereum address from a direct iban address
+     *
+     * @method toAddress
+     * @param {String} iban address
+     * @return {String} the ethereum address
+     */
+    toAddress(ib) {
+        ib = new Iban(ib);
 
-/**
- * This method should be used to create iban address from an ethereum address
- *
- * @method toIban
- * @param {String} address
- * @return {String} the IBAN address
- */
-Iban.toIban = function (address) {
-    return Iban.fromAddress(address).toString();
-};
+        if (!ib.isDirect()) {
+            throw new Error("IBAN is indirect and can't be converted");
+        }
 
-/**
- * This method should be used to create iban object from an ethereum address
- *
- * @method fromAddress
- * @param {String} address
- * @return {Iban} the IBAN object
- */
-Iban.fromAddress = function (address) {
-    if(!utils.isAddress(address)){
-        throw new Error('Provided address is not a valid address: '+ address);
+        return ib.toAddress();
     }
 
-    address = address.replace('0x','').replace('0X','');
+    /**
+     * This method should be used to create iban address from an ethereum address
+     *
+     * @method toIban
+     * @param {String} address
+     * @return {String} the IBAN address
+     */
+    toIban(address) {
+        return Iban.fromAddress(address).toString();
+    }
 
-    const asBn = new BigNumber(address, 16);
-    const base36 = asBn.toString(36);
-    const padded = leftPad(base36, 15);
-    return Iban.fromBban(padded.toUpperCase());
-};
+    /**
+     * This method should be used to create iban object from an ethereum address
+     *
+     * @method fromAddress
+     * @param {String} address
+     * @return {Iban} the IBAN object
+     */
+    fromAddress(address) {
+        if (!utils.isAddress(address)) {
+            throw new Error(
+                "Provided address is not a valid address: " + address
+            );
+        }
 
-/**
- * Convert the passed BBAN to an IBAN for this country specification.
- * Please note that <i>"generation of the IBAN shall be the exclusive responsibility of the bank/branch servicing the account"</i>.
- * This method implements the preferred algorithm described in http://en.wikipedia.org/wiki/International_Bank_Account_Number#Generating_IBAN_check_digits
- *
- * @method fromBban
- * @param {String} bban the BBAN to convert to IBAN
- * @returns {Iban} the IBAN object
- */
-Iban.fromBban = function (bban) {
-    const countryCode = 'XE';
+        address = address.replace("0x", "").replace("0X", "");
 
-    const remainder = mod9710(iso13616Prepare(countryCode + '00' + bban));
-    const checkDigit = ('0' + (98 - remainder)).slice(-2);
+        const asBn = new BigNumber(address, 16);
+        const base36 = asBn.toString(36);
+        const padded = leftPad(base36, 15);
+        return Iban.fromBban(padded.toUpperCase());
+    }
 
-    return new Iban(countryCode + checkDigit + bban);
-};
+    /**
+     * Convert the passed BBAN to an IBAN for this country specification.
+     * Please note that <i>"generation of the IBAN shall be the exclusive responsibility of the bank/branch servicing the account"</i>.
+     * This method implements the preferred algorithm described in http://en.wikipedia.org/wiki/International_Bank_Account_Number#Generating_IBAN_check_digits
+     *
+     * @method fromBban
+     * @param {String} bban the BBAN to convert to IBAN
+     * @returns {Iban} the IBAN object
+     */
+    fromBban(bban) {
+        const countryCode = "XE";
 
-/**
- * Should be used to create IBAN object for given institution and identifier
- *
- * @method createIndirect
- * @param {Object} options, required options are "institution" and "identifier"
- * @return {Iban} the IBAN object
- */
-Iban.createIndirect = function (options) {
-    return Iban.fromBban('ETH' + options.institution + options.identifier);
-};
+        const remainder = mod9710(iso13616Prepare(countryCode + "00" + bban));
+        const checkDigit = ("0" + (98 - remainder)).slice(-2);
 
-/**
- * This method should be used to check if given string is valid iban object
- *
- * @method isValid
- * @param {String} iban string
- * @return {Boolean} true if it is valid IBAN
- */
-Iban.isValid = function (iban) {
-    const i = new Iban(iban);
-    return i.isValid();
+        return new Iban(countryCode + checkDigit + bban);
+    }
+
+    /**
+     * Should be used to create IBAN object for given institution and identifier
+     *
+     * @method createIndirect
+     * @param {Object} options, required options are "institution" and "identifier"
+     * @return {Iban} the IBAN object
+     */
+    createIndirect(options) {
+        return Iban.fromBban("ETH" + options.institution + options.identifier);
+    }
+
+    /**
+     * This method should be used to check if given string is valid iban object
+     *
+     * @method isValid
+     * @param {String} iban string
+     * @return {Boolean} true if it is valid IBAN
+     */
+    isValid(iban) {
+        const i = new Iban(iban);
+        return i.isValid();
+    }
 };
 
 /**
