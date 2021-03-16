@@ -182,90 +182,90 @@ export class Iban {
         const i = new Iban(iban);
         return i.isValid();
     }
-};
 
-/**
- * Should be called to check if iban is correct
- *
- * @method isValid
- * @returns {Boolean} true if it is, otherwise false
- */
-Iban.prototype.isValid = function () {
-    return /^XE[0-9]{2}(ETH[0-9A-Z]{13}|[0-9A-Z]{30,31})$/.test(this._iban) &&
-        mod9710(iso13616Prepare(this._iban)) === 1;
-};
-
-/**
- * Should be called to check if iban number is direct
- *
- * @method isDirect
- * @returns {Boolean} true if it is, otherwise false
- */
-Iban.prototype.isDirect = function () {
-    return this._iban.length === 34 || this._iban.length === 35;
-};
-
-/**
- * Should be called to check if iban number if indirect
- *
- * @method isIndirect
- * @returns {Boolean} true if it is, otherwise false
- */
-Iban.prototype.isIndirect = function () {
-    return this._iban.length === 20;
-};
-
-/**
- * Should be called to get iban checksum
- * Uses the mod-97-10 checksumming protocol (ISO/IEC 7064:2003)
- *
- * @method checksum
- * @returns {String} checksum
- */
-Iban.prototype.checksum = function () {
-    return this._iban.substr(2, 2);
-};
-
-/**
- * Should be called to get institution identifier
- * eg. XREG
- *
- * @method institution
- * @returns {String} institution identifier
- */
-Iban.prototype.institution = function () {
-    return this.isIndirect() ? this._iban.substr(7, 4) : '';
-};
-
-/**
- * Should be called to get client identifier within institution
- * eg. GAVOFYORK
- *
- * @method client
- * @returns {String} client identifier
- */
-Iban.prototype.client = function () {
-    return this.isIndirect() ? this._iban.substr(11) : '';
-};
-
-/**
- * Should be called to get client direct address
- *
- * @method toAddress
- * @returns {String} ethereum address
- */
-Iban.prototype.toAddress = function () {
-    if (this.isDirect()) {
-        const base36 = this._iban.substr(4);
-        const asBn = new BigNumber(base36, 36);
-        return utils.toChecksumAddress(asBn.toString(16, 20));
+    /**
+     * Should be called to check if iban is correct
+     *
+     * @method isValid
+     * @returns {Boolean} true if it is, otherwise false
+     */
+    isValid() {
+        return (
+            /^XE[0-9]{2}(ETH[0-9A-Z]{13}|[0-9A-Z]{30,31})$/.test(this._iban) &&
+            mod9710(iso13616Prepare(this._iban)) === 1
+        );
     }
 
-    return '';
-};
+    /**
+     * Should be called to check if iban number is direct
+     *
+     * @method isDirect
+     * @returns {Boolean} true if it is, otherwise false
+     */
+    isDirect() {
+        return this._iban.length === 34 || this._iban.length === 35;
+    }
 
-Iban.prototype.toString = function () {
-    return this._iban;
-};
+    /**
+     * Should be called to check if iban number if indirect
+     *
+     * @method isIndirect
+     * @returns {Boolean} true if it is, otherwise false
+     */
+    isIndirect() {
+        return this._iban.length === 20;
+    }
 
-module.exports = Iban;
+    /**
+     * Should be called to get iban checksum
+     * Uses the mod-97-10 checksumming protocol (ISO/IEC 7064:2003)
+     *
+     * @method checksum
+     * @returns {String} checksum
+     */
+    checksum() {
+        return this._iban.substr(2, 2);
+    }
+
+    /**
+     * Should be called to get institution identifier
+     * eg. XREG
+     *
+     * @method institution
+     * @returns {String} institution identifier
+     */
+    institution() {
+        return this.isIndirect() ? this._iban.substr(7, 4) : "";
+    }
+
+    /**
+     * Should be called to get client identifier within institution
+     * eg. GAVOFYORK
+     *
+     * @method client
+     * @returns {String} client identifier
+     */
+    client() {
+        return this.isIndirect() ? this._iban.substr(11) : "";
+    }
+
+    /**
+     * Should be called to get client direct address
+     *
+     * @method toAddress
+     * @returns {String} ethereum address
+     */
+    toAddress() {
+        if (this.isDirect()) {
+            const base36 = this._iban.substr(4);
+            const asBn = new BigNumber(base36, 36);
+            return utils.toChecksumAddress(asBn.toString(16, 20));
+        }
+
+        return "";
+    }
+
+    toString() {
+        return this._iban;
+    }
+};
