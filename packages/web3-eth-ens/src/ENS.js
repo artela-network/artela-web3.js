@@ -35,41 +35,36 @@ var contenthash = require('./lib/contentHash');
  *
  * @constructor
  */
-function ENS(eth) {
-    this.eth = eth;
-    var registryAddress = null;
-    this._detectedAddress = null;
-    this._lastSyncCheck = null;
+export default class ENS {
 
-    Object.defineProperty(this, 'registry', {
-        get: function () {
-            return new Registry(this);
-        },
-        enumerable: true
-    });
+    constructor(eth) {
+        this.eth = eth;
+        const registryAddress = null;
+        this._detectedAddress = null;
+        this._lastSyncCheck = null;
+    }
 
-    Object.defineProperty(this, 'resolverMethodHandler', {
-        get: function () {
-            return new ResolverMethodHandler(this.registry);
-        },
-        enumerable: true
-    });
+    registry() {
+        return new Registry(this);
+    }
 
-    Object.defineProperty(this, 'registryAddress', {
-        get: function () {
-            return registryAddress;
-        },
-        set: function (value) {
-            if (value === null) {
-                registryAddress = value;
+    resolverMethodHandler() {
+        return new ResolverMethodHandler(this.registry);
+    }
 
-                return;
-            }
+    registryAddress() {
+        return registryAddress;
+    }
 
-            registryAddress = formatters.inputAddressFormatter(value);
-        },
-        enumerable: true
-    });
+    setRegistryAddress(value) {
+        if (value === null) {
+            registryAddress = value;
+
+            return;
+        }
+
+        registryAddress = formatters.inputAddressFormatter(value);
+    }
 }
 
 /**
@@ -534,5 +529,3 @@ ENS.prototype.checkNetwork = async function () {
 
     return this._detectedAddress;
 };
-
-module.exports = ENS;

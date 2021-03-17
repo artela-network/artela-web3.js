@@ -20,6 +20,4 @@
 
 "use strict";
 
-var ENS = require('./ENS');
-
-module.exports = ENS;
+export const ENS = require('./ENS');
