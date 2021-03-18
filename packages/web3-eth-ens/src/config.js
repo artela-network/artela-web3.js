@@ -25,7 +25,7 @@
  *
  * @type {{addresses: {main: string, rinkeby: string, goerli: string, ropsten: string}}}
  */
-var config = {
+const config = {
     addresses: {
         main: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
         ropsten: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",

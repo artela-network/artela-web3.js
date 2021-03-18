@@ -1,6 +1,6 @@
 "use strict";
 
-var RESOLVER = [
+const RESOLVER = [
     {
         "constant": true,
         "inputs": [

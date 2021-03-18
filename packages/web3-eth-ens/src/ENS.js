@@ -20,13 +20,13 @@
 
 "use strict";
 
-var _ = require('underscore');
-var config = require('./config');
-var formatters = require('web3-core-helpers').formatters;
-var utils = require('web3-utils');
-var Registry = require('./contracts/Registry');
-var ResolverMethodHandler = require('./lib/ResolverMethodHandler');
-var contenthash = require('./lib/contentHash');
+const _ = require('underscore');
+const config = require('./config');
+const formatters = require('web3-core-helpers').formatters;
+const utils = require('web3-utils');
+const Registry = require('./contracts/Registry');
+const ResolverMethodHandler = require('./lib/ResolverMethodHandler');
+const contenthash = require('./lib/contentHash');
 
 /**
  * Constructs a new instance of ENS
@@ -36,7 +36,6 @@ var contenthash = require('./lib/contentHash');
  * @constructor
  */
 export default class ENS {
-
     constructor(eth) {
         this.eth = eth;
         const registryAddress = null;
@@ -65,54 +64,58 @@ export default class ENS {
 
         registryAddress = formatters.inputAddressFormatter(value);
     }
+
+    /**
+     * Returns true if the given interfaceId is supported and otherwise false.
+     *
+     * @method supportsInterface
+     *
+     * @param {string} name
+     * @param {string} interfaceId
+     * @param {function} callback
+     *
+     * @callback callback callback(error, result)
+     * @returns {Promise<boolean>}
+     */
+    supportsInterface(name, interfaceId, callback) {
+        return this.getResolver(name)
+            .then(function (resolver) {
+                if (!utils.isHexStrict(interfaceId)) {
+                    interfaceId = utils.sha3(interfaceId).slice(0, 10);
+                }
+
+                return resolver.methods
+                    .supportsInterface(interfaceId)
+                    .call(callback);
+            })
+            .catch(function (error) {
+                if (_.isFunction(callback)) {
+                    callback(error, null);
+
+                    return;
+                }
+
+                throw error;
+            });
+    }
+
+    /**
+     * Returns the Resolver by the given address
+     *
+     * @deprecated Please use the "getResolver" method instead of "resolver"
+     *
+     * @method resolver
+     *
+     * @param {string} name
+     * @param {function} callback
+     *
+     * @callback callback callback(error, result)
+     * @returns {Promise<Contract>}
+     */
+    resolver(name, callback) {
+        return this.registry.resolver(name, callback);
+    }
 }
-
-/**
- * Returns true if the given interfaceId is supported and otherwise false.
- *
- * @method supportsInterface
- *
- * @param {string} name
- * @param {string} interfaceId
- * @param {function} callback
- *
- * @callback callback callback(error, result)
- * @returns {Promise<boolean>}
- */
-ENS.prototype.supportsInterface = function (name, interfaceId, callback) {
-    return this.getResolver(name).then(function (resolver) {
-        if (!utils.isHexStrict(interfaceId)) {
-            interfaceId = utils.sha3(interfaceId).slice(0,10);
-        }
-
-        return resolver.methods.supportsInterface(interfaceId).call(callback);
-    }).catch(function(error) {
-        if (_.isFunction(callback)) {
-            callback(error, null);
-
-            return;
-        }
-
-        throw error;
-    });
-};
-
-/**
- * Returns the Resolver by the given address
- *
- * @deprecated Please use the "getResolver" method instead of "resolver"
- *
- * @method resolver
- *
- * @param {string} name
- * @param {function} callback
- *
- * @callback callback callback(error, result)
- * @returns {Promise<Contract>}
- */
-ENS.prototype.resolver = function (name, callback) {
-    return this.registry.resolver(name, callback);
-};
 
 /**
  * Returns the Resolver by the given address
@@ -441,11 +444,11 @@ ENS.prototype.getContenthash = function (name, callback) {
  * @returns {PromiEvent<TransactionReceipt | TransactionRevertInstructionError>}
  */
 ENS.prototype.setContenthash = function (name, hash, txConfig, callback) {
-    var encoded;
+    const encoded;
     try {
         encoded = contenthash.encode(hash);
     } catch(err){
-        var error = new Error('Could not encode ' + hash + '. See docs for supported hash protocols.');
+        const error = new Error('Could not encode ' + hash + '. See docs for supported hash protocols.');
 
         if (_.isFunction(callback)) {
             callback(error, null);
@@ -497,11 +500,11 @@ ENS.prototype.setMultihash = function (name, hash, txConfig, callback) {
  * @returns {Promise<string>}
  */
 ENS.prototype.checkNetwork = async function () {
-    var now = new Date() / 1000;
+    const now = new Date() / 1000;
 
     if (!this._lastSyncCheck || (now - this._lastSyncCheck) > 3600) {
-        var block = await this.eth.getBlock('latest');
-        var headAge = now - block.timestamp;
+        const block = await this.eth.getBlock('latest');
+        const headAge = now - block.timestamp;
 
         if (headAge > 3600) {
             throw new Error("Network not synced; last block was " + headAge + " seconds ago");
@@ -515,8 +518,8 @@ ENS.prototype.checkNetwork = async function () {
     }
 
     if (!this._detectedAddress) {
-        var networkType = await this.eth.net.getNetworkType();
-        var addr = config.addresses[networkType];
+        const networkType = await this.eth.net.getNetworkType();
+        const addr = config.addresses[networkType];
 
         if (typeof addr === 'undefined') {
             throw new Error("ENS is not supported on network " + networkType);
