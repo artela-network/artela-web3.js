@@ -24,9 +24,11 @@ const _ = require('underscore');
 const config = require('./config');
 const formatters = require('web3-core-helpers').formatters;
 const utils = require('web3-utils');
+const Base = require("web3-base");
 const Registry = require('./contracts/Registry');
 const ResolverMethodHandler = require('./lib/ResolverMethodHandler');
 const contenthash = require('./lib/contentHash');
+import { Manager, BatchManager } from "web3-core-requestmanager";
 
 /**
  * Constructs a new instance of ENS
@@ -35,12 +37,15 @@ const contenthash = require('./lib/contentHash');
  *
  * @constructor
  */
-export default class ENS {
+export default class ENS extends Base {
     constructor(eth) {
         this.eth = eth;
         const registryAddress = null;
         this._detectedAddress = null;
         this._lastSyncCheck = null;
+
+        this.givenProvider = Manager.givenProvider;
+        this.providers = Manager.providers;
     }
 
     registry() {
