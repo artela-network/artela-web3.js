@@ -80,11 +80,6 @@ contract.deploy({
     arguments: [123, 'My String']
 });
 
-contract.bind({
-    aspectId: "0x1234567890123456789012345678901234567890",
-    aspectVersion: 0
-});
-
 // $ExpectType void
 contract.once(
     'MyEvent',
