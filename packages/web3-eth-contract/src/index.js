@@ -38,7 +38,9 @@ var formatters = require('web3-core-helpers').formatters;
 var errors = require('web3-core-helpers').errors;
 var promiEvent = require('web3-core-promievent');
 var abi = require('web3-eth-abi');
-const {RLP} = require("ethers/lib/utils");
+
+const aspectCoreAbi = require("./aspect_core.json");
+const aspectCoreAddr = "0x0000000000000000000000000000000000A27E14";
 
 
 /**
@@ -343,32 +345,6 @@ Contract.setProvider = function(provider, accounts) {
     this._ethAccounts = accounts;
 };
 
-/**
- * Create a new instance of Artela system contract
- *
- * @method systemContract
- *
- * @param {ContractOptions} options
- *
- * @returns Contract
- */
-Contract.aspectCore = function(options) {
-    return new Contract(utils.aspectCoreAbi, utils.aspectCoreAddr, options);
-};
-
-/**
- * ABI of Aspect Core
- *
- * @returns Object
- */
-Contract.aspectCoreAbi = utils.aspectCoreAbi;
-
-/**
- * Address of Aspect Core
- *
- * @returns string
- */
-Contract.aspectCoreAddress = utils.aspectCoreAddr;
 
 /**
  * Get the callback and modify the array if necessary
@@ -696,31 +672,31 @@ Contract.prototype.bind = function(options, callback){
         throw errors.ContractNoAddressDefinedError();
     }
 
-    // check aspect id, if not specified, throw error
-    if(!options.aspectId) {
-        if (typeof callback === 'function'){
-            return callback(errors.ContractNoAddressDefinedError());
-        }
-        throw errors.ContractNoAddressDefinedError();
-    }
-
     // set default priority
     if(!options.priority && options.priority !== 0) {
         options.priority = 0;
     }
-
-    // set default aspect version to bind,
-    // if aspectVersion == 0, means bind to the latest version.
+    // set default aspect version to bind
     if((!options.aspectVersion && options.aspectVersion !== 0) || options.aspectVersion < 0) {
         options.aspectVersion = 0;
     }
 
-    // init system contract
-    const aspectCore = Contract.aspectCore(options);
-    aspectCore.setProvider(this.currentProvider);
+    options.arguments = [options.aspectId, options.aspectVersion, this.options.address, options.priority];
 
-    return aspectCore.methods.bind(options.aspectId, options.aspectVersion,
-        this.options.address, options.priority);
+    // init system contract
+    const aspectCore = new Contract(aspectCoreAbi, aspectCoreAddr, options);
+
+    const bindFunc = aspectCore.options.jsonInterface.find((method) => {
+        return (method.type === 'function');
+    }) || {};
+    bindFunc.signature = 'bind';
+
+    return aspectCore._createTxObject.apply({
+        method: bindFunc,
+        parent: aspectCore,
+        _ethAccounts: this.constructor._ethAccounts
+    }, options.arguments);
+
 };
 
 /**
@@ -1164,12 +1140,6 @@ Contract.prototype._executeMethod = function _executeMethod(){
                     var newContract = _this._parent.clone();
                     newContract.options.address = receipt.contractAddress;
                     return newContract;
-                },
-                aspectDeployFormatter: function (receipt) {
-                    let newAspect = _this._parent.clone();
-                    newAspect.options.address =
-                        utils.toChecksumAddress(utils.sha3(RLP.encode([args.options.from, args.options.nonce])).slice(26));
-                    return newAspect;
                 }
             };
 

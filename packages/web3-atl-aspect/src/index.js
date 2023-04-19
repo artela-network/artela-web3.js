@@ -93,6 +93,85 @@ var Aspect = function Aspect( address, options) {
         enumerable: true
     });
 
+    // add method and event signatures, when the jsonInterface gets set
+    Object.defineProperty(this.options, 'jsonInterface', {
+        set: function(value){
+            _this.methods = {};
+            _this.events = {};
+
+            _this._jsonInterface = value.map(function(method) {
+                var func,
+                    funcName;
+
+                // make constant and payable backwards compatible
+                method.constant = (method.stateMutability === "view" || method.stateMutability === "pure" || method.constant);
+                method.payable = (method.stateMutability === "payable" || method.payable);
+
+
+                if (method.name) {
+                    funcName = utils._jsonInterfaceMethodToString(method);
+                }
+
+
+                // function
+                if (method.type === 'function') {
+                    method.signature = abi.encodeFunctionSignature(funcName);
+                    func = _this._createTxObject.bind({
+                        method: method,
+                        parent: _this
+                    });
+
+
+                    // add method only if not one already exists
+                    if(!_this.methods[method.name]) {
+                        _this.methods[method.name] = func;
+                    } else {
+                        var cascadeFunc = _this._createTxObject.bind({
+                            method: method,
+                            parent: _this,
+                            nextMethod: _this.methods[method.name]
+                        });
+                        _this.methods[method.name] = cascadeFunc;
+                    }
+
+                    // definitely add the method based on its signature
+                    _this.methods[method.signature] = func;
+
+                    // add method by name
+                    _this.methods[funcName] = func;
+
+
+                // event
+                } else if (method.type === 'event') {
+                    method.signature = abi.encodeEventSignature(funcName);
+                    var event = _this._on.bind(_this, method.signature);
+
+                    // add method only if not already exists
+                    if(!_this.events[method.name] || _this.events[method.name].name === 'bound ')
+                        _this.events[method.name] = event;
+
+                    // definitely add the method based on its signature
+                    _this.events[method.signature] = event;
+
+                    // add event by name
+                    _this.events[funcName] = event;
+                }
+
+
+                return method;
+            });
+
+            // add allEvents
+            _this.events.allEvents = _this._on.bind(_this, 'allevents');
+
+            return _this._jsonInterface;
+        },
+        get: function(){
+            return _this._jsonInterface;
+        },
+        enumerable: true
+    });
+
     // get default account from the Class
     var defaultAccount = this.constructor.defaultAccount;
     var defaultBlock = this.constructor.defaultBlock || 'latest';
@@ -227,13 +306,17 @@ var Aspect = function Aspect( address, options) {
         enumerable: true
     });
 
-    this._address = null;
+    // properties
+    this.methods = {};
+    this.events = {};
 
-    this._aspectCore = Contract.aspectCore(this.options)
-    this._aspectCore.setProvider(this.currentProvider);
+    this._address = null;
+    this._jsonInterface = [];
 
     // set getter/setter properties
     this.options.address = address;
+    this.options.jsonInterface = jsonInterface;
+
 };
 
 /**
@@ -319,8 +402,12 @@ Aspect.prototype._getOrSetDefaultOptions = function getOrSetDefaultOptions(optio
  * @return {Object} EventEmitter possible events are "error", "transactionHash" and "receipt"
  */
 Aspect.prototype.deploy = function(options, callback){
+
     options = options || {};
+
+    options.arguments = options.arguments || [];
     options = this._getOrSetDefaultOptions(options);
+
 
     // throw error, if no "data" is specified
     if(!options.data) {
@@ -330,36 +417,18 @@ Aspect.prototype.deploy = function(options, callback){
         throw errors.ContractMissingDeployDataError();
     }
 
-    return this._aspectCore.methods.deploy(
-        options.data, options.properties);
-};
+    var constructor = this.options.jsonInterface.find((method) => {
+        return (method.type === 'constructor');
+    }) || {};
+    constructor.signature = 'constructor';
 
-/**
- * Deploys an Aspect and fire events based on its state: transactionHash, receipt
- *
- * All event listeners will be removed, once the last possible event is fired ("error", or "receipt")
- *
- * @method deploy
- * @param {Object} options
- * @param {Function} callback
- * @return {Object} EventEmitter possible events are "error", "transactionHash" and "receipt"
- */
-Aspect.prototype.upgrade = function(options, callback){
-    options = options || {};
-    options = this._getOrSetDefaultOptions(options);
+    return this._createTxObject.apply({
+        method: constructor,
+        parent: this,
+        deployData: options.data,
+        _ethAccounts: this.constructor._ethAccounts
+    }, options.arguments);
 
-    // throw error, if no "data" is specified
-    if(!options.data) {
-        if (typeof callback === 'function'){
-            return callback(errors.ContractMissingDeployDataError());
-        }
-        throw errors.ContractMissingDeployDataError();
-    }
-
-    let aspectCore = Contract.systemContract(options);
-
-    return aspectCore.methods.upgrade(
-        options.data, options.properties);
 };
 
 /**
@@ -371,6 +440,42 @@ Aspect.prototype.upgrade = function(options, callback){
 Aspect.prototype.clone = function() {
     return new this.constructor(this.options.address, this.options);
 };
+
+
+/**
+ * Adds event listeners and creates a subscription, and remove it once its fired.
+ *
+ * @method once
+ * @param {String} event
+ * @param {Object} options
+ * @param {Function} callback
+ * @return {Object} the event subscription
+ */
+Aspect.prototype.once = function(event, options, callback) {
+    var args = Array.prototype.slice.call(arguments);
+
+    // get the callback
+    callback = this._getCallback(args);
+
+    if (!callback) {
+        throw errors.ContractOnceRequiresCallbackError();
+    }
+
+    // don't allow fromBlock
+    if (options)
+        delete options.fromBlock;
+
+    // don't return as once shouldn't provide "on"
+    this._on(event, options, function (err, res, sub) {
+        sub.unsubscribe();
+        if(typeof callback === 'function'){
+            callback(err, res, sub);
+        }
+    });
+
+    return undefined;
+};
+
 
 /**
  * returns the an object with call, send, estimate functions
@@ -391,6 +496,7 @@ Aspect.prototype._createTxObject =  function _createTxObject(){
 
     txObject.send = this.parent._executeMethod.bind(txObject, 'send');
     txObject.send.request = this.parent._executeMethod.bind(txObject, 'send', true); // to make batch requests
+    txObject.encodeABI = this.parent._encodeMethodABI.bind(txObject);
     txObject.estimateGas = this.parent._executeMethod.bind(txObject, 'estimate');
     txObject.createAccessList = this.parent._executeMethod.bind(txObject, 'createAccessList');
 
@@ -405,6 +511,10 @@ Aspect.prototype._createTxObject =  function _createTxObject(){
     txObject._method = this.method;
     txObject._parent = this.parent;
     txObject._ethAccounts = this.parent.constructor._ethAccounts || this._ethAccounts;
+
+    if(this.deployData) {
+        txObject._deployData = this.deployData;
+    }
 
     return txObject;
 };
