@@ -40,7 +40,7 @@ var promiEvent = require('web3-core-promievent');
 var abi = require('web3-eth-abi');
 
 const aspectCoreAbi = require("./aspect_core.json");
-const aspectCoreAddr = "0x0000000000000000000000000000000000A27E14";
+const aspectCoreAddr = "0xE19cA8b566759f7c6BceedcF2575B5D4c8A82554";
 
 
 /**
@@ -345,6 +345,32 @@ Contract.setProvider = function(provider, accounts) {
     this._ethAccounts = accounts;
 };
 
+/**
+ * Create a new instance of Artela system contract
+ *
+ * @method systemContract
+ *
+ * @param {ContractOptions} options
+ *
+ * @returns Contract
+ */
+Contract.aspectCore = function(options) {
+    return new Contract(aspectCoreAbi, aspectCoreAddr, options);
+};
+
+/**
+ * ABI of Aspect Core
+ *
+ * @returns Object
+ */
+Contract.aspectCoreAbi = aspectCoreAbi;
+
+/**
+ * Address of Aspect Core
+ *
+ * @returns string
+ */
+Contract.aspectCoreAddress = aspectCoreAddr;
 
 /**
  * Get the callback and modify the array if necessary
@@ -691,22 +717,12 @@ Contract.prototype.bind = function(options, callback){
         options.aspectVersion = 0;
     }
 
-    options.arguments = [options.aspectId, options.aspectVersion, this.options.address, options.priority];
-
     // init system contract
-    const aspectCore = new Contract(aspectCoreAbi, aspectCoreAddr, options);
+    const aspectCore = Contract.aspectCore(options);
+    aspectCore.setProvider(this.currentProvider);
 
-    const bindFunc = aspectCore.options.jsonInterface.find((method) => {
-        return (method.type === 'function');
-    }) || {};
-    bindFunc.signature = 'bind';
-
-    return aspectCore._createTxObject.apply({
-        method: bindFunc,
-        parent: aspectCore,
-        _ethAccounts: this.constructor._ethAccounts
-    }, options.arguments);
-
+    return aspectCore.methods.bind(options.aspectId, options.aspectVersion,
+        this.options.address, options.priority);
 };
 
 /**
