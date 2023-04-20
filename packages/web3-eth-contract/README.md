@@ -37,6 +37,16 @@ contract.methods.somFunc().send({from: ....})
 .on('receipt', function(){
     ...
 });
+
+// Bind an aspect
+contract.bind({
+    aspectId: "0xaaaaaa....", // required: address of the aspect
+    aspectVersion: 0,         // optional: version of aspect, default to 0, 0 == latest
+    priority: 1               // optional: execution order, default to 0
+}).send({from: ....})
+.on('receipt', function(){
+    ....
+});
 ```
 
 [docs]: http://web3js.readthedocs.io/en/1.0/
