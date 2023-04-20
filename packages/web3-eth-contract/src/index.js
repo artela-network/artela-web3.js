@@ -672,11 +672,21 @@ Contract.prototype.bind = function(options, callback){
         throw errors.ContractNoAddressDefinedError();
     }
 
+    // check aspect id, if not specified, throw error
+    if(!options.aspectId) {
+        if (typeof callback === 'function'){
+            return callback(errors.ContractNoAddressDefinedError());
+        }
+        throw errors.ContractNoAddressDefinedError();
+    }
+
     // set default priority
     if(!options.priority && options.priority !== 0) {
         options.priority = 0;
     }
-    // set default aspect version to bind
+
+    // set default aspect version to bind,
+    // if aspectVersion == 0, means bind to the latest version.
     if((!options.aspectVersion && options.aspectVersion !== 0) || options.aspectVersion < 0) {
         options.aspectVersion = 0;
     }
