@@ -11,6 +11,8 @@
     You should have received a copy of the GNU Lesser General Public License
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
+import Aspect from "web3-eth-contract";
+
 /**
  * @file contract-tests.ts
  * @author Josh Stevens <joshstevens19@hotmail.co.uk>
@@ -18,159 +20,101 @@
  * @date 2018
  */
 
-import ContractDefault, { Contract } from 'web3-eth-contract';
 
 // $ExpectType Contract
-const contract_default = new ContractDefault([]);
-
-// $ExpectType Contract
-const contract = new Contract([]);
+const aspect = new Aspect('0x1234567890123456789012345678901234567890');
 
 // $ExpectType string | null
-contract.defaultAccount;
+aspect.defaultAccount;
 
 // $ExpectType BlockNumber
-contract.defaultBlock;
+aspect.defaultBlock;
 
 // $ExpectType Common
-contract.defaultCommon;
+aspect.defaultCommon;
 
 // $ExpectType hardfork
-contract.defaultHardfork;
+aspect.defaultHardfork;
 
 // $ExpectType chain
-contract.defaultChain;
+aspect.defaultChain;
 
 // $ExpectType number
-contract.transactionPollingTimeout;
+aspect.transactionPollingTimeout;
 
 // $ExpectType number
-contract.transactionConfirmationBlocks;
+aspect.transactionConfirmationBlocks;
 
 // $ExpectType number
-contract.transactionBlockTimeout;
+aspect.transactionBlockTimeout;
 
 // $ExpectType boolean
-contract.handleRevert;
+aspect.handleRevert;
 
 // $ExpectType string
-contract.options.address;
+aspect.options.address;
 
 // $ExpectType AbiItem[]
-contract.options.jsonInterface;
+aspect.options.jsonInterface;
 
 // $ExpectType string | undefined
-contract.options.from;
+aspect.options.from;
 
 // $ExpectType number | undefined
-contract.options.gas;
+aspect.options.gas;
 
 // $ExpectType string | undefined
-contract.options.gasPrice;
+aspect.options.gasPrice;
 
 // $ExpectType string | undefined
-contract.options.data;
+aspect.options.data;
 
 // $ExpectType Contract
-contract.clone();
+aspect.clone();
 
 // $ExpectType ContractSendMethod
-contract.deploy({
+aspect.deploy({
     data: '0x12345...',
-    arguments: [123, 'My String']
+    properties: [{key: 'dummy', value: 'test'}]
 });
-
-// $ExpectType void
-contract.once(
-    'MyEvent',
-    {
-        filter: {
-            myIndexedParam: [20, 23],
-            myOtherIndexedParam: '0x123456789...'
-        },
-        fromBlock: 0
-    },
-    (error, event) => {}
-);
-
-// $ExpectType void
-contract.once('MyEvent', (error, event) => {});
-
-// $ExpectType Promise<EventData[]>
-contract.getPastEvents('MyEvent');
-
-// $ExpectType Promise<EventData[]>
-contract.getPastEvents('MyEvent', {
-    filter: { myIndexedParam: [20, 23], myOtherIndexedParam: '0x123456789...' },
-    fromBlock: 0,
-    toBlock: 'latest'
-});
-
-// $ExpectType Promise<EventData[]>
-contract.getPastEvents('MyEvent', {});
-
-// $ExpectType Promise<EventData[]>
-contract.getPastEvents(
-    'MyEvent',
-    {
-        filter: {
-            myIndexedParam: [20, 23],
-            myOtherIndexedParam: '0x123456789...'
-        },
-        fromBlock: 0,
-        toBlock: 'latest'
-    },
-    (error, events) => {}
-);
-
-// $ExpectType Promise<EventData[]>
-contract.getPastEvents('MyEvent', (error, events) => {});
 
 // $ExpectType Promise<number>
-contract
+aspect
     .deploy({
         data: '0x12345...',
-        arguments: [123, 'My String']
+        properties: [{key: 'dummy', value: 'test'}]
     })
     .estimateGas();
 
 // $ExpectType Promise<number>
-contract
+aspect
     .deploy({
         data: '0x12345...',
-        arguments: [123, 'My String']
+        properties: [{key: 'dummy', value: 'test'}]
     })
     .estimateGas({ from: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe' });
 
 // $ExpectType Promise<number>
-contract
+aspect
     .deploy({
         data: '0x12345...',
-        arguments: [123, 'My String']
+        properties: [{key: 'dummy', value: 'test'}]
     })
     .estimateGas((err: Error, gas: number) => {});
 
-// $ExpectType string
-contract
-    .deploy({
-        data: '0x12345...',
-        arguments: [123, 'My String']
-    })
-    .encodeABI();
-
 // $ExpectType PromiEvent<Contract>
-contract
+aspect
     .deploy({
         data: '0x12345...',
-        arguments: [123, 'My String']
+        properties: [{key: 'dummy', value: 'test'}]
     })
     .send({ from: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe' });
 
 // $ExpectType PromiEvent<Contract>
-contract
+aspect
     .deploy({
         data: '0x12345...',
-        arguments: [123, 'My String']
+        properties: [{key: 'dummy', value: 'test'}]
     })
     .send(
         { from: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe' },

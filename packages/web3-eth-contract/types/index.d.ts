@@ -31,6 +31,9 @@ export class Contract {
     );
 
     static setProvider(provider: provider, accounts?: Accounts): void;
+    static aspectCore(options?: ContractOptions): Contract;
+    static readonly aspectCoreAbi: any;
+    static readonly aspectCoreAddress: string;
 
     private _address: string;
     private _jsonInterface: AbiItem[];

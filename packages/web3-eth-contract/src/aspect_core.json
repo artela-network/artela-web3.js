@@ -152,6 +152,41 @@
         "inputs": [
             {
                 "internalType": "address",
+                "name": "apsectId",
+                "type": "address"
+            },
+            {
+                "internalType": "bytes",
+                "name": "code",
+                "type": "bytes"
+            },
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "key",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "string",
+                        "name": "value",
+                        "type": "string"
+                    }
+                ],
+                "internalType": "struct AspectCore.KVPair[]",
+                "name": "properties",
+                "type": "tuple[]"
+            }
+        ],
+        "name": "upgrade",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
                 "name": "aspectId",
                 "type": "address"
             }

@@ -18,9 +18,10 @@
  */
 
 import BN = require('bn.js');
-import {Common, PromiEvent, provider, hardfork, chain, BlockNumber, PastLogsOptions, LogsOptions} from 'web3-core';
+import {Common, PromiEvent, provider, hardfork, chain, BlockNumber} from 'web3-core';
 import {Accounts} from 'web3-eth-accounts';
 import {AbiItem} from 'web3-utils';
+import Contract from "web3-eth-contract";
 
 export class Aspect {
     constructor(
@@ -31,6 +32,7 @@ export class Aspect {
     static setProvider(provider: provider, accounts?: Accounts): void;
 
     private _address: string;
+    private _aspectCore: Contract;
     defaultAccount: string | null;
     defaultBlock: BlockNumber;
     defaultCommon: Common;
