@@ -39,9 +39,6 @@ var errors = require('web3-core-helpers').errors;
 var promiEvent = require('web3-core-promievent');
 var abi = require('web3-eth-abi');
 
-const aspectCoreAbi = require("./aspect_core.json");
-const aspectCoreAddr = "0xE19cA8b566759f7c6BceedcF2575B5D4c8A82554";
-
 
 /**
  * Should be called to create new contract instance
@@ -355,7 +352,7 @@ Contract.setProvider = function(provider, accounts) {
  * @returns Contract
  */
 Contract.aspectCore = function(options) {
-    return new Contract(aspectCoreAbi, aspectCoreAddr, options);
+    return new Contract(utils.aspectCoreAbi, utils.aspectCoreAddr, options);
 };
 
 /**
@@ -363,14 +360,14 @@ Contract.aspectCore = function(options) {
  *
  * @returns Object
  */
-Contract.aspectCoreAbi = aspectCoreAbi;
+Contract.aspectCoreAbi = utils.aspectCoreAbi;
 
 /**
  * Address of Aspect Core
  *
  * @returns string
  */
-Contract.aspectCoreAddress = aspectCoreAddr;
+Contract.aspectCoreAddress = utils.aspectCoreAddr;
 
 /**
  * Get the callback and modify the array if necessary
@@ -1166,6 +1163,11 @@ Contract.prototype._executeMethod = function _executeMethod(){
                     var newContract = _this._parent.clone();
                     newContract.options.address = receipt.contractAddress;
                     return newContract;
+                },
+                aspectDeployFormatter: function (receipt) {
+                    let newAspect = _this._parent.clone();
+                    newAspect.options.address = utils.toChecksumAddress(utils.sha3(`0x${args.options.from}${args.options.nonce.toString(16)}`).slice(26));
+                    return newAspect;
                 }
             };
 

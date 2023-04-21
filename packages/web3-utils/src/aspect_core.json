@@ -48,9 +48,9 @@
                 "type": "address"
             },
             {
-                "internalType": "int8",
+                "internalType": "uint8",
                 "name": "priority",
-                "type": "int8"
+                "type": "uint8"
             }
         ],
         "name": "bind",
@@ -110,14 +110,14 @@
             {
                 "components": [
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "key",
-                        "type": "bytes"
+                        "type": "string"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "value",
-                        "type": "bytes"
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct AspectCore.KVPair[]",
@@ -163,14 +163,14 @@
             {
                 "components": [
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "key",
-                        "type": "bytes"
+                        "type": "string"
                     },
                     {
-                        "internalType": "bytes",
+                        "internalType": "string",
                         "name": "value",
-                        "type": "bytes"
+                        "type": "string"
                     }
                 ],
                 "internalType": "struct AspectCore.KVPair[]",

@@ -28,7 +28,7 @@ var randombytes = require('randombytes');
 var BN = require('bn.js');
 
 const aspectCoreAbi = require("./aspect_core.json");
-const aspectCoreAddr = "0x0000000000000000000000000000000000A27E14";
+const aspectCoreAddr = "0xE19cA8b566759f7c6BceedcF2575B5D4c8A82554";
 
 /**
  * Fires an error in an event emitter and callback and returns the eventemitter
