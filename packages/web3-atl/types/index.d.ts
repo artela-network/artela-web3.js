@@ -43,6 +43,7 @@ import {Subscription} from 'web3-core-subscriptions';
 import {AbiCoder} from 'web3-eth-abi';
 import {Accounts} from 'web3-eth-accounts';
 import {Contract, ContractOptions} from 'web3-eth-contract';
+import {Aspect, AspectOptions} from "web3-atl-aspect";
 import {Ens} from 'web3-eth-ens';
 import {Iban} from 'web3-eth-iban';
 import {Personal} from 'web3-eth-personal';
@@ -71,6 +72,8 @@ export class Atl {
         address?: string,
         options?: ContractOptions
     ) => Contract;
+
+    Aspect: new (address?: string, options?: AspectOptions) => Aspect;
 
     Iban: new (iban: string) => Iban;
     personal: Personal;

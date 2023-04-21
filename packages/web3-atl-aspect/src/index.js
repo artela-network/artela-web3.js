@@ -230,6 +230,7 @@ var Aspect = function Aspect( address, options) {
     this._address = null;
 
     this._aspectCore = Contract.aspectCore(this.options)
+    this._aspectCore.setProvider(this.currentProvider);
 
     // set getter/setter properties
     this.options.address = address;
@@ -329,14 +330,8 @@ Aspect.prototype.deploy = function(options, callback){
         throw errors.ContractMissingDeployDataError();
     }
 
-    var deployFunc = this._aspectCore.options.jsonInterface.find((method) => {
-        return (method.type === 'function' && method.name === 'deploy');
-    }) || {};
-    deployFunc.signature = 'deploy';
-
     return this._aspectCore.methods.deploy(
-        options.data, options.properties,
-        options, callback);
+        options.data, options.properties);
 };
 
 /**
@@ -364,8 +359,7 @@ Aspect.prototype.upgrade = function(options, callback){
     let aspectCore = Contract.systemContract(options);
 
     return aspectCore.methods.upgrade(
-        options.data, options.properties,
-        options, callback);
+        options.data, options.properties);
 };
 
 /**

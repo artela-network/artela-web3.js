@@ -214,6 +214,10 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
             payload.params[0].data &&
             payload.params[0].from &&
             !payload.params[0].to,
+        isAspectDeployment = !isContractDeployment
+            && payload.params[0].to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
+            && payload.params[0].data
+            && payload.params[0].data.substring(0, 10) === '0x345d395c',
         hasBytecode = isContractDeployment && payload.params[0].data.length > 2;
 
     // add custom send Methods
@@ -390,6 +394,40 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             // if contract, return instance instead of receipt
                             if (method.extraFormatters && method.extraFormatters.contractDeployFormatter) {
                                 defer.resolve(method.extraFormatters.contractDeployFormatter(receipt));
+                            } else {
+                                defer.resolve(receipt);
+                            }
+
+                            // need to remove listeners, as they aren't removed automatically when succesfull
+                            if (canUnsubscribe) {
+                                defer.eventEmitter.removeAllListeners();
+                            }
+
+                        } else {
+                            utils._fireError(
+                                errors.ContractCodeNotStoredError(receipt),
+                                defer.eventEmitter,
+                                defer.reject,
+                                null,
+                                receipt
+                            );
+                        }
+
+                        if (canUnsubscribe) {
+                            sub.unsubscribe();
+                        }
+                        promiseResolved = true;
+                    } else if (isAspectDeployment && !promiseResolved) {
+                        // If deployment is status.true and there was a real
+                        // bytecode string, assume it was successful.
+                        const deploymentSuccess = receipt.status === true;
+
+                        if (deploymentSuccess) {
+                            defer.eventEmitter.emit('receipt', receipt);
+
+                            // if contract, return instance instead of receipt
+                            if (method.extraFormatters && method.extraFormatters.aspectDeployFormatter) {
+                                defer.resolve(method.extraFormatters.aspectDeployFormatter(receipt));
                             } else {
                                 defer.resolve(receipt);
                             }
@@ -813,7 +851,7 @@ Method.prototype.buildCall = function () {
             ) {
                 payload.params[0].accessList = [];
             }
-      
+
 
         // Send the actual transaction
         if (hasSendTxObject

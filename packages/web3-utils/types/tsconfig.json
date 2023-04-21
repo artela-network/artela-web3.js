@@ -8,6 +8,7 @@
         "strictNullChecks": true,
         "strictFunctionTypes": true,
         "noEmit": true,
+        "resolveJsonModule": true,
         "allowSyntheticDefaultImports": false,
         "baseUrl": ".",
         "paths": {

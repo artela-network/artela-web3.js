@@ -32,6 +32,7 @@ var Net = require('web3-net');
 var ENS = require('web3-eth-ens');
 var Personal = require('web3-eth-personal');
 var BaseContract = require('web3-eth-contract');
+var BaseAspect = require('web3-atl-aspect');
 var Iban = require('web3-eth-iban');
 var Accounts = require('web3-eth-accounts');
 var abi = require('web3-eth-abi');
@@ -352,7 +353,26 @@ var Atl = function Atl() {
         };
     };
 
+    var Aspect = function Aspect() {
+        BaseAspect.apply(this, arguments);
+
+        // when Eth.setProvider is called, call packageInit
+        // on all contract instances instantiated via this Eth
+        // instances. This will update the currentProvider for
+        // the contract instances
+        var _this = this;
+        var setProvider = self.setProvider;
+        self.setProvider = function() {
+            setProvider.apply(self, arguments);
+            core.packageInit(_this, [self]);
+        };
+    };
+
     Contract.setProvider = function() {
+        BaseContract.setProvider.apply(this, arguments);
+    };
+
+    Aspect.setProvider = function() {
         BaseContract.setProvider.apply(this, arguments);
     };
 
@@ -368,6 +388,9 @@ var Atl = function Atl() {
     Contract.prototype = Object.create(BaseContract.prototype);
     Contract.prototype.constructor = Contract;
 
+    Aspect.prototype = Object.create(BaseAspect.prototype);
+    Aspect.prototype.constructor = Aspect;
+
     // add contract
     this.Contract = Contract;
     this.Contract.defaultAccount = this.defaultAccount;
@@ -381,6 +404,20 @@ var Atl = function Atl() {
     this.Contract._requestManager = this._requestManager;
     this.Contract._ethAccounts = this.accounts;
     this.Contract.currentProvider = this._requestManager.provider;
+
+    // add aspect
+    this.Aspect = Aspect;
+    this.Aspect.defaultAccount = this.defaultAccount;
+    this.Aspect.defaultBlock = this.defaultBlock;
+    this.Aspect.transactionBlockTimeout = this.transactionBlockTimeout;
+    this.Aspect.transactionConfirmationBlocks = this.transactionConfirmationBlocks;
+    this.Aspect.transactionPollingTimeout = this.transactionPollingTimeout;
+    this.Aspect.transactionPollingInterval = this.transactionPollingInterval;
+    this.Aspect.blockHeaderTimeout = this.blockHeaderTimeout;
+    this.Aspect.handleRevert = this.handleRevert;
+    this.Aspect._requestManager = this._requestManager;
+    this.Aspect._ethAccounts = this.accounts;
+    this.Aspect.currentProvider = this._requestManager.provider;
 
     // add IBAN
     this.Iban = Iban;

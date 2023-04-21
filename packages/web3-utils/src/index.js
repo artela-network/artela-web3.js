@@ -27,6 +27,8 @@ var soliditySha3 = require('./soliditySha3.js');
 var randombytes = require('randombytes');
 var BN = require('bn.js');
 
+const aspectCoreAbi = require("./aspect_core.json");
+const aspectCoreAddr = "0xE19cA8b566759f7c6BceedcF2575B5D4c8A82554";
 
 /**
  * Fires an error in an event emitter and callback and returns the eventemitter
@@ -383,6 +385,8 @@ module.exports = {
     // extractDisplayName: extractDisplayName,
     // extractTypeName: extractTypeName,
     randomHex: randomHex,
+    aspectCoreAbi: aspectCoreAbi,
+    aspectCoreAddr: aspectCoreAddr,
     BN: utils.BN,
     isBN: utils.isBN,
     isBigNumber: utils.isBigNumber,
