@@ -20,6 +20,7 @@
 import { PromiEvent, TransactionConfig, TransactionReceipt } from 'web3-core';
 import { TransactionRevertInstructionError } from 'web3-core-helpers';
 import { Eth } from 'web3-eth';
+import { Atl } from 'web3-atl';
 import { Contract } from 'web3-eth-contract';
 
 export interface ContentHash {
@@ -30,7 +31,7 @@ export interface ContentHash {
 
 // TODO: Define as soon as implemented the generic contract
 export class Ens {
-    constructor(eth: Eth);
+    constructor(eth: Eth | Atl);
 
     registryAddress: string | null;
     registry: Registry;

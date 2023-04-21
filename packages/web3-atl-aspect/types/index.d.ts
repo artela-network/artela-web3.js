@@ -66,7 +66,7 @@ export interface AspectProperties {
     getAll(): AspectLoadingProperties;
 }
 
-export interface AspectUpdatingProperties extends AspectSendMethod{
+export interface AspectUpdatingProperties extends AspectSendMethod {
     set(key: string, value: string): AspectUpdatingProperties;
 }
 
@@ -118,7 +118,7 @@ export interface AspectCallOnlyMethod {
     estimateGas(): Promise<number>;
 }
 
-export interface AspectSendMethod extends AspectCallOnlyMethod{
+export interface AspectSendMethod extends AspectCallOnlyMethod {
     send(
         options: SendOptions,
         callback?: (err: Error, transactionHash: string) => void
