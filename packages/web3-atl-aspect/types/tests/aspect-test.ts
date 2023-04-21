@@ -11,7 +11,7 @@
     You should have received a copy of the GNU Lesser General Public License
     along with web3.js.  If not, see <http://www.gnu.org/licenses/>.
 */
-import Aspect from "web3-eth-contract";
+import Aspect, {AspectSendMethod} from "web3-eth-contract";
 
 /**
  * @file contract-tests.ts
@@ -20,8 +20,7 @@ import Aspect from "web3-eth-contract";
  * @date 2018
  */
 
-
-// $ExpectType Contract
+// $ExpectType Aspect
 const aspect = new Aspect('0x1234567890123456789012345678901234567890');
 
 // $ExpectType string | null
@@ -69,10 +68,10 @@ aspect.options.gasPrice;
 // $ExpectType string | undefined
 aspect.options.data;
 
-// $ExpectType Contract
+// $ExpectType Aspect
 aspect.clone();
 
-// $ExpectType ContractSendMethod
+// $ExpectType AspectSendMethod
 aspect.deploy({
     data: '0x12345...',
     properties: [{key: 'dummy', value: 'test'}]
@@ -102,7 +101,7 @@ aspect
     })
     .estimateGas((err: Error, gas: number) => {});
 
-// $ExpectType PromiEvent<Contract>
+// $ExpectType PromiEvent<Aspect>
 aspect
     .deploy({
         data: '0x12345...',
@@ -110,7 +109,7 @@ aspect
     })
     .send({ from: '0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe' });
 
-// $ExpectType PromiEvent<Contract>
+// $ExpectType PromiEvent<Aspect>
 aspect
     .deploy({
         data: '0x12345...',
