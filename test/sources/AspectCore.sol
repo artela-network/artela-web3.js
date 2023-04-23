@@ -3,8 +3,8 @@ pragma solidity ^0.8.0;
 
 interface AspectCore {
     struct KVPair {
-        string key;
-        string value;
+        bytes key;
+        bytes value;
     }
 
     struct AspectBoundInfo {
