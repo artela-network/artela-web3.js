@@ -110,14 +110,14 @@
             {
                 "components": [
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "key",
-                        "type": "string"
+                        "type": "bytes"
                     },
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "value",
-                        "type": "string"
+                        "type": "bytes"
                     }
                 ],
                 "internalType": "struct AspectCore.KVPair[]",
@@ -163,14 +163,14 @@
             {
                 "components": [
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "key",
-                        "type": "string"
+                        "type": "bytes"
                     },
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "value",
-                        "type": "string"
+                        "type": "bytes"
                     }
                 ],
                 "internalType": "struct AspectCore.KVPair[]",
