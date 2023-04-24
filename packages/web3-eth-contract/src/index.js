@@ -38,6 +38,7 @@ var formatters = require('web3-core-helpers').formatters;
 var errors = require('web3-core-helpers').errors;
 var promiEvent = require('web3-core-promievent');
 var abi = require('web3-eth-abi');
+const {RLP} = require("ethers/lib/utils");
 
 
 /**
@@ -1166,7 +1167,8 @@ Contract.prototype._executeMethod = function _executeMethod(){
                 },
                 aspectDeployFormatter: function (receipt) {
                     let newAspect = _this._parent.clone();
-                    newAspect.options.address = utils.toChecksumAddress(utils.sha3(`0x${args.options.from}${args.options.nonce.toString(16)}`).slice(26));
+                    newAspect.options.address =
+                        utils.toChecksumAddress(utils.sha3(RLP.encode([args.options.from, args.options.nonce])).slice(26));
                     return newAspect;
                 }
             };
