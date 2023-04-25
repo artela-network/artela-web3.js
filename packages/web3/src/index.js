@@ -31,6 +31,7 @@
 var version = require('../package.json').version;
 var core = require('web3-core');
 var Eth = require('web3-eth');
+var Atl = require('web3-atl');
 var Net = require('web3-net');
 var Personal = require('web3-eth-personal');
 var Shh = require('web3-shh');
@@ -47,6 +48,7 @@ var Web3 = function Web3() {
     this.utils = utils;
 
     this.eth = new Eth(this);
+    this.atl = new Atl(this);
     this.shh = new Shh(this);
     this.bzz = new Bzz(this);
 
@@ -57,6 +59,7 @@ var Web3 = function Web3() {
         setProvider.apply(_this, arguments);
 
         _this.eth.setRequestManager(_this._requestManager);
+        _this.atl.setRequestManager(_this._requestManager);
         _this.shh.setRequestManager(_this._requestManager);
         _this.bzz.setProvider(provider);
 
@@ -68,6 +71,7 @@ Web3.version = version;
 Web3.utils = utils;
 Web3.modules = {
     Eth: Eth,
+    Atl: Atl,
     Net: Net,
     Personal: Personal,
     Shh: Shh,

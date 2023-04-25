@@ -18,25 +18,21 @@
  */
 
 import BN = require('bn.js');
-import {Common, PromiEvent, provider, hardfork, chain, BlockNumber, PastLogsOptions, LogsOptions} from 'web3-core';
+import {Common, PromiEvent, provider, hardfork, chain, BlockNumber} from 'web3-core';
 import {Accounts} from 'web3-eth-accounts';
 import {AbiItem} from 'web3-utils';
+import Contract from "web3-eth-contract";
 
-// TODO: Add generic type!
-export class Contract {
+export class Aspect {
     constructor(
-        jsonInterface: AbiItem[],
         address?: string,
-        options?: ContractOptions
+        options?: AspectOptions
     );
 
     static setProvider(provider: provider, accounts?: Accounts): void;
-    static aspectCore(options?: ContractOptions): Contract;
-    static readonly aspectCoreAbi: any;
-    static readonly aspectCoreAddress: string;
 
     private _address: string;
-    private _jsonInterface: AbiItem[];
+    private _aspectCore: Contract;
     defaultAccount: string | null;
     defaultBlock: BlockNumber;
     defaultCommon: Common;
@@ -49,57 +45,57 @@ export class Contract {
 
     options: Options;
 
-    clone(): Contract;
+    clone(): Aspect;
 
-    deploy(options: DeployOptions): ContractSendMethod;
+    deploy(options: DeployOrUpgradeOptions): AspectSendMethod;
 
-    bind(options: BindAspectOptions): ContractSendMethod;
+    upgrade(options: DeployOrUpgradeOptions): AspectSendMethod;
 
-    aspects(): ContractSendMethod;
+    version(): AspectSendMethod;
 
-    methods: any;
+    contracts(): AspectSendMethod;
 
-    once(
-        event: string,
-        callback: (error: Error, event: EventData) => void
-    ): void;
-    once(
-        event: string,
-        options: EventOptions,
-        callback: (error: Error, event: EventData) => void
-    ): void;
-
-    events: any;
-
-    getPastEvents(event: string): Promise<EventData[]>;
-    getPastEvents(
-        event: string,
-        options: PastEventOptions,
-        callback: (error: Error, events: EventData[]) => void
-    ): Promise<EventData[]>;
-    getPastEvents(event: string, options: PastEventOptions): Promise<EventData[]>;
-    getPastEvents(
-        event: string,
-        callback: (error: Error, events: EventData[]) => void
-    ): Promise<EventData[]>;
+    properties(options: QueryPropertyOptions): AspectProperties;
 }
 
-export interface Options extends ContractOptions {
+export interface AspectProperties {
+    set(key: string, value: string): AspectUpdatingProperties;
+
+    get(key: string): AspectLoadingProperties;
+
+    getAll(): AspectLoadingProperties;
+}
+
+export interface AspectUpdatingProperties extends AspectSendMethod {
+    set(key: string, value: string): AspectUpdatingProperties;
+}
+
+export interface AspectLoadingProperties extends AspectCallOnlyMethod {
+    get(key: string): AspectLoadingProperties;
+
+    getAll(): AspectLoadingProperties;
+}
+
+export interface Options extends AspectOptions {
     address: string;
     jsonInterface: AbiItem[];
 }
 
-export interface DeployOptions {
+export interface DeployOrUpgradeOptions {
     data: string;
-    arguments?: any[];
+    properties?: KVPair[];
 }
 
-export interface ContractSendMethod {
-    send(
-        options: SendOptions,
-        callback?: (err: Error, transactionHash: string) => void
-    ): PromiEvent<Contract>;
+export interface QueryPropertyOptions {
+    keys: string[];
+}
 
+export interface KVPair {
+    key: string;
+    value: string;
+}
+
+export interface AspectCallOnlyMethod {
     call(
         options?: CallOptions,
         callback?: (err: Error, result: any) => void
@@ -120,8 +116,13 @@ export interface ContractSendMethod {
     estimateGas(options: EstimateGasOptions): Promise<number>;
 
     estimateGas(): Promise<number>;
+}
 
-    encodeABI(): string;
+export interface AspectSendMethod extends AspectCallOnlyMethod {
+    send(
+        options: SendOptions,
+        callback?: (err: Error, transactionHash: string) => void
+    ): PromiEvent<Aspect>;
 }
 
 export interface CallOptions {
@@ -138,57 +139,21 @@ export interface SendOptions {
     nonce?: number;
 }
 
-export interface BindAspectOptions {
-    priority?: number;
-    aspectId: string;
-    aspectVersion: number;
-}
-
 export interface EstimateGasOptions {
     from?: string;
     gas?: number;
     value?: number | string | BN;
 }
 
-export interface ContractOptions {
+export interface AspectOptions {
     // Sender to use for contract calls
     from?: string;
     // Gas price to use for contract calls
     gasPrice?: string;
     // Gas to use for contract calls
     gas?: number;
-    // Contract code
+    // Aspect WASM code
     data?: string;
 }
 
-export interface PastEventOptions extends PastLogsOptions {
-    filter?: Filter;
-}
-
-export interface EventOptions extends LogsOptions {
-    filter?: Filter;
-}
-
-export interface Filter {
-    [key: string]: number | string | string[] | number[];
-}
-
-export interface EventData {
-    returnValues: {
-        [key: string]: any;
-    };
-    raw: {
-        data: string;
-        topics: string[];
-    };
-    event: string;
-    signature: string;
-    logIndex: number;
-    transactionIndex: number;
-    transactionHash: string;
-    blockHash: string;
-    blockNumber: number;
-    address: string;
-}
-
-export default Contract
+export default Aspect
