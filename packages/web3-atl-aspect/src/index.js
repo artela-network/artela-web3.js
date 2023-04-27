@@ -231,6 +231,8 @@ var Aspect = function Aspect( address, options) {
 
     this._aspectCore = Contract.aspectCore(this.options)
     this._aspectCore.setProvider(this.currentProvider);
+    this._aspectCore._aspectBuilder = Aspect;
+    this._aspectCore._aspect = this;
 
     // set getter/setter properties
     this.options.address = address;

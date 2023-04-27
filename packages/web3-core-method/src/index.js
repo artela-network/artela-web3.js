@@ -457,7 +457,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                 })
                 // CHECK for normal tx check for receipt only
                 .then(async function (receipt) {
-                    if (!isContractDeployment && !promiseResolved) {
+                    if (!isContractDeployment && !isAspectDeployment && !promiseResolved) {
                         if (!receipt.outOfGas &&
                             (!gasProvided || gasProvided !== receipt.gasUsed) &&
                             (receipt.status === true || receipt.status === '0x1' || typeof receipt.status === 'undefined')) {

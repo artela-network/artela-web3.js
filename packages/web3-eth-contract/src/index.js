@@ -1166,9 +1166,9 @@ Contract.prototype._executeMethod = function _executeMethod(){
                     return newContract;
                 },
                 aspectDeployFormatter: function (receipt) {
-                    let newAspect = _this._parent.clone();
-                    newAspect.options.address =
-                        utils.toChecksumAddress(utils.sha3(RLP.encode([args.options.from, args.options.nonce])).slice(26));
+                    let newAspect = new _this._parent._aspectBuilder(
+                        utils.toChecksumAddress(utils.sha3(RLP.encode([args.options.from, args.options.nonce])).slice(26)),
+                        _this._parent._aspect.options);
                     return newAspect;
                 }
             };
