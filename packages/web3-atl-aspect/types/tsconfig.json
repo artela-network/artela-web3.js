@@ -8,11 +8,10 @@
         "strictNullChecks": true,
         "strictFunctionTypes": true,
         "noEmit": true,
-        "resolveJsonModule": true,
         "allowSyntheticDefaultImports": false,
         "baseUrl": ".",
         "paths": {
-            "web3-utils": ["."]
+            "web3-eth-contract": ["."]
         }
     }
 }

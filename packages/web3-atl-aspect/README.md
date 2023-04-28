@@ -1,4 +1,4 @@
-# web3-eth-contract
+# web3-atl-aspect
 
 [![NPM Package][npm-image]][npm-url]
 
@@ -15,38 +15,28 @@ You can install the package either using [NPM](https://www.npmjs.com/package/web
 ### Using NPM
 
 ```bash
-npm install web3-eth-contract
+npm install web3-atl-aspect
 ```
 
 ### Using Yarn
 
 ```bash
-yarn add web3-eth-contract
+yarn add web3-atl-aspect
 ```
 
 ## Usage
 
 ```js
-const Web3EthContract = require('web3-eth-contract');
+const Aspect = require('web3-atl-aspect');
 
 // Set provider for all later instances to use
-Web3EthContract.setProvider('ws://localhost:8546');
+Aspect.setProvider('ws://localhost:8546');
 
-const contract = new Web3EthContract(jsonInterface, address);
-contract.methods.somFunc().send({from: ....})
-.on('receipt', function(){
-    ...
-});
-
-// Bind an aspect
-contract.bind({
-    aspectId: "0xaaaaaa....", // required: address of the aspect
-    aspectVersion: 0,         // optional: version of aspect, default to 0, 0 == latest
-    priority: 1               // optional: execution order, default to 0
-}).send({from: ....})
-.on('receipt', function(){
-    ....
-});
+const aspect = new Aspect();
+aspect.deploy()
+    .on('receipt', function() {
+        ...
+    });
 ```
 
 [docs]: http://web3js.readthedocs.io/en/1.0/

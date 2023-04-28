@@ -1,8 +1,8 @@
 {
-    "name": "web3-eth-ens",
+    "name": "web3-atl",
     "version": "1.9.0",
-    "description": "ENS support for web3.",
-    "repository": "https://github.com/ethereum/web3.js/tree/1.x/packages/web3-eth-ens",
+    "description": "Web3 module to interact with the Artela aspects.",
+    "repository": "https://github.com/artela-network/web3.js/tree/1.x/packages/web3-atl",
     "license": "LGPL-3.0",
     "engines": {
         "node": ">=8.0.0"
@@ -14,19 +14,22 @@
     },
     "main": "lib/index.js",
     "dependencies": {
-        "content-hash": "^2.5.2",
-        "eth-ens-namehash": "2.0.8",
         "web3-core": "1.9.0",
         "web3-core-helpers": "1.9.0",
-        "web3-core-promievent": "1.9.0",
+        "web3-core-method": "1.9.0",
+        "web3-core-subscriptions": "1.9.0",
         "web3-eth-abi": "1.9.0",
+        "web3-eth-accounts": "1.9.0",
         "web3-eth-contract": "1.9.0",
+        "web3-atl-aspect": "1.9.0",
+        "web3-eth-ens": "1.9.0",
+        "web3-eth-iban": "1.9.0",
+        "web3-eth-personal": "1.9.0",
+        "web3-net": "1.9.0",
         "web3-utils": "1.9.0"
     },
     "devDependencies": {
         "dtslint": "^3.4.1",
-        "typescript": "4.1",
-        "web3-eth": "1.9.0",
-        "web3-atl": "1.9.0"
+        "typescript": "4.1"
     }
 }
