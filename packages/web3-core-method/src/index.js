@@ -214,6 +214,10 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
             payload.params[0].data &&
             payload.params[0].from &&
             !payload.params[0].to,
+        isAspectDeployment = !isContractDeployment
+            && payload.params[0].to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
+            && payload.params[0].data
+            && payload.params[0].data.substring(0, 10) === '0x503c1066',
         hasBytecode = isContractDeployment && payload.params[0].data.length > 2;
 
     // add custom send Methods
@@ -413,13 +417,47 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             sub.unsubscribe();
                         }
                         promiseResolved = true;
+                    } else if (isAspectDeployment && !promiseResolved) {
+                        // If deployment is status.true and there was a real
+                        // bytecode string, assume it was successful.
+                        const deploymentSuccess = receipt.status === true;
+
+                        if (deploymentSuccess) {
+                            defer.eventEmitter.emit('receipt', receipt);
+
+                            // if contract, return instance instead of receipt
+                            if (method.extraFormatters && method.extraFormatters.aspectDeployFormatter) {
+                                defer.resolve(method.extraFormatters.aspectDeployFormatter(receipt));
+                            } else {
+                                defer.resolve(receipt);
+                            }
+
+                            // need to remove listeners, as they aren't removed automatically when succesfull
+                            if (canUnsubscribe) {
+                                defer.eventEmitter.removeAllListeners();
+                            }
+
+                        } else {
+                            utils._fireError(
+                                errors.ContractCodeNotStoredError(receipt),
+                                defer.eventEmitter,
+                                defer.reject,
+                                null,
+                                receipt
+                            );
+                        }
+
+                        if (canUnsubscribe) {
+                            sub.unsubscribe();
+                        }
+                        promiseResolved = true;
                     }
 
                     return receipt;
                 })
                 // CHECK for normal tx check for receipt only
                 .then(async function (receipt) {
-                    if (!isContractDeployment && !promiseResolved) {
+                    if (!isContractDeployment && !isAspectDeployment && !promiseResolved) {
                         if (!receipt.outOfGas &&
                             (!gasProvided || gasProvided !== receipt.gasUsed) &&
                             (receipt.status === true || receipt.status === '0x1' || typeof receipt.status === 'undefined')) {

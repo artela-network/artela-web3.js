@@ -9,6 +9,7 @@
         "strictFunctionTypes": true,
         "noEmit": true,
         "allowSyntheticDefaultImports": false,
+        "resolveJsonModule": true,
         "baseUrl": ".",
         "paths": {
             "web3-eth-contract": ["."]

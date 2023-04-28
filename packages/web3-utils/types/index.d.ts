@@ -67,6 +67,9 @@ export type Mixed =
 
 export type Hex = string | number;
 
+export const aspectCoreAbi: any;
+export const aspectCoreAddr: string;
+
 // utils types
 export function isBN(value: string | number): boolean;
 export function isBigNumber(value: BN): boolean;
