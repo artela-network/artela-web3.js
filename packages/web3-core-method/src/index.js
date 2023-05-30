@@ -217,7 +217,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
         isAspectDeployment = !isContractDeployment
             && payload.params[0].to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
             && payload.params[0].data
-            && payload.params[0].data.substring(0, 10) === '0x503c1066',
+            && payload.params[0].data.substring(0, 10).toLowerCase() === '0x345d395c',
         hasBytecode = isContractDeployment && payload.params[0].data.length > 2;
 
     // add custom send Methods
