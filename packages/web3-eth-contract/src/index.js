@@ -1166,9 +1166,16 @@ Contract.prototype._executeMethod = function _executeMethod(){
                     return newContract;
                 },
                 aspectDeployFormatter: function (receipt) {
+                    let rlpData = RLP.encode([args.options.from,
+                        utils.bytesToHex(utils.hexToBytes(args.options.nonce))]);
+                    // FIXME: force replace the last byte if nonce is 0,
+                    //        this is a bug of rlp encoding in ethers.js, we have to hardcode this for now
+                    if (args.options.nonce === '0x0') {
+                        rlpData = rlpData.slice(0, -2) + '80';
+                    }
+
                     let newAspect = new _this._parent._aspectBuilder(
-                        utils.toChecksumAddress(utils.sha3(RLP.encode([args.options.from,
-                            utils.bytesToHex(utils.hexToBytes(args.options.nonce))])).slice(26)),
+                        utils.toChecksumAddress(utils.sha3(rlpData).slice(26)),
                         _this._parent._aspect.options);
                     return newAspect;
                 }
