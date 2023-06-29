@@ -18,9 +18,9 @@
  */
 
 import BN = require('bn.js');
-import {Common, PromiEvent, provider, hardfork, chain, BlockNumber, PastLogsOptions, LogsOptions} from 'web3-core';
+import {Common, PromiEvent, provider, hardfork, chain, BlockNumber, PastLogsOptions, LogsOptions} from '@artela/web3-core';
 import {Accounts} from 'web3-eth-accounts';
-import {AbiItem} from 'web3-utils';
+import {AbiItem} from '@artela/web3-utils';
 
 // TODO: Add generic type!
 export class Contract {

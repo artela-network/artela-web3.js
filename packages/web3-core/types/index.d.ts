@@ -28,7 +28,7 @@ import {
     JsonRpcPayload,
     JsonRpcResponse
 } from 'web3-core-helpers';
-import { Method } from 'web3-core-method';
+import { Method } from '@artela/web3-core-method';
 import BN = require('bn.js');
 import BigNumber from 'bignumber.js';
 

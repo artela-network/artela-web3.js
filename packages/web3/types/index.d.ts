@@ -20,8 +20,7 @@
 import * as net from 'net';
 import { Bzz } from 'web3-bzz';
 import { BatchRequest, provider, Providers, Extension } from 'web3-core';
-import { Eth } from 'web3-eth';
-import { Atl } from 'web3-atl';
+import { Atl } from '@artela/web3-atl';
 import { Personal } from 'web3-eth-personal';
 import { Network } from 'web3-net';
 import { Shh } from 'web3-shh';
@@ -43,7 +42,6 @@ export default class Web3 {
     static readonly providers: Providers;
 
     utils: Utils;
-    eth: Eth;
     atl: Atl;
     shh: Shh;
     bzz: Bzz;
@@ -54,7 +52,6 @@ export default class Web3 {
 }
 
 export interface Modules {
-    Eth: new (provider: provider, net: net.Socket) => Eth;
     Atl: new (provider: provider, net: net.Socket) => Atl;
     Net: new (provider: provider, net: net.Socket) => Network;
     Personal: new (provider: provider, net: net.Socket) => Personal;

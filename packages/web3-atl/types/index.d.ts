@@ -38,17 +38,17 @@ import {
     LogsOptions,
     PastLogsOptions,
     AccessTuple
-} from 'web3-core';
+} from '@artela/web3-core';
 import {Subscription} from 'web3-core-subscriptions';
 import {AbiCoder} from 'web3-eth-abi';
 import {Accounts} from 'web3-eth-accounts';
-import {Contract, ContractOptions} from 'web3-eth-contract';
-import {Aspect, AspectOptions} from "web3-atl-aspect";
+import {Contract, ContractOptions} from '@artela/web3-eth-contract';
+import {Aspect, AspectOptions} from '@artela/web3-atl-aspect';
 import {Ens} from 'web3-eth-ens';
 import {Iban} from 'web3-eth-iban';
 import {Personal} from 'web3-eth-personal';
 import {Network} from 'web3-net';
-import {AbiItem} from 'web3-utils';
+import {AbiItem} from '@artela/web3-utils';
 import {BigNumber} from 'bignumber.js';
 import BN = require('bn.js');
 

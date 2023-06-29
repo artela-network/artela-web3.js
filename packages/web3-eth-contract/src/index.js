@@ -30,9 +30,9 @@
 
 "use strict";
 
-var core = require('web3-core');
-var Method = require('web3-core-method');
-var utils = require('web3-utils');
+var core = require('@artela/web3-core');
+var Method = require('@artela/web3-core-method');
+var utils = require('@artela/web3-utils');
 var Subscription = require('web3-core-subscriptions').subscription;
 var formatters = require('web3-core-helpers').formatters;
 var errors = require('web3-core-helpers').errors;

@@ -30,11 +30,11 @@
 
 "use strict";
 
-const core = require('web3-core');
-const Method = require('web3-core-method');
-const utils = require('web3-utils');
+const core = require('@artela/web3-core');
+const Method = require('@artela/web3-core-method');
+const utils = require('@artela/web3-utils');
 // const Subscription = require('web3-core-subscriptions').subscription;
-const Contract = require('web3-eth-contract');
+const Contract = require('@artela/web3-eth-contract');
 const formatters = require('web3-core-helpers').formatters;
 const errors = require('web3-core-helpers').errors;
 const promiEvent = require('web3-core-promievent');

@@ -16,9 +16,6 @@
  * @author Samuel Furter <samuel@ethereum.org>
  * @date 2018
  */
-
-import {JsonRpcPayload} from 'web3-core-helpers';
-
 export interface Method {
     name: string;
     call: string;
