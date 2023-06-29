@@ -18,7 +18,7 @@
         "version": "npm run build",
         "postinstall": "npm run bootstrap",
         "build": "npm run bootstrap && lerna run compile --skip-nx-cache && webpack && cp -r ./dist ./packages/web3",
-        "publish": "lerna publish",
+        "publish": "lerna publish --access public",
         "bootstrap": "lerna bootstrap --hoist",
         "lint": "jshint *.js packages",
         "test": "mocha -R spec --require ts-node/register --grep E2E --invert",
