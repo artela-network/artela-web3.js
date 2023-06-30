@@ -38,7 +38,7 @@ var formatters = require('web3-core-helpers').formatters;
 var errors = require('web3-core-helpers').errors;
 var promiEvent = require('web3-core-promievent');
 var abi = require('web3-eth-abi');
-const {encodeRlp} = require("ethers/utils");
+const {RLP} = require("ethers/lib/utils");
 
 
 /**
@@ -1166,7 +1166,7 @@ Contract.prototype._executeMethod = function _executeMethod(){
                     return newContract;
                 },
                 aspectDeployFormatter: function (receipt) {
-                    let rlpData = encodeRlp([args.options.from,
+                    let rlpData = RLP.encode([args.options.from,
                         utils.bytesToHex(utils.hexToBytes(args.options.nonce))]);
                     // FIXME: force replace the last byte if nonce is 0,
                     //        this is a bug of rlp encoding in ethers.js, we have to hardcode this for now
