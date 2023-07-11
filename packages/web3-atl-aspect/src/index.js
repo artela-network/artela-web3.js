@@ -337,11 +337,11 @@ Aspect.prototype.deploy = function(options, callback){
 };
 
 /**
- * Deploys an Aspect and fire events based on its state: transactionHash, receipt
+ * Upgrade an Aspect and fire events based on its state: transactionHash, receipt
  *
  * All event listeners will be removed, once the last possible event is fired ("error", or "receipt")
  *
- * @method deploy
+ * @method upgrade
  * @param {Object} options
  * @param {Function} callback
  * @return {Object} EventEmitter possible events are "error", "transactionHash" and "receipt"
@@ -360,7 +360,7 @@ Aspect.prototype.upgrade = function(options, callback){
 
     let aspectCore = Contract.aspectCore(options);
 
-    return aspectCore.methods.upgrade(
+    return aspectCore.methods.upgrade(this.options.address,
         options.data, options.properties);
 };
 
