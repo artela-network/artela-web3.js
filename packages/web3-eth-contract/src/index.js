@@ -1177,6 +1177,8 @@ Contract.prototype._executeMethod = function _executeMethod(){
                     let newAspect = new _this._parent._aspectBuilder(
                         utils.toChecksumAddress(utils.sha3(rlpData).slice(26)),
                         _this._parent._aspect.options);
+                    newAspect.setProvider(_this._parent._aspect.currentProvider);
+                    newAspect._aspectCore.setProvider(_this._parent._aspect.currentProvider);
                     return newAspect;
                 }
             };
