@@ -358,7 +358,7 @@ Aspect.prototype.upgrade = function(options, callback){
         throw errors.ContractMissingDeployDataError();
     }
 
-    let aspectCore = Contract.systemContract(options);
+    let aspectCore = Contract.aspectCore(options);
 
     return aspectCore.methods.upgrade(
         options.data, options.properties);
