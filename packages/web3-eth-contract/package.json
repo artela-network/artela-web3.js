@@ -1,6 +1,6 @@
 {
     "name": "@artela/web3-eth-contract",
-    "version": "1.9.6",
+    "version": "1.9.7",
     "description": "Web3 module to interact with Ethereum smart contracts.",
     "repository": "https://github.com/artela-network/web3.js/tree/1.x/packages/web3-eth-contract",
     "license": "LGPL-3.0",
@@ -14,8 +14,8 @@
     },
     "main": "lib/index.js",
     "dependencies": {
-        "@artela/web3-core": "1.9.1",
-        "@artela/web3-core-method": "1.9.1",
+        "@artela/web3-core": "1.9.7",
+        "@artela/web3-core-method": "1.9.7",
         "@artela/web3-utils": "1.9.1",
         "@types/bn.js": "^5.1.1",
         "ethers": "^5.4.4",
