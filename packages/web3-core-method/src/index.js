@@ -30,6 +30,7 @@ var promiEvent = require('web3-core-promievent');
 var Subscriptions = require('web3-core-subscriptions').subscriptions;
 
 var EthersTransactionUtils = require('@ethersproject/transactions');
+const {RLP, hexlify} = require("ethers/lib/utils");
 
 var Method = function Method(options) {
 
@@ -353,6 +354,17 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                 })
                 // CHECK for CONTRACT DEPLOYMENT
                 .then(async function (receipt) {
+                    // If send was raw, fetch the transaction and reconstitute the
+                    // original params so they can be replayed with `eth_call`
+                    let parsedTx = payload;
+                    if (method.call === 'eth_sendRawTransaction') {
+                        let rawTransactionHex = payload.params[0];
+                        parsedTx = EthersTransactionUtils.parse(rawTransactionHex);
+                        isAspectDeployment = !isContractDeployment
+                            && parsedTx.to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
+                            && parsedTx.data
+                            && parsedTx.data.substring(0, 10).toLowerCase() === '0x345d395c';
+                    }
 
                     if (isContractDeployment && !promiseResolved) {
 
@@ -423,14 +435,15 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                         const deploymentSuccess = receipt.status === true;
 
                         if (deploymentSuccess) {
-                            defer.eventEmitter.emit('receipt', receipt);
-
                             // if contract, return instance instead of receipt
                             if (method.extraFormatters && method.extraFormatters.aspectDeployFormatter) {
                                 defer.resolve(method.extraFormatters.aspectDeployFormatter(receipt));
                             } else {
+                                receipt = aspectFormatter(parsedTx, receipt);
                                 defer.resolve(receipt);
                             }
+
+                            defer.eventEmitter.emit('receipt', receipt);
 
                             // need to remove listeners, as they aren't removed automatically when succesfull
                             if (canUnsubscribe) {
@@ -1013,5 +1026,17 @@ Method.prototype.request = function () {
     payload.format = this.formatOutput.bind(this);
     return payload;
 };
+
+function aspectFormatter (tx, receipt) {
+    let rlpData = RLP.encode([tx.from, hexlify(tx.nonce)]);
+    // FIXME: force replace the last byte if nonce is 0,
+    //        this is a bug of rlp encoding in ethers.js, we have to hardcode this for now
+    if (!tx.nonce) {
+        rlpData = rlpData.slice(0, -2) + '80';
+    }
+
+    receipt.aspectAddress = utils.toChecksumAddress(utils.sha3(rlpData).slice(26));
+    return receipt;
+}
 
 module.exports = Method;
