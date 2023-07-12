@@ -214,7 +214,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
             payload.params[0].data &&
             payload.params[0].from &&
             !payload.params[0].to,
-        isAspectDeployment = !isContractDeployment
+        isAspectDeployment = (!!payload.params[0] && typeof payload.params[0] === 'object') && !isContractDeployment
             && payload.params[0].to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
             && payload.params[0].data
             && payload.params[0].data.substring(0, 10).toLowerCase() === '0x345d395c',
