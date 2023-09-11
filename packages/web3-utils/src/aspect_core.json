@@ -17,13 +17,18 @@
                         "type": "address"
                     },
                     {
-                        "internalType": "uint256",
+                        "internalType": "uint64",
+                        "name": "version",
+                        "type": "uint64"
+                    },
+                    {
+                        "internalType": "int8",
                         "name": "priority",
-                        "type": "uint256"
+                        "type": "int8"
                     }
                 ],
-                "internalType": "struct AspectCore.AspectBoundInfo[]",
-                "name": "",
+                "internalType": "struct AspectCore.AspectBoundInfoArr[]",
+                "name": "aspectBoundInfo",
                 "type": "tuple[]"
             }
         ],
@@ -71,9 +76,9 @@
                 "type": "address"
             },
             {
-                "internalType": "uint256",
+                "internalType": "uint64",
                 "name": "version",
-                "type": "uint256"
+                "type": "uint64"
             }
         ],
         "name": "changeVersion",
@@ -93,7 +98,7 @@
         "outputs": [
             {
                 "internalType": "address[]",
-                "name": "",
+                "name": "contracts",
                 "type": "address[]"
             }
         ],
@@ -110,24 +115,58 @@
             {
                 "components": [
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "key",
-                        "type": "string"
+                        "type": "bytes"
                     },
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "value",
-                        "type": "string"
+                        "type": "bytes"
                     }
                 ],
                 "internalType": "struct AspectCore.KVPair[]",
                 "name": "properties",
                 "type": "tuple[]"
+            },
+            {
+                "internalType": "address",
+                "name": "account",
+                "type": "address"
+            },
+            {
+                "internalType": "bytes",
+                "name": "proof",
+                "type": "bytes"
             }
         ],
         "name": "deploy",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "aspectId",
+                "type": "address"
+            },
+            {
+                "internalType": "bytes",
+                "name": "data",
+                "type": "bytes"
+            }
+        ],
+        "name": "entrypoint",
+        "outputs": [
+            {
+                "internalType": "bytes",
+                "name": "result",
+                "type": "bytes"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -152,7 +191,7 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "apsectId",
+                "name": "aspectId",
                 "type": "address"
             },
             {
@@ -163,14 +202,14 @@
             {
                 "components": [
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "key",
-                        "type": "string"
+                        "type": "bytes"
                     },
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "value",
-                        "type": "string"
+                        "type": "bytes"
                     }
                 ],
                 "internalType": "struct AspectCore.KVPair[]",
@@ -194,9 +233,9 @@
         "name": "versionOf",
         "outputs": [
             {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
+                "internalType": "uint64",
+                "name": "version",
+                "type": "uint64"
             }
         ],
         "stateMutability": "view",

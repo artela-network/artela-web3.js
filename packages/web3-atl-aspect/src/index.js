@@ -39,6 +39,8 @@ const formatters = require('web3-core-helpers').formatters;
 const errors = require('web3-core-helpers').errors;
 const promiEvent = require('web3-core-promievent');
 const abi = require('web3-eth-abi');
+const {getContractAddress} = require("@ethersproject/address");
+const {aspectCoreAddr} = require("@artela/web3-utils");
 
 /**
  * Should be called to create new aspect instance
@@ -48,7 +50,7 @@ const abi = require('web3-eth-abi');
  * @param {String} address
  * @param {Object} options
  */
-var Aspect = function Aspect( address, options) {
+var Aspect = function Aspect(address, options) {
     var _this = this,
         args = Array.prototype.slice.call(arguments);
 
@@ -228,11 +230,7 @@ var Aspect = function Aspect( address, options) {
     });
 
     this._address = null;
-
     this._aspectCore = Contract.aspectCore(this.options)
-    this._aspectCore.setProvider(this.currentProvider);
-    this._aspectCore._aspectBuilder = Aspect;
-    this._aspectCore._aspect = this;
 
     // set getter/setter properties
     this.options.address = address;
@@ -332,8 +330,15 @@ Aspect.prototype.deploy = function(options, callback){
         throw errors.ContractMissingDeployDataError();
     }
 
-    return this._aspectCore.methods.deploy(
-        options.data, options.properties);
+    const deploy = this._aspectCore.options.jsonInterface.find((method) => {
+        return (method.type === 'function' && method.name === 'deploy');
+    });
+
+    return this._createTxObject.apply({
+        method: deploy,
+        parent: this,
+        _ethAccounts: this.constructor._ethAccounts
+    }, [options.data, options.properties]);
 };
 
 /**
@@ -358,8 +363,37 @@ Aspect.prototype.upgrade = function(options, callback){
         throw errors.ContractMissingDeployDataError();
     }
 
-    return this._aspectCore.methods.upgrade(this.options.address,
-        options.data, options.properties);
+    const upgrade = this._aspectCore.options.jsonInterface.find((method) => {
+        return (method.type === 'function' && method.name === 'upgrade');
+    });
+
+    return this._createTxObject.apply({
+        method: upgrade,
+        parent: this,
+        _ethAccounts: this.constructor._ethAccounts
+    }, [options.data, options.properties]);
+};
+
+/**
+ * Rawcall an Aspect's operational interface and fire events based on its state: transactionHash, receipt
+ *
+ * All event listeners will be removed, once the last possible event is fired ("error", or "receipt")
+ *
+ * @method rawcall
+ * @param {Object} encodedArgs
+ * @param {Function} callback
+ * @return {Object} EventEmitter possible events are "error", "transactionHash" and "receipt"
+ */
+Aspect.prototype.rawcall = function(encodedArgs, callback){
+    const entrypoint = this._aspectCore.options.jsonInterface.find((method) => {
+        return (method.type === 'function' && method.name === 'entrypoint');
+    });
+
+    return this._createTxObject.apply({
+        method: entrypoint,
+        parent: this,
+        _ethAccounts: this.constructor._ethAccounts
+    }, [encodedArgs]);
 };
 
 /**
@@ -391,8 +425,8 @@ Aspect.prototype._createTxObject =  function _createTxObject(){
 
     txObject.send = this.parent._executeMethod.bind(txObject, 'send');
     txObject.send.request = this.parent._executeMethod.bind(txObject, 'send', true); // to make batch requests
+    txObject.encodeABI = this.parent._encodeMethodABI.bind(txObject);
     txObject.estimateGas = this.parent._executeMethod.bind(txObject, 'estimate');
-    txObject.createAccessList = this.parent._executeMethod.bind(txObject, 'createAccessList');
 
     if (args && this.method.inputs && args.length !== this.method.inputs.length) {
         if (this.nextMethod) {
@@ -442,14 +476,54 @@ Contract.prototype._processExecuteArguments = function _processExecuteArguments(
     if(!this._deployData && !utils.isAddress(this._parent.options.address))
         throw errors.ContractNoAddressDefinedError();
 
-    if(!this._deployData)
-        processedArgs.options.to = this._parent.options.address;
+    processedArgs.options.to = aspectCoreAddr;
 
     // return error, if no "data" is specified
     if(!processedArgs.options.data)
         return utils._fireError(new Error('Couldn\'t find a matching contract method, or the number of parameters is wrong.'), defer.eventEmitter, defer.reject, processedArgs.callback);
 
     return processedArgs;
+};
+
+/**
+ * Encodes an ABI for a method, including signature or the method.
+ * Or when constructor encodes only the constructor parameters.
+ *
+ * @method _encodeMethodABI
+ * @param {Mixed} args the arguments to encode
+ * @param {String} the encoded ABI
+ */
+Aspect.prototype._encodeMethodABI = function _encodeMethodABI() {
+    var methodSignature = this._method.signature,
+        args = this.arguments || [];
+
+    var signature = false,
+        paramsABI = this._parent._aspectCore.options.jsonInterface.filter(function (json) {
+            return ((methodSignature === 'constructor' && json.type === methodSignature) ||
+                ((json.signature === methodSignature || json.signature === methodSignature.replace('0x','') || json.name === methodSignature) && json.type === 'function'));
+        }).map(function (json) {
+            var inputLength = (Array.isArray(json.inputs)) ? json.inputs.length : 0;
+
+            if (inputLength !== args.length) {
+                throw new Error('The number of arguments is not matching the methods required number. You need to pass '+ inputLength +' arguments.');
+            }
+
+            if (json.type === 'function') {
+                signature = json.signature;
+            }
+            return Array.isArray(json.inputs) ? json.inputs : [];
+        }).map(function (inputs) {
+            return abi.encodeParameters(inputs, args).replace('0x','');
+        })[0] || '';
+
+    // return method
+    var returnValue = (signature) ? signature + paramsABI : paramsABI;
+
+    if(!returnValue) {
+        throw new Error('Couldn\'t find a matching contract method named "'+ this._method.name +'".');
+    }
+
+    return returnValue;
 };
 
 /**
@@ -486,26 +560,6 @@ Aspect.prototype._executeMethod = function _executeMethod(){
     }
 
     switch (args.type) {
-        case 'createAccessList':
-
-            // return error, if no "from" is specified
-            if(!utils.isAddress(args.options.from)) {
-                return utils._fireError(errors.ContractNoFromAddressDefinedError(), defer.eventEmitter, defer.reject, args.callback);
-            }
-
-            var createAccessList = (new Method({
-                name: 'createAccessList',
-                call: 'eth_createAccessList',
-                params: 2,
-                inputFormatter: [formatters.inputTransactionFormatter, formatters.inputDefaultBlockNumberFormatter],
-                requestManager: _this._parent._requestManager,
-                accounts: ethAccounts, // is eth.accounts (necessary for wallet signing)
-                defaultAccount: _this._parent.defaultAccount,
-                defaultBlock: _this._parent.defaultBlock
-            })).createFunction();
-
-            return createAccessList(args.options, args.callback);
-
         case 'estimate':
 
             var estimateGas = (new Method({
@@ -559,46 +613,10 @@ Aspect.prototype._executeMethod = function _executeMethod(){
 
             // make sure receipt logs are decoded
             var extraFormatters = {
-                receiptFormatter: function (receipt) {
-                    if (Array.isArray(receipt.logs)) {
-
-                        // decode logs
-                        var events = receipt.logs.map((log) => {
-                            return _this._parent._decodeEventABI.call({
-                                name: 'ALLEVENTS',
-                                jsonInterface: _this._parent.options.jsonInterface
-                            }, log);
-                        });
-
-                        // make log names keys
-                        receipt.events = {};
-                        var count = 0;
-                        events.forEach(function (ev) {
-                            if (ev.event) {
-                                // if > 1 of the same event, don't overwrite any existing events
-                                if (receipt.events[ev.event]) {
-                                    if (Array.isArray(receipt.events[ ev.event ])) {
-                                        receipt.events[ ev.event ].push(ev);
-                                    } else {
-                                        receipt.events[ev.event] = [receipt.events[ev.event], ev];
-                                    }
-                                } else {
-                                    receipt.events[ ev.event ] = ev;
-                                }
-                            } else {
-                                receipt.events[count] = ev;
-                                count++;
-                            }
-                        });
-
-                        delete receipt.logs;
-                    }
-                    return receipt;
-                },
-                contractDeployFormatter: function (receipt) {
-                    var newContract = _this._parent.clone();
-                    newContract.options.address = receipt.contractAddress;
-                    return newContract;
+                aspectDeployFormatter: function (receipt) {
+                    let newAspect = _this._parent.clone();
+                    newAspect.options.address = getContractAddress(args.options);
+                    return newAspect;
                 }
             };
 

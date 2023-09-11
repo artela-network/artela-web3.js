@@ -51,6 +51,8 @@ export class Aspect {
 
     upgrade(options: DeployOrUpgradeOptions): AspectSendMethod;
 
+    rawcall(encodedArgs: string): AspectSendMethod;
+
     version(): AspectSendMethod;
 
     contracts(): AspectSendMethod;
@@ -116,6 +118,8 @@ export interface AspectCallOnlyMethod {
     estimateGas(options: EstimateGasOptions): Promise<number>;
 
     estimateGas(): Promise<number>;
+
+    encodeABI(): string;
 }
 
 export interface AspectSendMethod extends AspectCallOnlyMethod {

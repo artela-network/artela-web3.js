@@ -18,11 +18,11 @@
         "@artela/web3-core-method": "1.9.7",
         "@artela/web3-utils": "1.9.1",
         "@types/bn.js": "^5.1.1",
-        "ethers": "^5.4.4",
         "web3-core-helpers": "1.9.0",
         "web3-core-promievent": "1.9.0",
         "web3-core-subscriptions": "1.9.0",
-        "web3-eth-abi": "1.9.0"
+        "web3-eth-abi": "1.9.0",
+        "web3-eth-accounts": "1.9.0"
     },
     "devDependencies": {
         "dtslint": "^3.4.1",

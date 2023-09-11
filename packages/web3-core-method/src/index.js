@@ -31,6 +31,7 @@ var Subscriptions = require('web3-core-subscriptions').subscriptions;
 
 var EthersTransactionUtils = require('@ethersproject/transactions');
 const {RLP, hexlify} = require("ethers/lib/utils");
+const {getAddress, getContractAddress} = require("@ethersproject/address");
 
 var Method = function Method(options) {
 
@@ -435,12 +436,11 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                         const deploymentSuccess = receipt.status === true;
 
                         if (deploymentSuccess) {
-                            // if contract, return instance instead of receipt
+                            // if aspect, return instance instead of receipt
                             if (method.extraFormatters && method.extraFormatters.aspectDeployFormatter) {
                                 defer.resolve(method.extraFormatters.aspectDeployFormatter(receipt));
                             } else {
-                                receipt = aspectFormatter(parsedTx, receipt);
-                                defer.resolve(receipt);
+                                defer.resolve(aspectFormatter(parsedTx, receipt));
                             }
 
                             defer.eventEmitter.emit('receipt', receipt);
@@ -1028,14 +1028,7 @@ Method.prototype.request = function () {
 };
 
 function aspectFormatter (tx, receipt) {
-    let rlpData = RLP.encode([tx.from, hexlify(tx.nonce)]);
-    // FIXME: force replace the last byte if nonce is 0,
-    //        this is a bug of rlp encoding in ethers.js, we have to hardcode this for now
-    if (!tx.nonce) {
-        rlpData = rlpData.slice(0, -2) + '80';
-    }
-
-    receipt.aspectAddress = utils.toChecksumAddress(utils.sha3(rlpData).slice(26));
+    receipt.aspectAddress = getContractAddress(tx);
     return receipt;
 }
 

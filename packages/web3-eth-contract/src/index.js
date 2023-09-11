@@ -38,8 +38,7 @@ var formatters = require('web3-core-helpers').formatters;
 var errors = require('web3-core-helpers').errors;
 var promiEvent = require('web3-core-promievent');
 var abi = require('web3-eth-abi');
-const {RLP} = require("ethers/lib/utils");
-
+const {aspectCoreAbi, aspectCoreAddr} = require("@artela/web3-utils");
 
 /**
  * Should be called to create new contract instance
@@ -753,13 +752,12 @@ Contract.prototype.aspects = function(options, callback){
     const aspectCore = new Contract(aspectCoreAbi, aspectCoreAddr, options);
 
     const aspectsOfFunc = aspectCore.options.jsonInterface.find((method) => {
-        return (method.type === 'function');
+        return (method.type === 'function' && method.name === 'aspectsOf');
     }) || {};
-    aspectsOfFunc.signature = 'aspectsOf';
 
     return aspectCore._createTxObject.apply({
         method: aspectsOfFunc,
-        parent: aspectCore,
+        parent: this,
         _ethAccounts: this.constructor._ethAccounts
     }, options.arguments);
 
@@ -1164,22 +1162,6 @@ Contract.prototype._executeMethod = function _executeMethod(){
                     var newContract = _this._parent.clone();
                     newContract.options.address = receipt.contractAddress;
                     return newContract;
-                },
-                aspectDeployFormatter: function (receipt) {
-                    let rlpData = RLP.encode([args.options.from,
-                        utils.bytesToHex(utils.hexToBytes(args.options.nonce))]);
-                    // FIXME: force replace the last byte if nonce is 0,
-                    //        this is a bug of rlp encoding in ethers.js, we have to hardcode this for now
-                    if (args.options.nonce === '0x0') {
-                        rlpData = rlpData.slice(0, -2) + '80';
-                    }
-
-                    let newAspect = new _this._parent._aspectBuilder(
-                        utils.toChecksumAddress(utils.sha3(rlpData).slice(26)),
-                        _this._parent._aspect.options);
-                    newAspect.setProvider(_this._parent._aspect.currentProvider);
-                    newAspect._aspectCore.setProvider(_this._parent._aspect.currentProvider);
-                    return newAspect;
                 }
             };
 
