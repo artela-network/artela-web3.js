@@ -47,9 +47,9 @@ export class Aspect {
 
     clone(): Aspect;
 
-    deploy(options: DeployOrUpgradeOptions): AspectSendMethod;
+    deploy(options: DeployOptions): AspectSendMethod;
 
-    upgrade(options: DeployOrUpgradeOptions): AspectSendMethod;
+    upgrade(options: UpgradeOptions): AspectSendMethod;
 
     rawcall(encodedArgs: string): AspectSendMethod;
 
@@ -83,9 +83,14 @@ export interface Options extends AspectOptions {
     jsonInterface: AbiItem[];
 }
 
-export interface DeployOrUpgradeOptions {
+export interface UpgradeOptions {
     data: string;
     properties?: KVPair[];
+}
+
+export interface DeployOptions extends UpgradeOptions {
+    paymaster: string;
+    proof?: string;
 }
 
 export interface QueryPropertyOptions {

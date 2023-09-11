@@ -329,6 +329,12 @@ Aspect.prototype.deploy = function(options, callback){
         }
         throw errors.ContractMissingDeployDataError();
     }
+    if (!options.paymaster) {
+        throw errors.ContractMissingDeployDataError();
+    }
+
+    options.properties = options.properties || []
+    options.proof = options.proof || '0x00';
 
     const deploy = this._aspectCore.options.jsonInterface.find((method) => {
         return (method.type === 'function' && method.name === 'deploy');
@@ -338,7 +344,7 @@ Aspect.prototype.deploy = function(options, callback){
         method: deploy,
         parent: this,
         _ethAccounts: this.constructor._ethAccounts
-    }, [options.data, options.properties]);
+    }, [options.data, options.properties, options.paymaster, options.proof]);
 };
 
 /**
@@ -363,6 +369,10 @@ Aspect.prototype.upgrade = function(options, callback){
         throw errors.ContractMissingDeployDataError();
     }
 
+    if (!this.options.address) {
+        throw errors.ContractNoAddressDefinedError();
+    }
+
     const upgrade = this._aspectCore.options.jsonInterface.find((method) => {
         return (method.type === 'function' && method.name === 'upgrade');
     });
@@ -371,7 +381,7 @@ Aspect.prototype.upgrade = function(options, callback){
         method: upgrade,
         parent: this,
         _ethAccounts: this.constructor._ethAccounts
-    }, [options.data, options.properties]);
+    }, [this.options.address, options.data, options.properties]);
 };
 
 /**
@@ -451,7 +461,7 @@ Aspect.prototype._createTxObject =  function _createTxObject(){
  * @param {Array} args
  * @param {Promise} defer
  */
-Contract.prototype._processExecuteArguments = function _processExecuteArguments(args, defer) {
+Aspect.prototype._processExecuteArguments = function _processExecuteArguments(args, defer) {
     var processedArgs = {};
 
     processedArgs.type = args.shift();
@@ -471,10 +481,6 @@ Contract.prototype._processExecuteArguments = function _processExecuteArguments(
 
     processedArgs.options = this._parent._getOrSetDefaultOptions(processedArgs.options);
     processedArgs.options.data = this.encodeABI();
-
-    // add contract address
-    if(!this._deployData && !utils.isAddress(this._parent.options.address))
-        throw errors.ContractNoAddressDefinedError();
 
     processedArgs.options.to = aspectCoreAddr;
 
