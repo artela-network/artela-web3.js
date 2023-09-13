@@ -219,7 +219,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
         isAspectDeployment = (!!payload.params[0] && typeof payload.params[0] === 'object') && !isContractDeployment
             && payload.params[0].to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
             && payload.params[0].data
-            && payload.params[0].data.substring(0, 10).toLowerCase() === '0x345d395c',
+            && payload.params[0].data.substring(0, 10).toLowerCase() === '0xbf132f15',
         hasBytecode = isContractDeployment && payload.params[0].data.length > 2;
 
     // add custom send Methods
@@ -364,7 +364,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                         isAspectDeployment = !isContractDeployment
                             && parsedTx.to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
                             && parsedTx.data
-                            && parsedTx.data.substring(0, 10).toLowerCase() === '0x345d395c';
+                            && parsedTx.data.substring(0, 10).toLowerCase() === '0xbf132f15';
                     }
 
                     if (isContractDeployment && !promiseResolved) {
