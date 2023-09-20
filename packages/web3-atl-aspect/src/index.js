@@ -403,7 +403,7 @@ Aspect.prototype.rawcall = function(encodedArgs, callback){
         method: entrypoint,
         parent: this,
         _ethAccounts: this.constructor._ethAccounts
-    }, [encodedArgs]);
+    }, [this.options.address, encodedArgs]);
 };
 
 /**
