@@ -1,6 +1,6 @@
 {
     "name": "@artela/web3-atl-aspect",
-    "version": "1.9.7",
+    "version": "1.9.8",
     "description": "Web3 module to interact with Ethereum smart contracts.",
     "repository": "https://github.com/artela-network/web3.js/tree/1.x/packages/web3-eth-contract",
     "license": "LGPL-3.0",
@@ -14,17 +14,17 @@
     },
     "main": "lib/index.js",
     "dependencies": {
-        "@artela/web3-core": "1.9.7",
-        "@artela/web3-core-method": "1.9.7",
-        "@artela/web3-eth-contract": "1.9.7",
-        "@artela/web3-utils": "1.9.1",
-        "@types/bn.js": "^5.1.1",
+        "@artela/web3-core": "1.9.8",
+        "@artela/web3-core-method": "1.9.8",
+        "@artela/web3-eth-contract": "1.9.8",
+        "@artela/web3-utils": "1.9.8",
         "@ethersproject/address": "^5.7.0",
+        "@types/bn.js": "^5.1.1",
         "web3-core-helpers": "1.9.0",
         "web3-core-promievent": "1.9.0",
         "web3-core-subscriptions": "1.9.0",
-        "web3-eth-accounts": "1.9.0",
-        "web3-eth-abi": "1.9.0"
+        "web3-eth-abi": "1.9.0",
+        "web3-eth-accounts": "1.9.0"
     },
     "devDependencies": {
         "dtslint": "^3.4.1",
