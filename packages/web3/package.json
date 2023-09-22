@@ -1,6 +1,6 @@
 {
     "name": "@artela/web3",
-    "version": "1.9.9",
+    "version": "1.9.10",
     "description": "Ethereum JavaScript API",
     "repository": "https://github.com/artela-network/web3.js",
     "license": "LGPL-3.0",
@@ -51,8 +51,8 @@
         }
     ],
     "dependencies": {
-        "@artela/web3-atl": "1.9.9",
-        "@artela/web3-core": "1.9.9",
+        "@artela/web3-atl": "1.9.10",
+        "@artela/web3-core": "1.9.10",
         "@artela/web3-utils": "1.9.8",
         "web3-bzz": "1.9.0",
         "web3-eth-personal": "1.9.0",

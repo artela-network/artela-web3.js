@@ -1,6 +1,6 @@
 {
     "name": "@artela/web3-core",
-    "version": "1.9.9",
+    "version": "1.9.10",
     "description": "Web3 core tools for sub-packages. This is an internal package.",
     "repository": "https://github.com/artela-network/web3.js/tree/1.x/packages/web3-core",
     "license": "LGPL-3.0",
@@ -14,7 +14,7 @@
     },
     "main": "lib/index.js",
     "dependencies": {
-        "@artela/web3-core-method": "1.9.9",
+        "@artela/web3-core-method": "1.9.10",
         "@artela/web3-utils": "1.9.8",
         "@types/bn.js": "^5.1.1",
         "@types/node": "^12.12.6",
