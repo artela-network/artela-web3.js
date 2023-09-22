@@ -219,6 +219,10 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
             && payload.params[0].to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
             && payload.params[0].data
             && payload.params[0].data.substring(0, 10).toLowerCase() === '0xbf132f15',
+        isAspectCall = (!!payload.params[0] && typeof payload.params[0] === 'object')
+            && payload.params[0].to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
+            && payload.params[0].data
+            && payload.params[0].data.substring(0, 10).toLowerCase() === '0x995a75e8',
         hasBytecode = isContractDeployment && payload.params[0].data.length > 2;
 
     // add custom send Methods
@@ -364,6 +368,9 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             && parsedTx.to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
                             && parsedTx.data
                             && parsedTx.data.substring(0, 10).toLowerCase() === '0xbf132f15';
+                        isAspectCall = parsedTx.to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
+                            && parsedTx.data
+                            && parsedTx.data.substring(0, 10).toLowerCase() === '0x995a75e8';
                     }
 
                     if (isContractDeployment && !promiseResolved) {
@@ -470,7 +477,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                 // CHECK for normal tx check for receipt only
                 .then(async function (receipt) {
                     if (!isContractDeployment && !isAspectDeployment && !promiseResolved) {
-                        if (!receipt.outOfGas &&
+                        if (!isAspectCall && !receipt.outOfGas &&
                             (!gasProvided || gasProvided !== receipt.gasUsed) &&
                             (receipt.status === true || receipt.status === '0x1' || typeof receipt.status === 'undefined')) {
                             defer.eventEmitter.emit('receipt', receipt);
@@ -484,11 +491,9 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                         } else {
                             receiptJSON = JSON.stringify(receipt, null, 2);
 
-                            if (receipt.status === false || receipt.status === '0x0') {
+                            if (receipt.status === false || receipt.status === '0x0' || isAspectCall) {
                                 try {
-                                    var revertMessage = null;
-
-                                    if ( method.handleRevert &&
+                                    if ( (method.handleRevert || isAspectCall) &&
                                         (method.call === 'eth_sendTransaction' || method.call === 'eth_sendRawTransaction'))
                                     {
                                         var txReplayOptions = payload.params[0];
@@ -510,22 +515,37 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                                             });
                                         }
 
-                                        // Get revert reason string with eth_call
-                                        revertMessage = await method.getRevertReason(
-                                            txReplayOptions,
-                                            receipt.blockNumber
-                                        );
-
-                                        if (revertMessage) { // Only throw a revert error if a revert reason is existing
-                                            utils._fireError(
-                                                errors.TransactionRevertInstructionError(revertMessage.reason, revertMessage.signature, receipt),
-                                                defer.eventEmitter,
-                                                defer.reject,
-                                                null,
-                                                receipt
+                                        if (isAspectCall) {
+                                            // Get aspect result with eth_call
+                                            let aspectOutput = await method.getAspectEntryPointOutput(
+                                                txReplayOptions,
+                                                receipt.blockNumber
                                             );
+
+                                            defer.eventEmitter.emit('receipt', receipt);
+                                            defer.resolve(aspectOutput);
+
+                                            if (canUnsubscribe) {
+                                                defer.eventEmitter.removeAllListeners();
+                                            }
                                         } else {
-                                            throw false; // Throw false and let the try/catch statement handle the error correctly after
+                                            // Get revert reason string with eth_call
+                                            let revertMessage = await method.getRevertReason(
+                                                txReplayOptions,
+                                                receipt.blockNumber
+                                            );
+
+                                            if (revertMessage) { // Only throw a revert error if a revert reason is existing
+                                                utils._fireError(
+                                                    errors.TransactionRevertInstructionError(revertMessage.reason, revertMessage.signature, receipt),
+                                                    defer.eventEmitter,
+                                                    defer.reject,
+                                                    null,
+                                                    receipt
+                                                );
+                                            } else {
+                                                throw false; // Throw false and let the try/catch statement handle the error correctly after
+                                            }
                                         }
                                     } else {
                                         throw false; // Throw false and let the try/catch statement handle the error correctly after
@@ -987,6 +1007,44 @@ Method.prototype.getRevertReason = function (txOptions, blockNumber) {
             .createFunction(self.requestManager)(txOptions, utils.numberToHex(blockNumber))
             .then(function () {
                 resolve(false);
+            })
+            .catch(function (error) {
+                if (error.reason) {
+                    resolve({
+                        reason: error.reason,
+                        signature: error.signature
+                    });
+                } else {
+                    reject(error);
+                }
+            });
+    });
+};
+
+/**
+ * Returns the output of aspect execution
+ *
+ * @method getAspectEntryPointOutput
+ *
+ * @param {Object} txOptions
+ * @param {Number} blockNumber
+ *
+ * @returns {Promise<Boolean|String>}
+ */
+Method.prototype.getAspectEntryPointOutput = function (txOptions, blockNumber) {
+    var self = this;
+
+    return new Promise(function (resolve, reject) {
+        (new Method({
+            name: 'call',
+            call: 'eth_call',
+            params: 2,
+            abiCoder: self.abiCoder,
+            handleRevert: true
+        }))
+            .createFunction(self.requestManager)(txOptions, utils.numberToHex(blockNumber))
+            .then(function (value) {
+                resolve(value);
             })
             .catch(function (error) {
                 if (error.reason) {
