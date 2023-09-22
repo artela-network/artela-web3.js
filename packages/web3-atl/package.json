@@ -1,6 +1,6 @@
 {
     "name": "@artela/web3-atl",
-    "version": "1.9.13",
+    "version": "1.9.14",
     "description": "Web3 module to interact with the Artela aspects.",
     "repository": "https://github.com/artela-network/web3.js/tree/1.x/packages/web3-atl",
     "license": "LGPL-3.0",
@@ -14,10 +14,10 @@
     },
     "main": "lib/index.js",
     "dependencies": {
-        "@artela/web3-atl-aspect": "1.9.13",
-        "@artela/web3-core": "1.9.13",
-        "@artela/web3-core-method": "1.9.13",
-        "@artela/web3-eth-contract": "1.9.13",
+        "@artela/web3-atl-aspect": "1.9.14",
+        "@artela/web3-core": "1.9.14",
+        "@artela/web3-core-method": "1.9.14",
+        "@artela/web3-eth-contract": "1.9.14",
         "@artela/web3-utils": "1.9.8",
         "web3-core-helpers": "1.9.0",
         "web3-core-subscriptions": "1.9.0",
