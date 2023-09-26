@@ -364,13 +364,15 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                     if (method.call === 'eth_sendRawTransaction') {
                         let rawTransactionHex = payload.params[0];
                         parsedTx = EthersTransactionUtils.parse(rawTransactionHex);
-                        isAspectDeployment = !isContractDeployment
+                        isAspectDeployment = !!parsedTx.to
                             && parsedTx.to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
                             && parsedTx.data
+                            && parsedTx.data.length >= 10
                             && parsedTx.data.substring(0, 10).toLowerCase() === '0xbf132f15';
-                        isAspectCall = !isContractDeployment
+                        isAspectCall = !!parsedTx.to
                             && parsedTx.to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
                             && parsedTx.data
+                            && parsedTx.data.length >= 10
                             && parsedTx.data.substring(0, 10).toLowerCase() === '0x995a75e8';
                     }
 
