@@ -385,16 +385,16 @@ Aspect.prototype.upgrade = function(options, callback){
 };
 
 /**
- * Rawcall an Aspect's operational interface and fire events based on its state: transactionHash, receipt
+ * Operation an Aspect's operational interface and fire events based on its state: transactionHash, receipt
  *
  * All event listeners will be removed, once the last possible event is fired ("error", or "receipt")
  *
- * @method rawcall
+ * @method operation
  * @param {Object} encodedArgs
  * @param {Function} callback
  * @return {Object} EventEmitter possible events are "error", "transactionHash" and "receipt"
  */
-Aspect.prototype.rawcall = function(encodedArgs, callback){
+Aspect.prototype.operation = function(encodedArgs, callback){
     const entrypoint = this._aspectCore.options.jsonInterface.find((method) => {
         return (method.type === 'function' && method.name === 'entrypoint');
     });

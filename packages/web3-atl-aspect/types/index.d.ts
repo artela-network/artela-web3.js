@@ -51,7 +51,7 @@ export class Aspect {
 
     upgrade(options: UpgradeOptions): AspectSendMethod;
 
-    rawcall(encodedArgs: string): AspectSendMethod;
+    operation(encodedArgs: string): AspectSendMethod;
 
     version(): AspectSendMethod;
 
