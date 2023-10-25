@@ -32,7 +32,6 @@ var Net = require('web3-net');
 var ENS = require('web3-eth-ens');
 var Personal = require('web3-eth-personal');
 var BaseContract = require('@artela/web3-eth-contract');
-var BaseAspect = require('@artela/web3-atl-aspect');
 var Iban = require('web3-eth-iban');
 var Accounts = require('web3-eth-accounts');
 var abi = require('web3-eth-abi');
@@ -62,7 +61,7 @@ var uncleCountCall = function (args) {
 };
 
 
-var Atl = function Atl() {
+var Eth = function Eth() {
     var _this = this;
 
     // sets _requestmanager
@@ -93,6 +92,7 @@ var Atl = function Atl() {
         _this.ens._detectedAddress = null;
         _this.ens._lastSyncCheck = null;
     };
+
 
     var handleRevert = false;
     var defaultAccount = null;
@@ -338,8 +338,8 @@ var Atl = function Atl() {
     // web3-eth would subsequently change the provider for _all_ contract
     // instances!
     var self = this;
-    var Aspect = function Aspect() {
-        BaseAspect.apply(this, arguments);
+    var Contract = function Contract() {
+        BaseContract.apply(this, arguments);
 
         // when Eth.setProvider is called, call packageInit
         // on all contract instances instantiated via this Eth
@@ -353,33 +353,28 @@ var Atl = function Atl() {
         };
     };
 
-    Aspect.setProvider = function() {
+    Contract.setProvider = function() {
         BaseContract.setProvider.apply(this, arguments);
     };
 
-    // add aspect core
-    this.aspectCore = function () {
-        let contract = BaseContract.aspectCore.apply(this, arguments);
-        contract.setProvider(_this);
-        return contract;
-    }
+    // make our proxy Contract inherit from web3-eth-contract so that it has all
+    // the right functionality and so that instanceof and friends work properly
+    Contract.prototype = Object.create(BaseContract.prototype);
+    Contract.prototype.constructor = Contract;
 
-    Aspect.prototype = Object.create(BaseAspect.prototype);
-    Aspect.prototype.constructor = Aspect;
-
-    // add aspect
-    this.Aspect = Aspect;
-    this.Aspect.defaultAccount = this.defaultAccount;
-    this.Aspect.defaultBlock = this.defaultBlock;
-    this.Aspect.transactionBlockTimeout = this.transactionBlockTimeout;
-    this.Aspect.transactionConfirmationBlocks = this.transactionConfirmationBlocks;
-    this.Aspect.transactionPollingTimeout = this.transactionPollingTimeout;
-    this.Aspect.transactionPollingInterval = this.transactionPollingInterval;
-    this.Aspect.blockHeaderTimeout = this.blockHeaderTimeout;
-    this.Aspect.handleRevert = this.handleRevert;
-    this.Aspect._requestManager = this._requestManager;
-    this.Aspect._ethAccounts = this.accounts;
-    this.Aspect.currentProvider = this._requestManager.provider;
+    // add contract
+    this.Contract = Contract;
+    this.Contract.defaultAccount = this.defaultAccount;
+    this.Contract.defaultBlock = this.defaultBlock;
+    this.Contract.transactionBlockTimeout = this.transactionBlockTimeout;
+    this.Contract.transactionConfirmationBlocks = this.transactionConfirmationBlocks;
+    this.Contract.transactionPollingTimeout = this.transactionPollingTimeout;
+    this.Contract.transactionPollingInterval = this.transactionPollingInterval;
+    this.Contract.blockHeaderTimeout = this.blockHeaderTimeout;
+    this.Contract.handleRevert = this.handleRevert;
+    this.Contract._requestManager = this._requestManager;
+    this.Contract._ethAccounts = this.accounts;
+    this.Contract.currentProvider = this._requestManager.provider;
 
     // add IBAN
     this.Iban = Iban;
@@ -711,8 +706,7 @@ var Atl = function Atl() {
 };
 
 // Adds the static givenProvider and providers property to the Eth module
-core.addProviders(Atl);
+core.addProviders(Eth);
 
 
-module.exports = Atl;
-
+module.exports = Eth;

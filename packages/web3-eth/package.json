@@ -1,0 +1,36 @@
+{
+    "name": "@artela/web3-eth",
+    "version": "1.9.16",
+    "description": "Web3 module to interact with the Artela aspects.",
+    "repository": "https://github.com/artela-network/web3.js/tree/1.x/packages/web3-eth",
+    "license": "LGPL-3.0",
+    "engines": {
+        "node": ">=8.0.0"
+    },
+    "types": "types/index.d.ts",
+    "scripts": {
+        "compile": "tsc -b tsconfig.json",
+        "dtslint": "dtslint --localTs ../../node_modules/typescript/lib  types"
+    },
+    "main": "lib/index.js",
+    "dependencies": {
+        "@artela/web3-core": "1.9.15",
+        "@artela/web3-core-method": "1.9.15",
+        "@artela/web3-eth-contract": "1.9.15",
+        "@artela/web3-utils": "1.9.8",
+        "web3-core-helpers": "1.9.0",
+        "web3-core-subscriptions": "1.9.0",
+        "web3-eth-abi": "1.9.0",
+        "web3-eth-accounts": "1.9.0",
+        "web3-eth-ens": "1.9.0",
+        "web3-eth-iban": "1.9.0",
+        "web3-eth-personal": "1.9.0",
+        "web3-net": "1.9.0"
+    },
+    "devDependencies": {
+        "web3-eth": "1.9.0",
+        "dtslint": "^3.4.1",
+        "typescript": "4.1"
+    },
+    "gitHead": "3ad3460e41163b01e0f48465365d557d0a49fdaf"
+}

@@ -21,33 +21,33 @@
 
 import * as net from 'net';
 import {
-    AccessTuple,
     BatchRequest,
-    BlockNumber,
-    chain,
-    Common,
     Extension,
-    hardfork,
     Log,
-    LogsOptions,
-    PastLogsOptions,
     PromiEvent,
     provider,
     Providers,
     RLPEncodedTransaction,
     Transaction,
     TransactionConfig,
-    TransactionReceipt
+    TransactionReceipt,
+    Common,
+    hardfork,
+    chain,
+    BlockNumber,
+    LogsOptions,
+    PastLogsOptions,
+    AccessTuple
 } from '@artela/web3-core';
 import {Subscription} from 'web3-core-subscriptions';
 import {AbiCoder} from 'web3-eth-abi';
 import {Accounts} from 'web3-eth-accounts';
 import {Contract, ContractOptions} from '@artela/web3-eth-contract';
-import {Aspect, AspectOptions} from '@artela/web3-atl-aspect';
 import {Ens} from 'web3-eth-ens';
 import {Iban} from 'web3-eth-iban';
 import {Personal} from 'web3-eth-personal';
 import {Network} from 'web3-net';
+import {AbiItem} from '@artela/web3-utils';
 import {BigNumber} from 'bignumber.js';
 import BN = require('bn.js');
 
@@ -59,15 +59,18 @@ export {
     hardfork,
     Common,
     chain
-} from 'web3-core';
+} from '@artela/web3-core';
 
-export class Atl {
+export class Eth {
     constructor();
     constructor(provider: provider);
     constructor(provider: provider, net: net.Socket);
 
-    Aspect: new (address?: string, options?: AspectOptions) => Aspect;
-
+    Contract: new (
+        jsonInterface: AbiItem[] | AbiItem,
+        address?: string,
+        options?: ContractOptions
+    ) => Contract;
     Iban: new (iban: string) => Iban;
     personal: Personal;
     accounts: Accounts;
@@ -89,8 +92,6 @@ export class Atl {
     readonly currentProvider: provider;
 
     setProvider(provider: provider): boolean;
-
-    aspectCore(options?: ContractOptions): Contract;
 
     BatchRequest: new () => BatchRequest;
     static readonly providers: Providers;
@@ -481,4 +482,4 @@ export interface FeeHistoryResult {
     reward: string[][];
 }
 
-export default Atl
+export default Eth

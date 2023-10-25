@@ -31,6 +31,7 @@
 var version = require('../package.json').version;
 var core = require('@artela/web3-core');
 var Atl = require('@artela/web3-atl');
+var Eth = require('@artela/web3-eth');
 var Net = require('web3-net');
 var Personal = require('web3-eth-personal');
 var Shh = require('web3-shh');
@@ -49,6 +50,7 @@ var Web3 = function Web3() {
     this.atl = new Atl(this);
     this.shh = new Shh(this);
     this.bzz = new Bzz(this);
+    this.eth = new Eth(this);
 
     // overwrite package setProvider
     var setProvider = this.setProvider;
@@ -69,6 +71,7 @@ Web3.version = version;
 Web3.utils = utils;
 Web3.modules = {
     Atl: Atl,
+    Eth: Eth,
     Net: Net,
     Personal: Personal,
     Shh: Shh,

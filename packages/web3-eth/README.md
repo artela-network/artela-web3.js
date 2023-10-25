@@ -1,4 +1,4 @@
-# web3-atl
+# web3-eth
 
 [![NPM Package][npm-image]][npm-url]
 
@@ -15,21 +15,21 @@ You can install the package either using [NPM](https://www.npmjs.com/package/web
 ### Using NPM
 
 ```bash
-npm install web3-atl
+npm install web3-eth
 ```
 
 ### Using Yarn
 
 ```bash
-yarn add web3-atl
+yarn add web3-eth
 ```
 
 ## Usage
 
 ```js
-const Web3Atl = require('web3-atl');
+const Web3Eth = require('web3-eth');
 
-const atl = new Web3Atl('ws://localhost:8546');
+const eth = new Web3Eth('ws://localhost:8546');
 ```
 
 ## Types
