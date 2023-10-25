@@ -1,6 +1,6 @@
 {
     "name": "@artela/web3-eth",
-    "version": "1.9.16",
+    "version": "1.9.17",
     "description": "Web3 module to interact with the Artela aspects.",
     "repository": "https://github.com/artela-network/web3.js/tree/1.x/packages/web3-eth",
     "license": "LGPL-3.0",
@@ -28,9 +28,9 @@
         "web3-net": "1.9.0"
     },
     "devDependencies": {
-        "web3-eth": "1.9.0",
         "dtslint": "^3.4.1",
-        "typescript": "4.1"
+        "typescript": "4.1",
+        "web3-eth": "1.9.0"
     },
     "gitHead": "3ad3460e41163b01e0f48465365d557d0a49fdaf"
 }

@@ -1,6 +1,6 @@
 {
     "name": "@artela/web3-atl",
-    "version": "1.9.16",
+    "version": "1.9.17",
     "description": "Web3 module to interact with the Artela aspects.",
     "repository": "https://github.com/artela-network/web3.js/tree/1.x/packages/web3-atl",
     "license": "LGPL-3.0",
