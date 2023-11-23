@@ -480,7 +480,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                 // CHECK for normal tx check for receipt only
                 .then(async function (receipt) {
                     if (!isContractDeployment && !isAspectDeployment && !promiseResolved) {
-                        if (!isAspectCall && !receipt.outOfGas &&
+                        if (!receipt.outOfGas &&
                             (!gasProvided || gasProvided !== receipt.gasUsed) &&
                             (receipt.status === true || receipt.status === '0x1' || typeof receipt.status === 'undefined')) {
                             defer.eventEmitter.emit('receipt', receipt);
@@ -494,9 +494,9 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                         } else {
                             receiptJSON = JSON.stringify(receipt, null, 2);
 
-                            if (receipt.status === false || receipt.status === '0x0' || isAspectCall) {
+                            if (receipt.status === false || receipt.status === '0x0') {
                                 try {
-                                    if ( (method.handleRevert || isAspectCall) &&
+                                    if (method.handleRevert &&
                                         (method.call === 'eth_sendTransaction' || method.call === 'eth_sendRawTransaction'))
                                     {
                                         var txReplayOptions = payload.params[0];
