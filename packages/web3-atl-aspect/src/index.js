@@ -43,13 +43,12 @@ const {getContractAddress} = require("@ethersproject/address");
 const {aspectCoreAddr} = require("@artela/web3-utils");
 
 const JoinPointRunMap = new Map([
-    ["VerifyTx",1],
-    ["PreTxExecute",2],
-    ["PreContractCall", 4],
-    ["PostContractCall",8],
-    ["PostTxExecute",16],
-    ["PostTxCommit",32],
-    ["Operation",64]
+    ["verifytx",1],
+    ["pretxexecute",2],
+    ["precontractcall", 4],
+    ["postcontractcall",8],
+    ["posttxexecute",16],
+    ["posttxcommit",32],
 ]);
 
 /**
@@ -350,16 +349,17 @@ Aspect.prototype.deploy = function(options, callback){
 
     let joinPointValue=0;
     for (const name of options.joinPoints) {
-        const enumValue = JoinPointRunMap[name];
+        const enumValue = JoinPointRunMap.get(name.toLowerCase());
         if (enumValue !== undefined) {
             joinPointValue += enumValue;
+        }else {
+            throw errors.ContractMissingDeployDataError();
         }
     }
 
     const deploy = this._aspectCore.options.jsonInterface.find((method) => {
         return (method.type === 'function' && method.name === 'deploy');
     });
-
 
 
     return this._createTxObject.apply({
@@ -397,9 +397,11 @@ Aspect.prototype.upgrade = function(options, callback){
     options.joinPoints = options.joinPoints || [];
     let joinPointValue=0;
     for (const name of options.joinPoints) {
-        const enumValue = JoinPointRunMap[name];
+        const enumValue = JoinPointRunMap.get(name.toLowerCase());
         if (enumValue !== undefined) {
             joinPointValue += enumValue;
+        }else {
+            throw errors.ContractMissingDeployDataError();
         }
     }
 

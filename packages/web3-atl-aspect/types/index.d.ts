@@ -89,9 +89,8 @@ export interface UpgradeOptions {
     properties?: KVPair[];
     joinPoints?: JoinPoint[];
 }
-export type JoinPoint ="VerifyTx"|"PreTxExecute"|"PreContractCall"|"PostContractCall"|"PostTxExecute"|"PostTxCommit"|"Operation";
 
-
+export type JoinPoint ="VerifyTx"|"PreTxExecute"|"PreContractCall"|"PostContractCall"|"PostTxExecute"|"PostTxCommit";
 
 export interface DeployOptions extends UpgradeOptions {
     paymaster: string;
