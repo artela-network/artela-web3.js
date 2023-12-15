@@ -73,6 +73,8 @@ aspect.clone();
 
 // $ExpectType AspectSendMethod
 aspect.deploy({
+    paymaster: "",
+    joinPoints: ["PreContractCall","PostContractCall"],
     data: '0x12345...',
     properties: [{key: 'dummy', value: 'test'}]
 });
@@ -80,6 +82,8 @@ aspect.deploy({
 // $ExpectType Promise<number>
 aspect
     .deploy({
+        paymaster: "",
+        joinPoints: ["PreContractCall","PostContractCall"],
         data: '0x12345...',
         properties: [{key: 'dummy', value: 'test'}]
     })
@@ -88,6 +92,8 @@ aspect
 // $ExpectType Promise<number>
 aspect
     .deploy({
+        paymaster: "",
+        joinPoints: ["PreContractCall","PostContractCall"],
         data: '0x12345...',
         properties: [{key: 'dummy', value: 'test'}]
     })
@@ -96,6 +102,8 @@ aspect
 // $ExpectType Promise<number>
 aspect
     .deploy({
+        paymaster: "",
+        joinPoints: ["PreContractCall","PostContractCall"],
         data: '0x12345...',
         properties: [{key: 'dummy', value: 'test'}]
     })
@@ -104,6 +112,8 @@ aspect
 // $ExpectType PromiEvent<Aspect>
 aspect
     .deploy({
+        paymaster: "",
+        joinPoints: ["PreContractCall","PostContractCall"],
         data: '0x12345...',
         properties: [{key: 'dummy', value: 'test'}]
     })
@@ -112,6 +122,8 @@ aspect
 // $ExpectType PromiEvent<Aspect>
 aspect
     .deploy({
+        paymaster: "",
+        joinPoints: ["PreContractCall","PostContractCall"],
         data: '0x12345...',
         properties: [{key: 'dummy', value: 'test'}]
     })

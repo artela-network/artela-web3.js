@@ -58,6 +58,7 @@ export class Aspect {
     contracts(): AspectSendMethod;
 
     properties(options: QueryPropertyOptions): AspectProperties;
+
 }
 
 export interface AspectProperties {
@@ -86,7 +87,11 @@ export interface Options extends AspectOptions {
 export interface UpgradeOptions {
     data: string;
     properties?: KVPair[];
+    joinPoints?: JoinPoint[];
 }
+export type JoinPoint ="VerifyTx"|"PreTxExecute"|"PreContractCall"|"PostContractCall"|"PostTxExecute"|"PostTxCommit"|"Operation";
+
+
 
 export interface DeployOptions extends UpgradeOptions {
     paymaster: string;

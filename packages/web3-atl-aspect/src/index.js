@@ -42,6 +42,16 @@ const abi = require('web3-eth-abi');
 const {getContractAddress} = require("@ethersproject/address");
 const {aspectCoreAddr} = require("@artela/web3-utils");
 
+const JoinPointRunMap = new Map([
+    ["VerifyTx",1],
+    ["PreTxExecute",2],
+    ["PreContractCall", 4],
+    ["PostContractCall",8],
+    ["PostTxExecute",16],
+    ["PostTxCommit",32],
+    ["Operation",64]
+]);
+
 /**
  * Should be called to create new aspect instance
  *
@@ -333,18 +343,30 @@ Aspect.prototype.deploy = function(options, callback){
         throw errors.ContractMissingDeployDataError();
     }
 
-    options.properties = options.properties || []
+    options.properties = options.properties || [];
     options.proof = options.proof || '0x00';
+    options.joinPoints = options.joinPoints || [];
+
+
+    let joinPointValue=0;
+    for (const name of options.joinPoints) {
+        const enumValue = JoinPointRunMap[name];
+        if (enumValue !== undefined) {
+            joinPointValue += enumValue;
+        }
+    }
 
     const deploy = this._aspectCore.options.jsonInterface.find((method) => {
         return (method.type === 'function' && method.name === 'deploy');
     });
 
+
+
     return this._createTxObject.apply({
         method: deploy,
         parent: this,
         _ethAccounts: this.constructor._ethAccounts
-    }, [options.data, options.properties, options.paymaster, options.proof]);
+    }, [options.data, options.properties, options.paymaster, options.proof,joinPointValue]);
 };
 
 /**
@@ -372,6 +394,14 @@ Aspect.prototype.upgrade = function(options, callback){
     if (!this.options.address) {
         throw errors.ContractNoAddressDefinedError();
     }
+    options.joinPoints = options.joinPoints || [];
+    let joinPointValue=0;
+    for (const name of options.joinPoints) {
+        const enumValue = JoinPointRunMap[name];
+        if (enumValue !== undefined) {
+            joinPointValue += enumValue;
+        }
+    }
 
     const upgrade = this._aspectCore.options.jsonInterface.find((method) => {
         return (method.type === 'function' && method.name === 'upgrade');
@@ -381,7 +411,7 @@ Aspect.prototype.upgrade = function(options, callback){
         method: upgrade,
         parent: this,
         _ethAccounts: this.constructor._ethAccounts
-    }, [this.options.address, options.data, options.properties]);
+    }, [this.options.address, options.data, options.properties,joinPointValue]);
 };
 
 /**

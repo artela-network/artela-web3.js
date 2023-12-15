@@ -115,14 +115,14 @@
             {
                 "components": [
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "key",
-                        "type": "string"
+                        "type": "bytes"
                     },
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "value",
-                        "type": "string"
+                        "type": "bytes"
                     }
                 ],
                 "internalType": "struct AspectCore.KVPair[]",
@@ -138,6 +138,11 @@
                 "internalType": "bytes",
                 "name": "proof",
                 "type": "bytes"
+            },
+            {
+                "internalType": "uint256",
+                "name": "joinPoints",
+                "type": "uint256"
             }
         ],
         "name": "deploy",
@@ -215,6 +220,11 @@
                 "internalType": "struct AspectCore.KVPair[]",
                 "name": "properties",
                 "type": "tuple[]"
+            },
+            {
+                "internalType": "uint256",
+                "name": "joinPoints",
+                "type": "uint256"
             }
         ],
         "name": "upgrade",
