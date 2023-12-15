@@ -85,6 +85,7 @@ export interface Options extends AspectOptions {
 }
 
 export interface UpgradeOptions {
+    aspectId:string;
     data: string;
     properties?: KVPair[];
     joinPoints?: JoinPoint[];
@@ -93,6 +94,7 @@ export interface UpgradeOptions {
 export type JoinPoint ="VerifyTx"|"PreTxExecute"|"PreContractCall"|"PostContractCall"|"PostTxExecute"|"PostTxCommit";
 
 export interface DeployOptions extends UpgradeOptions {
+
     paymaster: string;
     proof?: string;
 }
