@@ -58,7 +58,6 @@ export class Aspect {
     contracts(): AspectSendMethod;
 
     properties(options: QueryPropertyOptions): AspectProperties;
-
 }
 
 export interface AspectProperties {
@@ -91,9 +90,7 @@ export interface UpgradeOptions {
 }
 
 export type JoinPoint ="VerifyTx"|"PreTxExecute"|"PreContractCall"|"PostContractCall"|"PostTxExecute"|"PostTxCommit";
-
 export interface DeployOptions extends UpgradeOptions {
-
     paymaster: string;
     proof?: string;
 }
@@ -152,13 +149,11 @@ export interface SendOptions {
     value?: number | string | BN;
     nonce?: number;
 }
-
 export interface EstimateGasOptions {
     from?: string;
     gas?: number;
     value?: number | string | BN;
 }
-
 export interface AspectOptions {
     // Sender to use for contract calls
     from?: string;
