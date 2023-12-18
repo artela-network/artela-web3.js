@@ -41,6 +41,7 @@ const promiEvent = require('web3-core-promievent');
 const abi = require('web3-eth-abi');
 const {getContractAddress} = require("@ethersproject/address");
 const {aspectCoreAddr} = require("@artela/web3-utils");
+const {map} = require("core-js/internals/array-iteration");
 
 const JoinPointRunMap = new Map([
     ["verifytx",1],
@@ -50,7 +51,6 @@ const JoinPointRunMap = new Map([
     ["posttxexecute",16],
     ["posttxcommit",32],
 ]);
-
 /**
  * Should be called to create new aspect instance
  *
@@ -348,8 +348,14 @@ Aspect.prototype.deploy = function(options, callback){
 
 
     let joinPointValue=0;
+    let processedJPName = new Map();
     for (const name of options.joinPoints) {
+        if(processedJPName.has(name)){
+            //Deduplication
+            continue;
+        }
         const enumValue = JoinPointRunMap.get(name.toLowerCase());
+        processedJPName.set(name,enumValue);
         if (enumValue !== undefined) {
             joinPointValue += enumValue;
         }else {
@@ -396,8 +402,14 @@ Aspect.prototype.upgrade = function(options, callback){
     }
     options.joinPoints = options.joinPoints || [];
     let joinPointValue=0;
+    let processedJPName = new Map();
     for (const name of options.joinPoints) {
+        if(processedJPName.has(name)){
+            //Deduplication
+            continue;
+        }
         const enumValue = JoinPointRunMap.get(name.toLowerCase());
+        processedJPName.set(name,enumValue);
         if (enumValue !== undefined) {
             joinPointValue += enumValue;
         }else {
