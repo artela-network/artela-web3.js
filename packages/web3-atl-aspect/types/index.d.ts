@@ -18,7 +18,7 @@
  */
 
 import BN = require('bn.js');
-import {Common, PromiEvent, provider, hardfork, chain, BlockNumber} from '@artela/web3-core';
+import {BlockNumber, chain, Common, hardfork, PromiEvent, provider} from '@artela/web3-core';
 import {Accounts} from 'web3-eth-accounts';
 import {AbiItem} from '@artela/web3-utils';
 import Contract from "@artela/web3-eth-contract";
@@ -86,8 +86,10 @@ export interface Options extends AspectOptions {
 export interface UpgradeOptions {
     data: string;
     properties?: KVPair[];
+    joinPoints?: JoinPoint[];
 }
 
+export type JoinPoint ="VerifyTx"|"PreTxExecute"|"PreContractCall"|"PostContractCall"|"PostTxExecute"|"PostTxCommit";
 export interface DeployOptions extends UpgradeOptions {
     paymaster: string;
     proof?: string;
@@ -147,13 +149,11 @@ export interface SendOptions {
     value?: number | string | BN;
     nonce?: number;
 }
-
 export interface EstimateGasOptions {
     from?: string;
     gas?: number;
     value?: number | string | BN;
 }
-
 export interface AspectOptions {
     // Sender to use for contract calls
     from?: string;

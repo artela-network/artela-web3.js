@@ -41,7 +41,16 @@ const promiEvent = require('web3-core-promievent');
 const abi = require('web3-eth-abi');
 const {getContractAddress} = require("@ethersproject/address");
 const {aspectCoreAddr} = require("@artela/web3-utils");
+const {map} = require("core-js/internals/array-iteration");
 
+const JoinPointRunMap = new Map([
+    ["verifytx", 1],
+    ["pretxexecute", 2],
+    ["precontractcall", 4],
+    ["postcontractcall", 8],
+    ["posttxexecute", 16],
+    ["posttxcommit", 32],
+]);
 /**
  * Should be called to create new aspect instance
  *
@@ -54,7 +63,7 @@ var Aspect = function Aspect(address, options) {
     var _this = this,
         args = Array.prototype.slice.call(arguments);
 
-    if(!(this instanceof Aspect)) {
+    if (!(this instanceof Aspect)) {
         throw new Error('Please use the "new" keyword to instantiate a web3.atl.Aspect() object!');
     }
 
@@ -73,23 +82,23 @@ var Aspect = function Aspect(address, options) {
     this.options = {};
 
     var lastArg = args[args.length - 1];
-    if(!!lastArg && typeof lastArg === 'object' && !Array.isArray(lastArg)) {
+    if (!!lastArg && typeof lastArg === 'object' && !Array.isArray(lastArg)) {
         options = lastArg;
 
-        this.options = { ...this.options, ...this._getOrSetDefaultOptions(options)};
-        if(!!address && typeof address === 'object') {
+        this.options = {...this.options, ...this._getOrSetDefaultOptions(options)};
+        if (!!address && typeof address === 'object') {
             address = null;
         }
     }
 
     // set address
     Object.defineProperty(this.options, 'address', {
-        set: function(value){
-            if(value) {
+        set: function (value) {
+            if (value) {
                 _this._address = utils.toChecksumAddress(formatters.inputAddressFormatter(value));
             }
         },
-        get: function(){
+        get: function () {
             return _this._address;
         },
         enumerable: true
@@ -209,7 +218,7 @@ var Aspect = function Aspect(address, options) {
             return defaultAccount;
         },
         set: function (val) {
-            if(val) {
+            if (val) {
                 defaultAccount = utils.toChecksumAddress(formatters.inputAddressFormatter(val));
             }
 
@@ -247,7 +256,7 @@ var Aspect = function Aspect(address, options) {
  *
  * @returns void
  */
-Aspect.setProvider = function(provider, accounts) {
+Aspect.setProvider = function (provider, accounts) {
     // Contract.currentProvider = provider;
     core.packageInit(this, [provider]);
 
@@ -263,7 +272,7 @@ Aspect.setProvider = function(provider, accounts) {
  * @return {Function} the callback
  */
 Aspect.prototype._getCallback = function getCallback(args) {
-    if (args && !!args[args.length- 1 ] && typeof args[args.length - 1] === 'function') {
+    if (args && !!args[args.length - 1] && typeof args[args.length - 1] === 'function') {
         return args.pop(); // modify the args array!
     }
 };
@@ -276,8 +285,8 @@ Aspect.prototype._getCallback = function getCallback(args) {
  * @param {String} event
  * @return {Object} the contract instance
  */
-Aspect.prototype._checkListener = function(type, event){
-    if(event === type) {
+Aspect.prototype._checkListener = function (type, event) {
+    if (event === type) {
         throw errors.ContractReservedEventError(type);
     }
 };
@@ -291,8 +300,8 @@ Aspect.prototype._checkListener = function(type, event){
  * @return {Object} the options with gaps filled by defaults
  */
 Aspect.prototype._getOrSetDefaultOptions = function getOrSetDefaultOptions(options) {
-    var _options = { ...options };
-    var gasPrice = _options.gasPrice ? String(_options.gasPrice): null;
+    var _options = {...options};
+    var gasPrice = _options.gasPrice ? String(_options.gasPrice) : null;
     var from = _options.from ? utils.toChecksumAddress(formatters.inputAddressFormatter(_options.from)) : null;
 
     _options.data = _options.data || this.options.data;
@@ -318,13 +327,13 @@ Aspect.prototype._getOrSetDefaultOptions = function getOrSetDefaultOptions(optio
  * @param {Function} callback
  * @return {Object} EventEmitter possible events are "error", "transactionHash" and "receipt"
  */
-Aspect.prototype.deploy = function(options, callback){
+Aspect.prototype.deploy = function (options, callback) {
     options = options || {};
     options = this._getOrSetDefaultOptions(options);
 
     // throw error, if no "data" is specified
-    if(!options.data) {
-        if (typeof callback === 'function'){
+    if (!options.data) {
+        if (typeof callback === 'function') {
             return callback(errors.ContractMissingDeployDataError());
         }
         throw errors.ContractMissingDeployDataError();
@@ -333,18 +342,37 @@ Aspect.prototype.deploy = function(options, callback){
         throw errors.ContractMissingDeployDataError();
     }
 
-    options.properties = options.properties || []
+    options.properties = options.properties || [];
     options.proof = options.proof || '0x00';
+    options.joinPoints = options.joinPoints || [];
+
+
+    let joinPointValue = 0;
+    let processedJPName = new Map();
+    for (const name of options.joinPoints) {
+        if (processedJPName.has(name)) {
+            //Deduplication
+            continue;
+        }
+        const enumValue = JoinPointRunMap.get(name.toLowerCase());
+        processedJPName.set(name, enumValue);
+        if (enumValue !== undefined) {
+            joinPointValue += enumValue;
+        } else {
+            throw errors.ContractMissingDeployDataError();
+        }
+    }
 
     const deploy = this._aspectCore.options.jsonInterface.find((method) => {
         return (method.type === 'function' && method.name === 'deploy');
     });
 
+
     return this._createTxObject.apply({
         method: deploy,
         parent: this,
         _ethAccounts: this.constructor._ethAccounts
-    }, [options.data, options.properties, options.paymaster, options.proof]);
+    }, [options.data, options.properties, options.paymaster, options.proof, joinPointValue]);
 };
 
 /**
@@ -357,13 +385,13 @@ Aspect.prototype.deploy = function(options, callback){
  * @param {Function} callback
  * @return {Object} EventEmitter possible events are "error", "transactionHash" and "receipt"
  */
-Aspect.prototype.upgrade = function(options, callback){
+Aspect.prototype.upgrade = function (options, callback) {
     options = options || {};
     options = this._getOrSetDefaultOptions(options);
 
     // throw error, if no "data" is specified
-    if(!options.data) {
-        if (typeof callback === 'function'){
+    if (!options.data) {
+        if (typeof callback === 'function') {
             return callback(errors.ContractMissingDeployDataError());
         }
         throw errors.ContractMissingDeployDataError();
@@ -371,6 +399,22 @@ Aspect.prototype.upgrade = function(options, callback){
 
     if (!this.options.address) {
         throw errors.ContractNoAddressDefinedError();
+    }
+    options.joinPoints = options.joinPoints || [];
+    let joinPointValue = 0;
+    let processedJPName = new Map();
+    for (const name of options.joinPoints) {
+        if (processedJPName.has(name)) {
+            //Deduplication
+            continue;
+        }
+        const enumValue = JoinPointRunMap.get(name.toLowerCase());
+        processedJPName.set(name, enumValue);
+        if (enumValue !== undefined) {
+            joinPointValue += enumValue;
+        } else {
+            throw errors.ContractMissingDeployDataError();
+        }
     }
 
     const upgrade = this._aspectCore.options.jsonInterface.find((method) => {
@@ -381,7 +425,7 @@ Aspect.prototype.upgrade = function(options, callback){
         method: upgrade,
         parent: this,
         _ethAccounts: this.constructor._ethAccounts
-    }, [this.options.address, options.data, options.properties]);
+    }, [this.options.address, options.data, options.properties, joinPointValue]);
 };
 
 /**
@@ -394,7 +438,7 @@ Aspect.prototype.upgrade = function(options, callback){
  * @param {Function} callback
  * @return {Object} EventEmitter possible events are "error", "transactionHash" and "receipt"
  */
-Aspect.prototype.operation = function(encodedArgs, callback){
+Aspect.prototype.operation = function (encodedArgs, callback) {
     const entrypoint = this._aspectCore.options.jsonInterface.find((method) => {
         return (method.type === 'function' && method.name === 'entrypoint');
     });
@@ -412,7 +456,7 @@ Aspect.prototype.operation = function(encodedArgs, callback){
  * @method clone
  * @return {Object} the event subscription
  */
-Aspect.prototype.clone = function() {
+Aspect.prototype.clone = function () {
     return new this.constructor(this.options.address, this.options);
 };
 
@@ -422,11 +466,11 @@ Aspect.prototype.clone = function() {
  * @method _createTxObject
  * @returns {Object} an object with functions to call the methods
  */
-Aspect.prototype._createTxObject =  function _createTxObject(){
+Aspect.prototype._createTxObject = function _createTxObject() {
     var args = Array.prototype.slice.call(arguments);
     var txObject = {};
 
-    if(this.method.type === 'function') {
+    if (this.method.type === 'function') {
 
         txObject.call = this.parent._executeMethod.bind(txObject, 'call');
         txObject.call.request = this.parent._executeMethod.bind(txObject, 'call', true); // to make batch requests
@@ -470,14 +514,14 @@ Aspect.prototype._processExecuteArguments = function _processExecuteArguments(ar
     processedArgs.callback = this._parent._getCallback(args);
 
     // get block number to use for call
-    if(processedArgs.type === 'call' && args[args.length - 1] !== true && (typeof args[args.length - 1] === 'string' || isFinite(args[args.length - 1])))
+    if (processedArgs.type === 'call' && args[args.length - 1] !== true && (typeof args[args.length - 1] === 'string' || isFinite(args[args.length - 1])))
         processedArgs.defaultBlock = args.pop();
 
     // get the options
     processedArgs.options = (!!args[args.length - 1] && typeof args[args.length - 1]) === 'object' ? args.pop() : {};
 
     // get the generateRequest argument for batch requests
-    processedArgs.generateRequest = (args[args.length - 1] === true)? args.pop() : false;
+    processedArgs.generateRequest = (args[args.length - 1] === true) ? args.pop() : false;
 
     processedArgs.options = this._parent._getOrSetDefaultOptions(processedArgs.options);
     processedArgs.options.data = this.encodeABI();
@@ -485,7 +529,7 @@ Aspect.prototype._processExecuteArguments = function _processExecuteArguments(ar
     processedArgs.options.to = aspectCoreAddr;
 
     // return error, if no "data" is specified
-    if(!processedArgs.options.data)
+    if (!processedArgs.options.data)
         return utils._fireError(new Error('Couldn\'t find a matching contract method, or the number of parameters is wrong.'), defer.eventEmitter, defer.reject, processedArgs.callback);
 
     return processedArgs;
@@ -506,12 +550,12 @@ Aspect.prototype._encodeMethodABI = function _encodeMethodABI() {
     var signature = false,
         paramsABI = this._parent._aspectCore.options.jsonInterface.filter(function (json) {
             return ((methodSignature === 'constructor' && json.type === methodSignature) ||
-                ((json.signature === methodSignature || json.signature === methodSignature.replace('0x','') || json.name === methodSignature) && json.type === 'function'));
+                ((json.signature === methodSignature || json.signature === methodSignature.replace('0x', '') || json.name === methodSignature) && json.type === 'function'));
         }).map(function (json) {
             var inputLength = (Array.isArray(json.inputs)) ? json.inputs.length : 0;
 
             if (inputLength !== args.length) {
-                throw new Error('The number of arguments is not matching the methods required number. You need to pass '+ inputLength +' arguments.');
+                throw new Error('The number of arguments is not matching the methods required number. You need to pass ' + inputLength + ' arguments.');
             }
 
             if (json.type === 'function') {
@@ -519,14 +563,14 @@ Aspect.prototype._encodeMethodABI = function _encodeMethodABI() {
             }
             return Array.isArray(json.inputs) ? json.inputs : [];
         }).map(function (inputs) {
-            return abi.encodeParameters(inputs, args).replace('0x','');
+            return abi.encodeParameters(inputs, args).replace('0x', '');
         })[0] || '';
 
     // return method
     var returnValue = (signature) ? signature + paramsABI : paramsABI;
 
-    if(!returnValue) {
-        throw new Error('Couldn\'t find a matching contract method named "'+ this._method.name +'".');
+    if (!returnValue) {
+        throw new Error('Couldn\'t find a matching contract method named "' + this._method.name + '".');
     }
 
     return returnValue;
@@ -539,21 +583,21 @@ Aspect.prototype._encodeMethodABI = function _encodeMethodABI() {
  * @param {String} type the type this execute function should execute
  * @param {Boolean} makeRequest if true, it simply returns the request parameters, rather than executing it
  */
-Aspect.prototype._executeMethod = function _executeMethod(){
+Aspect.prototype._executeMethod = function _executeMethod() {
     var _this = this,
         args = this._parent._processExecuteArguments.call(this, Array.prototype.slice.call(arguments), defer),
         defer = promiEvent((args.type !== 'send')),
         ethAccounts = _this.constructor._ethAccounts || _this._ethAccounts;
 
     // simple return request for batch requests
-    if(args.generateRequest) {
+    if (args.generateRequest) {
 
         var payload = {
             params: [formatters.inputCallFormatter.call(this._parent, args.options)],
             callback: args.callback
         };
 
-        if(args.type === 'call') {
+        if (args.type === 'call') {
             payload.params.push(formatters.inputDefaultBlockNumberFormatter.call(this._parent, args.defaultBlock));
             payload.method = 'eth_call';
             payload.format = this._parent._decodeMethodReturn.bind(null, this._method.outputs);
@@ -608,7 +652,7 @@ Aspect.prototype._executeMethod = function _executeMethod(){
         case 'send':
 
             // return error, if no "from" is specified
-            if(!utils.isAddress(args.options.from)) {
+            if (!utils.isAddress(args.options.from)) {
                 return utils._fireError(errors.ContractNoFromAddressDefinedError(), defer.eventEmitter, defer.reject, args.callback);
             }
 
