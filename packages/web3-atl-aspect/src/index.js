@@ -391,7 +391,7 @@ Aspect.prototype.upgrade = function(options, callback){
         throw errors.ContractMissingDeployDataError();
     }
 
-    if (!options.aspectId) {
+    if (!this.options.address) {
         throw errors.ContractNoAddressDefinedError();
     }
     options.joinPoints = options.joinPoints || [];
@@ -413,7 +413,7 @@ Aspect.prototype.upgrade = function(options, callback){
         method: upgrade,
         parent: this,
         _ethAccounts: this.constructor._ethAccounts
-    }, [options.aspectId, options.data, options.properties,joinPointValue]);
+    }, [this.options.address, options.data, options.properties,joinPointValue]);
 };
 
 /**

@@ -3,7 +3,7 @@
         "inputs": [
             {
                 "internalType": "address",
-                "name": "contractAddr",
+                "name": "accountAddr",
                 "type": "address"
             }
         ],
@@ -69,10 +69,29 @@
                 "internalType": "address",
                 "name": "aspectId",
                 "type": "address"
+            }
+        ],
+        "outputs": [
+            {
+                "internalType": "address[]",
+                "name": "accounts",
+                "type": "address[]"
+            }
+        ],
+        "name": "boundAddressesOf",
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "aspectId",
+                "type": "address"
             },
             {
                 "internalType": "address",
-                "name": "contractAddr",
+                "name": "accountAddr",
                 "type": "address"
             },
             {
@@ -84,25 +103,6 @@
         "name": "changeVersion",
         "outputs": [],
         "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "aspectId",
-                "type": "address"
-            }
-        ],
-        "name": "contractsOf",
-        "outputs": [
-            {
-                "internalType": "address[]",
-                "name": "contracts",
-                "type": "address[]"
-            }
-        ],
-        "stateMutability": "view",
         "type": "function"
     },
     {
@@ -183,7 +183,7 @@
             },
             {
                 "internalType": "address",
-                "name": "contractAddr",
+                "name": "accountAddr",
                 "type": "address"
             }
         ],

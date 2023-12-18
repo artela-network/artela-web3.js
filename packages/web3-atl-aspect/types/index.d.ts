@@ -85,7 +85,6 @@ export interface Options extends AspectOptions {
 }
 
 export interface UpgradeOptions {
-    aspectId:string;
     data: string;
     properties?: KVPair[];
     joinPoints?: JoinPoint[];
