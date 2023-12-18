@@ -358,8 +358,6 @@ Aspect.prototype.deploy = function (options, callback) {
         processedJPName.set(name, enumValue);
         if (enumValue !== undefined) {
             joinPointValue += enumValue;
-        } else {
-            throw errors.ContractMissingDeployDataError();
         }
     }
 
@@ -412,8 +410,6 @@ Aspect.prototype.upgrade = function (options, callback) {
         processedJPName.set(name, enumValue);
         if (enumValue !== undefined) {
             joinPointValue += enumValue;
-        } else {
-            throw errors.ContractMissingDeployDataError();
         }
     }
 
