@@ -18,7 +18,7 @@
  */
 
 import BN = require('bn.js');
-import {Common, PromiEvent, provider, hardfork, chain, BlockNumber} from '@artela/web3-core';
+import {BlockNumber, chain, Common, hardfork, PromiEvent, provider} from '@artela/web3-core';
 import {Accounts} from 'web3-eth-accounts';
 import {AbiItem} from '@artela/web3-utils';
 import Contract from "@artela/web3-eth-contract";
