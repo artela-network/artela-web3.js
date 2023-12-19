@@ -356,7 +356,7 @@ Aspect.prototype.deploy = function (options, callback) {
         }
         const enumValue = JoinPointRunMap.get(name.toLowerCase());
         processedJPName.set(name, enumValue);
-        if (enumValue !== undefined) {
+        if (!!enumValue) {
             joinPointValue += enumValue;
         }
     }
@@ -396,8 +396,8 @@ Aspect.prototype.upgrade = function (options, callback) {
     if (options.properties && options.properties.length > 0) {
         // check the property for illegal values
         for (const pop of options.properties) {
-            if (pop.key === "" || pop.key === undefined || pop.value === undefined) {
-                throw errors.ContractNoAddressDefinedError();
+            if (!pop.key || !pop.value) {
+                throw errors.AspectPropertyIllegalContentError();
             }
         }
     }
@@ -412,7 +412,7 @@ Aspect.prototype.upgrade = function (options, callback) {
         }
         const enumValue = JoinPointRunMap.get(name.toLowerCase());
         processedJPName.set(name, enumValue);
-        if (enumValue !== undefined) {
+        if (!!enumValue) {
             joinPointValue += enumValue;
         }
     }
