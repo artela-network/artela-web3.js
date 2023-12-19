@@ -356,10 +356,8 @@ Aspect.prototype.deploy = function (options, callback) {
         }
         const enumValue = JoinPointRunMap.get(name.toLowerCase());
         processedJPName.set(name, enumValue);
-        if (enumValue !== undefined) {
+        if (!!enumValue) {
             joinPointValue += enumValue;
-        } else {
-            throw errors.ContractMissingDeployDataError();
         }
     }
 
@@ -390,16 +388,20 @@ Aspect.prototype.upgrade = function (options, callback) {
     options = this._getOrSetDefaultOptions(options);
 
     // throw error, if no "data" is specified
-    if (!options.data) {
-        if (typeof callback === 'function') {
-            return callback(errors.ContractMissingDeployDataError());
-        }
-        throw errors.ContractMissingDeployDataError();
-    }
+    options.data = options.data ? options.data : '0x';
 
     if (!this.options.address) {
         throw errors.ContractNoAddressDefinedError();
     }
+    if (options.properties && options.properties.length > 0) {
+        // check the property for illegal values
+        for (const pop of options.properties) {
+            if (!pop.key || !pop.value) {
+                throw errors.AspectPropertyIllegalContentError();
+            }
+        }
+    }
+
     options.joinPoints = options.joinPoints || [];
     let joinPointValue = 0;
     let processedJPName = new Map();
@@ -410,10 +412,8 @@ Aspect.prototype.upgrade = function (options, callback) {
         }
         const enumValue = JoinPointRunMap.get(name.toLowerCase());
         processedJPName.set(name, enumValue);
-        if (enumValue !== undefined) {
+        if (!!enumValue) {
             joinPointValue += enumValue;
-        } else {
-            throw errors.ContractMissingDeployDataError();
         }
     }
 
