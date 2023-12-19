@@ -393,7 +393,7 @@ Aspect.prototype.upgrade = function (options, callback) {
     if (!this.options.address) {
         throw errors.ContractNoAddressDefinedError();
     }
-    if(options.properties && options.properties.length>0) {
+    if (options.properties && options.properties.length > 0) {
         // check the property for illegal values
         for (const pop of options.properties) {
             if (pop.key === "" || pop.key === undefined || pop.value === undefined) {
