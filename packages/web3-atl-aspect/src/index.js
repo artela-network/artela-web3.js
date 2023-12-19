@@ -388,16 +388,20 @@ Aspect.prototype.upgrade = function (options, callback) {
     options = this._getOrSetDefaultOptions(options);
 
     // throw error, if no "data" is specified
-    if (!options.data) {
-        if (typeof callback === 'function') {
-            return callback(errors.ContractMissingDeployDataError());
-        }
-        throw errors.ContractMissingDeployDataError();
-    }
+    options.data = options.data ? options.data : '0x';
 
     if (!this.options.address) {
         throw errors.ContractNoAddressDefinedError();
     }
+    if(options.properties && options.properties.length>0) {
+        // check the property for illegal values
+        for (const pop of options.properties) {
+            if (pop.key === "" || pop.key === undefined || pop.value === undefined) {
+                throw errors.ContractNoAddressDefinedError();
+            }
+        }
+    }
+
     options.joinPoints = options.joinPoints || [];
     let joinPointValue = 0;
     let processedJPName = new Map();
