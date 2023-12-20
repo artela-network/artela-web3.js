@@ -41,7 +41,6 @@ const promiEvent = require('web3-core-promievent');
 const abi = require('web3-eth-abi');
 const {getContractAddress} = require("@ethersproject/address");
 const {aspectCoreAddr} = require("@artela/web3-utils");
-const {map} = require("core-js/internals/array-iteration");
 
 const JoinPointRunMap = new Map([
     ["verifytx", 1],
