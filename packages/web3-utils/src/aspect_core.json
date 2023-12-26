@@ -49,7 +49,7 @@
             },
             {
                 "internalType": "address",
-                "name": "contractAddr",
+                "name": "accountAddr",
                 "type": "address"
             },
             {
@@ -71,6 +71,7 @@
                 "type": "address"
             }
         ],
+        "name": "boundAddressesOf",
         "outputs": [
             {
                 "internalType": "address[]",
@@ -78,7 +79,6 @@
                 "type": "address[]"
             }
         ],
-        "name": "boundAddressesOf",
         "stateMutability": "view",
         "type": "function"
     },
@@ -120,9 +120,9 @@
                         "type": "string"
                     },
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "value",
-                        "type": "string"
+                        "type": "bytes"
                     }
                 ],
                 "internalType": "struct AspectCore.KVPair[]",
@@ -212,9 +212,9 @@
                         "type": "string"
                     },
                     {
-                        "internalType": "string",
+                        "internalType": "bytes",
                         "name": "value",
-                        "type": "string"
+                        "type": "bytes"
                     }
                 ],
                 "internalType": "struct AspectCore.KVPair[]",

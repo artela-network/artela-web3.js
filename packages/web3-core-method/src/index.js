@@ -218,7 +218,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
         isAspectDeployment = (!!payload.params[0] && typeof payload.params[0] === 'object') && !isContractDeployment
             && payload.params[0].to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
             && payload.params[0].data
-            && payload.params[0].data.substring(0, 10).toLowerCase() === '0x53d4afd5',
+            && payload.params[0].data.substring(0, 10).toLowerCase() === '0xef00b7b0',
         isAspectCall = (!!payload.params[0] && typeof payload.params[0] === 'object') && !isContractDeployment
             && payload.params[0].to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
             && payload.params[0].data
@@ -368,7 +368,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             && parsedTx.to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
                             && parsedTx.data
                             && parsedTx.data.length >= 10
-                            && parsedTx.data.substring(0, 10).toLowerCase() === '0x53d4afd5';
+                            && parsedTx.data.substring(0, 10).toLowerCase() === '0xef00b7b0';
                         isAspectCall = !!parsedTx.to
                             && parsedTx.to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
                             && parsedTx.data
