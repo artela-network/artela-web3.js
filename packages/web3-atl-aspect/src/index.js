@@ -48,7 +48,6 @@ const JoinPointRunMap = new Map([
     ["precontractcall", 4],
     ["postcontractcall", 8],
     ["posttxexecute", 16],
-    ["posttxcommit", 32],
 ]);
 /**
  * Should be called to create new aspect instance
@@ -342,9 +341,9 @@ Aspect.prototype.deploy = function (options, callback) {
     }
 
     options.properties = options.properties || [];
-    options.proof = options.proof || '0x00';
+    options.proof = options.proof || '0x';
     options.joinPoints = options.joinPoints || [];
-
+    options.initData = options.initData || '0x';
 
     let joinPointValue = 0;
     let processedJPName = new Map();
@@ -369,7 +368,7 @@ Aspect.prototype.deploy = function (options, callback) {
         method: deploy,
         parent: this,
         _ethAccounts: this.constructor._ethAccounts
-    }, [options.data, options.properties, options.paymaster, options.proof, joinPointValue]);
+    }, [options.data, options.initData, options.properties, options.paymaster, options.proof, joinPointValue]);
 };
 
 /**

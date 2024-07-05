@@ -113,6 +113,11 @@
                 "type": "bytes"
             },
             {
+                "internalType": "bytes",
+                "name": "initdata",
+                "type": "bytes"
+            },
+            {
                 "components": [
                     {
                         "internalType": "string",
