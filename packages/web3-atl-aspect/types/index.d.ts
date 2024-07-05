@@ -89,10 +89,11 @@ export interface UpgradeOptions {
     joinPoints?: JoinPoint[];
 }
 
-export type JoinPoint ="VerifyTx"|"PreTxExecute"|"PreContractCall"|"PostContractCall"|"PostTxExecute"|"PostTxCommit";
+export type JoinPoint ="VerifyTx"|"PreTxExecute"|"PreContractCall"|"PostContractCall"|"PostTxExecute";
 export interface DeployOptions extends UpgradeOptions {
     paymaster: string;
     proof?: string;
+    initData?: string;
 }
 
 export interface QueryPropertyOptions {
