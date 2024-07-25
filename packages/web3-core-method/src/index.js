@@ -449,7 +449,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             if (method.extraFormatters && method.extraFormatters.aspectDeployFormatter) {
                                 defer.resolve(method.extraFormatters.aspectDeployFormatter(receipt));
                             } else {
-                                defer.resolve(aspectFormatter(parsedTx, receipt));
+                                defer.resolve(aspectFormatter(receipt));
                             }
 
                             defer.eventEmitter.emit('receipt', receipt);
@@ -486,7 +486,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             defer.eventEmitter.emit('receipt', receipt);
                             defer.resolve(receipt);
 
-                            // need to remove listeners, as they aren't removed automatically when succesfull
+                            // need to remove listeners, as they aren't removed automatically when successful
                             if (canUnsubscribe) {
                                 defer.eventEmitter.removeAllListeners();
                             }
@@ -1087,8 +1087,8 @@ Method.prototype.request = function () {
     return payload;
 };
 
-function aspectFormatter (tx, receipt) {
-    receipt.aspectAddress = getContractAddress(tx);
+function aspectFormatter (receipt) {
+    receipt.aspectAddress = receipt.contractAddress;
     return receipt;
 }
 
