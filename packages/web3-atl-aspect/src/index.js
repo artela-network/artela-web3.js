@@ -39,7 +39,6 @@ const formatters = require('web3-core-helpers').formatters;
 const errors = require('web3-core-helpers').errors;
 const promiEvent = require('web3-core-promievent');
 const abi = require('web3-eth-abi');
-const {getContractAddress} = require("@ethersproject/address");
 const {aspectCoreAddr} = require("@artela/web3-utils");
 
 const JoinPointRunMap = new Map([
@@ -663,7 +662,7 @@ Aspect.prototype._executeMethod = function _executeMethod() {
             var extraFormatters = {
                 aspectDeployFormatter: function (receipt) {
                     let newAspect = _this._parent.clone();
-                    newAspect.options.address = getContractAddress(args.options);
+                    newAspect.options.address = receipt.contractAddress;
                     return newAspect;
                 }
             };
