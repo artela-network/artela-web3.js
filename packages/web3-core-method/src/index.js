@@ -30,7 +30,6 @@ var promiEvent = require('web3-core-promievent');
 var Subscriptions = require('web3-core-subscriptions').subscriptions;
 
 var EthersTransactionUtils = require('@ethersproject/transactions');
-const {getContractAddress} = require("@ethersproject/address");
 
 var Method = function Method(options) {
 
