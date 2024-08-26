@@ -30,15 +30,15 @@
 
 "use strict";
 
-var core = require('@artela/web3-core');
-var Method = require('@artela/web3-core-method');
-var utils = require('@artela/web3-utils');
+var core = require('@artela-next/web3-core');
+var Method = require('@artela-next/web3-core-method');
+var utils = require('@artela-next/web3-utils');
 var Subscription = require('web3-core-subscriptions').subscription;
 var formatters = require('web3-core-helpers').formatters;
 var errors = require('web3-core-helpers').errors;
 var promiEvent = require('web3-core-promievent');
 var abi = require('web3-eth-abi');
-const {aspectCoreAbi, aspectCoreAddr} = require("@artela/web3-utils");
+const {aspectCoreAbi, aspectCoreAddr} = require("@artela-next/web3-utils");
 
 /**
  * Should be called to create new contract instance

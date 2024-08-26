@@ -24,8 +24,8 @@
 
 
 var formatters = require('web3-core-helpers').formatters;
-var Method = require('@artela/web3-core-method');
-var utils = require('@artela/web3-utils');
+var Method = require('@artela-next/web3-core-method');
+var utils = require('@artela-next/web3-utils');
 
 
 var extend = function (pckg) {

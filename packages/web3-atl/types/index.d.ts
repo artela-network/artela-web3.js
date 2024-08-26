@@ -38,12 +38,12 @@ import {
     Transaction,
     TransactionConfig,
     TransactionReceipt
-} from '@artela/web3-core';
+} from '@artela-next/web3-core';
 import {Subscription} from 'web3-core-subscriptions';
 import {AbiCoder} from 'web3-eth-abi';
 import {Accounts} from 'web3-eth-accounts';
-import {Contract, ContractOptions} from '@artela/web3-eth-contract';
-import {Aspect, AspectOptions} from '@artela/web3-atl-aspect';
+import {Contract, ContractOptions} from '@artela-next/web3-eth-contract';
+import {Aspect, AspectOptions} from '@artela-next/web3-atl-aspect';
 import {Ens} from 'web3-eth-ens';
 import {Iban} from 'web3-eth-iban';
 import {Personal} from 'web3-eth-personal';

@@ -19,7 +19,7 @@
 
 import Web3 from 'web3';
 import * as net from 'net';
-import { AbstractProvider, RequestArguments } from '@artela/web3-core';
+import { AbstractProvider, RequestArguments } from '@artela-next/web3-core';
 import { JsonRpcPayload, JsonRpcResponse } from 'web3-core-helpers';
 
 // $ExpectType Utils

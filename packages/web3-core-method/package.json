@@ -1,5 +1,5 @@
 {
-    "name": "@artela/web3-core-method",
+    "name": "@artela-next/web3-core-method",
     "version": "1.9.22",
     "description": "Creates the methods on the web3 modules. This is an internal package.",
     "repository": "https://github.com/artela-network/web3.js/tree/1.x/packages/web3-core-method",
@@ -14,7 +14,7 @@
     },
     "main": "lib/index.js",
     "dependencies": {
-        "@artela/web3-utils": "1.9.22",
+        "@artela-next/web3-utils": "1.9.22",
         "@ethersproject/transactions": "^5.6.2",
         "web3-core-helpers": "1.9.0",
         "web3-core-promievent": "1.9.0",

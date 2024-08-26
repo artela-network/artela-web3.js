@@ -20,7 +20,7 @@
 import * as net from 'net';
 import { Bzz } from 'web3-bzz';
 import { BatchRequest, provider, Providers, Extension } from 'web3-core';
-import { Atl } from '@artela/web3-atl';
+import { Atl } from '@artela-next/web3-atl';
 import { Personal } from 'web3-eth-personal';
 import { Network } from 'web3-net';
 import { Shh } from 'web3-shh';

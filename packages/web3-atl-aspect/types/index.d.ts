@@ -18,10 +18,10 @@
  */
 
 import BN = require('bn.js');
-import {BlockNumber, chain, Common, hardfork, PromiEvent, provider} from '@artela/web3-core';
+import {BlockNumber, chain, Common, hardfork, PromiEvent, provider} from '@artela-next/web3-core';
 import {Accounts} from 'web3-eth-accounts';
-import {AbiItem} from '@artela/web3-utils';
-import Contract from "@artela/web3-eth-contract";
+import {AbiItem} from '@artela-next/web3-utils';
+import Contract from "@artela-next/web3-eth-contract";
 
 export class Aspect {
     constructor(

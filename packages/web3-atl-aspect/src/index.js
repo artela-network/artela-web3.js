@@ -30,16 +30,16 @@
 
 "use strict";
 
-const core = require('@artela/web3-core');
-const Method = require('@artela/web3-core-method');
-const utils = require('@artela/web3-utils');
+const core = require('@artela-next/web3-core');
+const Method = require('@artela-next/web3-core-method');
+const utils = require('@artela-next/web3-utils');
 // const Subscription = require('web3-core-subscriptions').subscription;
-const Contract = require('@artela/web3-eth-contract');
+const Contract = require('@artela-next/web3-eth-contract');
 const formatters = require('web3-core-helpers').formatters;
 const errors = require('web3-core-helpers').errors;
 const promiEvent = require('web3-core-promievent');
 const abi = require('web3-eth-abi');
-const {aspectCoreAddr} = require("@artela/web3-utils");
+const {aspectCoreAddr} = require("@artela-next/web3-utils");
 
 const JoinPointRunMap = new Map([
     ["verifytx", 1],

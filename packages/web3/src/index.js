@@ -29,14 +29,14 @@
 
 
 var version = require('../package.json').version;
-var core = require('@artela/web3-core');
-var Atl = require('@artela/web3-atl');
-var Eth = require('@artela/web3-eth');
+var core = require('@artela-next/web3-core');
+var Atl = require('@artela-next/web3-atl');
+var Eth = require('@artela-next/web3-eth');
 var Net = require('web3-net');
 var Personal = require('web3-eth-personal');
 var Shh = require('web3-shh');
 var Bzz = require('web3-bzz');
-var utils = require('@artela/web3-utils');
+var utils = require('@artela-next/web3-utils');
 
 var Web3 = function Web3() {
     var _this = this;
