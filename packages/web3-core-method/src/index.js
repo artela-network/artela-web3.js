@@ -30,7 +30,6 @@ var promiEvent = require('web3-core-promievent');
 var Subscriptions = require('web3-core-subscriptions').subscriptions;
 
 var EthersTransactionUtils = require('@ethersproject/transactions');
-const {getContractAddress} = require("@ethersproject/address");
 
 var Method = function Method(options) {
 
@@ -218,7 +217,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
         isAspectDeployment = (!!payload.params[0] && typeof payload.params[0] === 'object') && !isContractDeployment
             && payload.params[0].to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
             && payload.params[0].data
-            && payload.params[0].data.substring(0, 10).toLowerCase() === '0xef00b7b0',
+            && payload.params[0].data.substring(0, 10).toLowerCase() === '0xdf8c47d2',
         isAspectCall = (!!payload.params[0] && typeof payload.params[0] === 'object') && !isContractDeployment
             && payload.params[0].to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
             && payload.params[0].data
@@ -368,7 +367,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             && parsedTx.to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
                             && parsedTx.data
                             && parsedTx.data.length >= 10
-                            && parsedTx.data.substring(0, 10).toLowerCase() === '0xef00b7b0';
+                            && parsedTx.data.substring(0, 10).toLowerCase() === '0xdf8c47d2';
                         isAspectCall = !!parsedTx.to
                             && parsedTx.to.toLowerCase() === utils.aspectCoreAddr.toLowerCase()
                             && parsedTx.data
@@ -449,7 +448,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             if (method.extraFormatters && method.extraFormatters.aspectDeployFormatter) {
                                 defer.resolve(method.extraFormatters.aspectDeployFormatter(receipt));
                             } else {
-                                defer.resolve(aspectFormatter(parsedTx, receipt));
+                                defer.resolve(aspectFormatter(receipt));
                             }
 
                             defer.eventEmitter.emit('receipt', receipt);
@@ -486,7 +485,7 @@ Method.prototype._confirmTransaction = function (defer, result, payload) {
                             defer.eventEmitter.emit('receipt', receipt);
                             defer.resolve(receipt);
 
-                            // need to remove listeners, as they aren't removed automatically when succesfull
+                            // need to remove listeners, as they aren't removed automatically when successful
                             if (canUnsubscribe) {
                                 defer.eventEmitter.removeAllListeners();
                             }
@@ -1087,8 +1086,8 @@ Method.prototype.request = function () {
     return payload;
 };
 
-function aspectFormatter (tx, receipt) {
-    receipt.aspectAddress = getContractAddress(tx);
+function aspectFormatter (receipt) {
+    receipt.aspectAddress = receipt.contractAddress;
     return receipt;
 }
 
